@@ -15,7 +15,10 @@ const msgs = {
         WEAPON_DELETED: 'Weapon successfully deleted',
         PLANET_CREATED: 'Planet successfully created',
         PLANET_EDITED: 'Planet successfully edited',
-        PLANET_DELETED: 'Planet successfully deleted'
+        PLANET_DELETED: 'Planet successfully deleted',
+        MOVIE_CREATED: 'Movie successfully created',
+        MOVIE_EDITED: 'Movie successfully edited',
+        MOVIE_DELETED: 'Movie successfully deleted'
     },
     errors: {
         SOMETHING_WENT_WRONG: 'Something went wrong',
@@ -36,9 +39,13 @@ const msgs = {
         FAILED_TO_EDIT_WEAPON: 'Failed to edit weapon',
         FAILED_TO_DELETE_WEAPON: 'Failed to delete weapon',
         PLANET_DOES_NOT_EXIST: 'Planet does not exist, anymore',
-        UNABLE_TO_CREATE_PLANET: 'Planet to create spaceship',
+        UNABLE_TO_CREATE_PLANET: 'Unable to create planet',
         FAILED_TO_EDIT_PLANET: 'Failed to edit planet',
-        FAILED_TO_DELETE_PLANET: 'Failed to delete planet'
+        FAILED_TO_DELETE_PLANET: 'Failed to delete planet',
+        MOVIE_DOES_NOT_EXIST: 'Movie does not exist, anymore',
+        UNABLE_TO_CREATE_MOVIE: 'Unable to create movie',
+        FAILED_TO_EDIT_MOVIE: 'Failed to edit movie',
+        FAILED_TO_DELETE_MOVIE: 'Failed to delete movie'
     }
 };
 

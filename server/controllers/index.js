@@ -3,11 +3,13 @@ const characterController = require('./character-controller');
 const spaceshipController = require('./spaceship-controller');
 const weaponController = require('./weapon-controller');
 const planetController = require('./planet-controller');
+const movieController = require('./movie-controller');
 
 module.exports = {
     userController,
     characterController,
     spaceshipController,
     weaponController,
-    planetController
+    planetController,
+    movieController
 };
