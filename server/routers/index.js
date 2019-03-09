@@ -4,6 +4,7 @@ const spaceshipRouter = require('./spaceship-router');
 const weaponRouter = require('./weapon-router');
 const planetRouter = require('./planet-router');
 const movieRouter = require('./movie-router');
+const storyRouter = require('./story-router');
 
 module.exports = app => {
     app
@@ -12,5 +13,6 @@ module.exports = app => {
         .use('/spaceship', spaceshipRouter)
         .use('/weapon', weaponRouter)
         .use('/planet', planetRouter)
-        .use('/movie', movieRouter);
+        .use('/movie', movieRouter)
+        .use('/story', storyRouter);
 };

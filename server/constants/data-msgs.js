@@ -18,7 +18,10 @@ const msgs = {
         PLANET_DELETED: 'Planet successfully deleted',
         MOVIE_CREATED: 'Movie successfully created',
         MOVIE_EDITED: 'Movie successfully edited',
-        MOVIE_DELETED: 'Movie successfully deleted'
+        MOVIE_DELETED: 'Movie successfully deleted',
+        STORY_CREATED: 'Story successfully created',
+        STORY_EDITED: 'Story successfully edited',
+        STORY_DELETED: 'Story successfully deleted'
     },
     errors: {
         SOMETHING_WENT_WRONG: 'Something went wrong',
@@ -45,7 +48,11 @@ const msgs = {
         MOVIE_DOES_NOT_EXIST: 'Movie does not exist, anymore',
         UNABLE_TO_CREATE_MOVIE: 'Unable to create movie',
         FAILED_TO_EDIT_MOVIE: 'Failed to edit movie',
-        FAILED_TO_DELETE_MOVIE: 'Failed to delete movie'
+        FAILED_TO_DELETE_MOVIE: 'Failed to delete movie',
+        STORY_DOES_NOT_EXIST: 'Story does not exist, anymore',
+        UNABLE_TO_CREATE_STORY: 'Unable to create story',
+        FAILED_TO_EDIT_STORY: 'Failed to edit story',
+        FAILED_TO_DELETE_STORY: 'Failed to delete story'
     }
 };
 
