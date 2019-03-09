@@ -9,7 +9,10 @@ const msgs = {
         CHARACTER_DELETED: 'Character successfully deleted',
         SPACESHIP_CREATED: 'Spaceship successfully created',
         SPACESHIP_EDITED: 'Spaceship successfully edited',
-        SPACESHIP_DELETED: 'Spaceship successfully deleted'
+        SPACESHIP_DELETED: 'Spaceship successfully deleted',
+        WEAPON_CREATED: 'Weapon successfully created',
+        WEAPON_EDITED: 'Weapon successfully edited',
+        WEAPON_DELETED: 'Weapon successfully deleted'
     },
     errors: {
         SOMETHING_WENT_WRONG: 'Something went wrong',
@@ -24,7 +27,11 @@ const msgs = {
         SPACESHIP_DOES_NOT_EXIST: 'Spaceship does not exist, anymore',
         UNABLE_TO_CREATE_SPACESHIP: 'Unable to create spaceship',
         FAILED_TO_EDIT_SPACESHIP: 'Failed to edit spaceship',
-        FAILED_TO_DELETE_SPACESHIP: 'Failed to delete spaceship'
+        FAILED_TO_DELETE_SPACESHIP: 'Failed to delete spaceship',
+        WEAPON_DOES_NOT_EXIST: 'Weapon does not exist, anymore',
+        UNABLE_TO_CREATE_WEAPON: 'Weapon to create spaceship',
+        FAILED_TO_EDIT_WEAPON: 'Failed to edit weapon',
+        FAILED_TO_DELETE_WEAPON: 'Failed to delete weapon'
     }
 };
 
