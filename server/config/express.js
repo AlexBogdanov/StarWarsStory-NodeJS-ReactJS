@@ -9,11 +9,13 @@ const success = require('express-json-success');
 module.exports = app => {
     app.use(cookieParser());
     app.use(bodyParser.urlencoded({extended: true}));
+    app.use(bodyParser.json());
     app.use(session({
         secret: '123456',
         resave: false,
         saveUninitialized: false
     }));
+    // app.use(responseMiddleware);
     success(app);
     app.use(cors());
     app.use(passport.initialize());

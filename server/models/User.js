@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const encryption = require('../utils/encryption');
 
 const UserSchema = new mongoose.Schema({
-    username: { type: mongoose.Schema.Types.String, required: true, unique: true },
+    username: { type: mongoose.Schema.Types.String, required: true, unique: true, minlength: 3 },
     hashedPass: { type: mongoose.Schema.Types.String, required: true },
     salt: { type: mongoose.Schema.Types.String, required: true },
     firstName: { type: mongoose.Schema.Types.String },

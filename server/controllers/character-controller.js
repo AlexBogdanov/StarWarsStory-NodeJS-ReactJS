@@ -11,12 +11,13 @@ module.exports = {
                 200
             );
         }).catch(err => {
-            res.success(
-                false,
-                err.message,
-                null,
-                500
-            );
+            // res.success(
+            //     false,
+            //     err.message,
+            //     null,
+            //     500
+            // );
+            res.error(err.message);
         });
     },
 
@@ -51,12 +52,13 @@ module.exports = {
                 200
             );
         }).catch(err => {
-            res.success(
-                false,
-                err.message,
-                null,
-                500
-            );
+            // res.success(
+            //     false,
+            //     err.message,
+            //     null,
+            //     500
+            // );
+            res.error(err.message);
         });
     },
 

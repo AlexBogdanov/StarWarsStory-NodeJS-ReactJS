@@ -24,6 +24,8 @@ const msgs = {
         STORY_DELETED: 'Story successfully deleted'
     },
     errors: {
+        ERROR_PROCESSING_REQUEST: 'Error occured processing your request',
+        LOG_IN_AND_TRY_AGAIN: 'Log In and try again.',
         SOMETHING_WENT_WRONG: 'Something went wrong',
         REGISTER_FAILED: 'Failed to register user',
         USER_DOES_NOT_EXIST: 'User does not exist',
@@ -53,6 +55,9 @@ const msgs = {
         UNABLE_TO_CREATE_STORY: 'Unable to create story',
         FAILED_TO_EDIT_STORY: 'Failed to edit story',
         FAILED_TO_DELETE_STORY: 'Failed to delete story'
+    },
+    serverErrors: {
+        BAD_REQUEST: 'Invalid request'
     }
 };
 

@@ -1,8 +1,6 @@
 const dataMsgs = require('./../constants/data-msgs');
 const { userData } = require('./../data');
 
-const User = require('mongoose').model('User');
-
 module.exports = {
     register: async (req, res) => {
         userData.register(req.body)
