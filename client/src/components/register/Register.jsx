@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 
-import { register } from './../../services/user-service';
+import userService from './../../services/user-service';
 import { errorNotifs } from './../../constants/notification-messages';
+import { OK } from './../../constants/http-responses';
 
 class Register extends Component {
     constructor(props) {
@@ -48,12 +49,11 @@ class Register extends Component {
             password: this.state.password
         };
         
-        const promise = register(user);
+        const promise = userService.register(user);
         promise.then(res => {
-            if (res.status === 200) {
+            if (res.status === OK) {
                 res.json()
                     .then(data => {
-                        localStorage.setItem('user', data.result);
                         NotificationManager.success(data.message);
                         window.location.href = '/';
                     });

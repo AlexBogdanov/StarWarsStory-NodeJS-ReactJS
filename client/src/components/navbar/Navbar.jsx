@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 
 import Register from './../register/Register';
+import Login from './../login/Login';
 
 const Navbar = () => {
     const user = localStorage.getItem('user');
@@ -15,6 +16,7 @@ const Navbar = () => {
 
             <Switch>
                 <Route path="/register" component={Register} />
+                <Route path="/login" component={Login} />
             </Switch>
         </div>
     );
