@@ -1,5 +1,4 @@
 import { baseUrl } from './../constants/urls';
-import axios from 'axios';
 
 const registerUrl = `${baseUrl}/user/register`;
 
