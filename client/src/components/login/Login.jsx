@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './Login.css';
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 
@@ -38,7 +39,12 @@ class Login extends Component {
                 if (res.status === OK) {
                     res.json()
                         .then(data => {
-                            localStorage.setItem('user', data.result);
+                            const user = {
+                                id: data.result._id,
+                                username: data.result.username,
+                                roles: data.result.roles
+                            };
+                            this.props.setUser(user);
                             NotificationManager.success(data.message);
                             window.location.href = '/';
                         });
