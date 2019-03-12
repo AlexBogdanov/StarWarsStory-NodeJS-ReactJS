@@ -13,7 +13,7 @@ const CharacterSchema = new mongoose.Schema({
     weapons: [{ type: String }],
     specialSkills: [{ type: String }],
     vehicles: [{ type: String }],
-    images: [{ type: String }]
+    images: [{ type: String, required: true }]
 });
 
 module.exports = mongoose.model('Character', CharacterSchema);
