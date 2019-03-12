@@ -4,6 +4,11 @@ const errorNotifs = {
     PASSWORDS_DO_NOT_MATCH: 'Passwords do not match'
 };
 
+const successNotifs = {
+    LOGOUT_SUCCESSFULL: 'Logout successfull'
+};
+
 export {
-    errorNotifs
+    errorNotifs,
+    successNotifs
 };
