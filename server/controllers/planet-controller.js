@@ -47,7 +47,7 @@ module.exports = {
             res.success(
                 true,
                 data.msg,
-                data.planet,
+                data.planetId,
                 200
             );
         }).catch(err => {
@@ -68,7 +68,7 @@ module.exports = {
             res.success(
                 true,
                 data.msg,
-                data.planet,
+                null,
                 200
             );
         }).catch(err => {

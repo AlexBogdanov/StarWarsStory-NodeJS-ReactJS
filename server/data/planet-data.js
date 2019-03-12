@@ -25,7 +25,7 @@ module.exports = {
     create: async (planetInput) => {
         try {
             const planet = await Planet.create(planetInput);
-            return { planet, msg: dataMsgs.success.PLANET_CREATED };
+            return { planetId: planet._id, msg: dataMsgs.success.PLANET_CREATED };
         } catch(err) {
             console.log(err);
             throw new Error(dataMsgs.errors.UNABLE_TO_CREATE_PLANET);
@@ -41,7 +41,7 @@ module.exports = {
             });
 
             await planet.save();
-            return { planet, msg: dataMsgs.success.PLANET_EDITED };
+            return { msg: dataMsgs.success.PLANET_EDITED };
         } catch(err) {
             console.log(err);
             throw new Error(dataMsgs.errors.FAILED_TO_EDIT_PLANET);

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const SpaceshipSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    dimension: { type: Number, required: true },
+    dimension: { type: String, required: true },
     affilations: [{ type: String }],
     info: { type: String },
     images: [{ type: String }],

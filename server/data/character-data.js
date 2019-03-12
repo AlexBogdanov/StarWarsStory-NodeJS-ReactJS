@@ -25,7 +25,7 @@ module.exports = {
     create: async (characterInput) => {
         try {
             const character = await Character.create(characterInput);
-            return { character, msg: dataMsgs.success.CHARACTER_CREATED }
+            return { characterId: character._id, msg: dataMsgs.success.CHARACTER_CREATED }
         } catch(err) {
             console.log(err);
             throw new Error(dataMsgs.errors.UNABLE_TO_CREATE_CHARACTER);
@@ -41,7 +41,7 @@ module.exports = {
             });
 
             await character.save();
-            return { character, msg: dataMsgs.success.CHARACTER_EDITED };
+            return { msg: dataMsgs.success.CHARACTER_EDITED };
         } catch (err) {
             console.log(err);
             throw new Error(dataMsgs.errors.FAILED_TO_EDIT_CHARACTER);

@@ -48,7 +48,7 @@ module.exports = {
             res.success(
                 true,
                 data.msg,
-                data.character,
+                null,
                 200
             );
         }).catch(err => {

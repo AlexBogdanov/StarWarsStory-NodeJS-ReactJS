@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 
+import ListItem from './../../list-item/ListItem';
 import movieService from './../../../services/movie-service';
 import { OK } from './../../../constants/http-responses';
 
@@ -44,9 +45,7 @@ class MoviesList extends Component {
                 {this.state.doRender ?
                 this.state.movies.map((movie, index) => {
                     return (
-                        <div key={index} className="item">
-                            <span>{movie.name}</span>
-                        </div>
+                        <ListItem key={index} name={movie.name} shortDescr={movie.info} imageUrl={movie.cover} />
                     );
                 })
                 :

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 
+import ListItem from './../../list-item/ListItem';
 import storyService from './../../../services/story-service';
 import { OK } from './../../../constants/http-responses';
 
@@ -44,9 +45,7 @@ class StoriesList extends Component {
                 {this.state.doRender ?
                 this.state.stories.map((story, index) => {
                     return (
-                        <div key={index} className="item">
-                            <span>{story.name}</span>
-                        </div>
+                        <ListItem key={index} name={story.name} shortDescr={story.story} imageUrl={story.images[0]} />
                     );
                 })
                 :

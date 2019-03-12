@@ -25,7 +25,7 @@ module.exports = {
     create: async (spaceshipInput) => {
         try {
             const spaceship = await Spaceship.create(spaceshipInput);
-            return { spaceship, msg: dataMsgs.success.SPACESHIP_CREATED };
+            return { spaceshipId: spaceship._id, msg: dataMsgs.success.SPACESHIP_CREATED };
         } catch(err) {
             console.log(err);
             throw new Error(dataMsgs.errors.UNABLE_TO_CREATE_SPACESHIP);
@@ -41,7 +41,7 @@ module.exports = {
             });
 
             await spaceship.save();
-            return { spaceship, msg: dataMsgs.success.SPACESHIP_EDITED };
+            return { msg: dataMsgs.success.SPACESHIP_EDITED };
         } catch(err) {
             console.log(err);
             throw new Error(dataMsgs.errors.FAILED_TO_EDIT_SPACESHIP);

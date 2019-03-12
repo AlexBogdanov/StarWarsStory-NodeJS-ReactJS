@@ -25,7 +25,7 @@ getAll: async () => {
     create: async (weaponInput) => {
         try {
             const weapon = await Weapon.create(weaponInput);
-            return { weapon, msg: dataMsgs.success.WEAPON_CREATED };
+            return { weaponId: weapon._id, msg: dataMsgs.success.WEAPON_CREATED };
         } catch(err) {
             console.log(err);
             throw new Error(dataMsgs.errors.UNABLE_TO_CREATE_WEAPON);
@@ -41,7 +41,7 @@ getAll: async () => {
             });
 
             await weapon.save();
-            return { weapon, msg: dataMsgs.success.WEAPON_EDITED };
+            return { msg: dataMsgs.success.WEAPON_EDITED };
         } catch(err) {
             console.log(err);
             throw new Error(dataMsgs.errors.FAILED_TO_EDIT_WEAPON);

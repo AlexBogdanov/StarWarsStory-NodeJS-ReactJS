@@ -47,7 +47,7 @@ module.exports = {
             res.success(
                 true,
                 data.msg,
-                data.weapon,
+                data.weaponId,
                 200
             );
         }).catch(err => {
@@ -68,7 +68,7 @@ module.exports = {
             res.success(
                 true,
                 data.msg,
-                data.weapon,
+                null,
                 200
             );
         }).catch(err => {

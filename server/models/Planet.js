@@ -6,7 +6,6 @@ const PlanetSchema = new mongoose.Schema({
     affilations: [{ type: String }],
     climate: { type: String },
     terrain: { type: String },
-    resource: { type: String },
     natives: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }],
     images: [{ type: String, required: true }]
 });

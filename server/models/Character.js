@@ -7,11 +7,10 @@ const CharacterSchema = new mongoose.Schema({
     homePlanet: { type: String, default: 'Unknown' },
     affilations: [{ type: String }],
     shortStory: { type: String, required: true },
-    birhtday: { type: Date },
-    height: { type: Number },
-    weight: { type: Number },
+    birhtday: { type: String, default: 'Unknown' },
+    height: { type: String, default: 'Unknown' },
+    weight: { type: String, default: 'Unknown' },
     weapons: [{ type: String }],
-    specialSkills: [{ type: String }],
     vehicles: [{ type: String }],
     images: [{ type: String, required: true }]
 });
