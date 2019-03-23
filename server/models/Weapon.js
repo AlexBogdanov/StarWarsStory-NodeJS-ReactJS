@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const WeaponSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
     affilations: [{ type: String,  }],
     info: { type: String },
     images: [{ type: String, required: true }],
