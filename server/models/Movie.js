@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const MovieSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     type: { type: Number, enum: [0, 1, 2, 3] },
-    releaseDate: { type: Date, required: true },
+    // releaseDate: { type: Date, required: true },
     director: { type: String },
     writers: [{ type: String }],
     actors: [{ type: String }],

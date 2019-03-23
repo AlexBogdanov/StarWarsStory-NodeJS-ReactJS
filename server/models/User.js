@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    roles: [{ type: String, required: true }],
     salt: { type: String, required: true }
 });
 
@@ -25,6 +26,7 @@ User.seedAdminUser = async () => {
                             username: 'admin',
                             password: hashedPass,
                             email: 'admin@admin.bg',
+                            roles: ['Admin'],
                             salt
                         });
                     });
