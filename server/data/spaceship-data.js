@@ -25,7 +25,7 @@ const spaceshipData = {
     create: async (spaceshipInput) => {
         try {
             const spaceship = await Spaceship.create(spaceshipInput);
-            return { spaceshipId: spaceship._id, msg: notifMsgs.success.SPACESHIP_CREATED };
+            return { spaceship, msg: notifMsgs.success.SPACESHIP_CREATED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.UNABLE_TO_CREATE_SPACESHIP);
@@ -41,7 +41,7 @@ const spaceshipData = {
             });
 
             await spaceship.save();
-            return { msg: notifMsgs.success.SPACESHIP_EDITED };
+            return { spaceship, msg: notifMsgs.success.SPACESHIP_EDITED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_EDIT_SPACESHIP);

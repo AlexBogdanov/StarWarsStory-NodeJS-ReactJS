@@ -25,7 +25,7 @@ const weaponData = {
     create: async (weaponInput) => {
         try {
             const weapon = await Weapon.create(weaponInput);
-            return { weaponId: weapon._id, msg: notifMsgs.success.WEAPON_CREATED };
+            return { weapon, msg: notifMsgs.success.WEAPON_CREATED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.UNABLE_TO_CREATE_WEAPON);
@@ -41,7 +41,7 @@ const weaponData = {
             });
 
             await weapon.save();
-            return { msg: notifMsgs.success.WEAPON_EDITED };
+            return { weapon, msg: notifMsgs.success.WEAPON_EDITED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_EDIT_WEAPON);

@@ -25,7 +25,7 @@ const planetData = {
     create: async (planetInput) => {
         try {
             const planet = await Planet.create(planetInput);
-            return { planetId: planet._id, msg: notifMsgs.success.PLANET_CREATED };
+            return { planet, msg: notifMsgs.success.PLANET_CREATED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.UNABLE_TO_CREATE_PLANET);
@@ -41,7 +41,7 @@ const planetData = {
             });
 
             await planet.save();
-            return { msg: notifMsgs.success.PLANET_EDITED };
+            return { planet, msg: notifMsgs.success.PLANET_EDITED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_EDIT_PLANET);

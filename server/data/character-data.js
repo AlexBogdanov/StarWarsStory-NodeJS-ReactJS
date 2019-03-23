@@ -41,7 +41,7 @@ const characterData = {
             });
 
             await character.save();
-            return { msg: notifMsgs.success.CHARACTER_EDITED };
+            return { character, msg: notifMsgs.success.CHARACTER_EDITED };
         } catch (err) {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_EDIT_CHARACTER);

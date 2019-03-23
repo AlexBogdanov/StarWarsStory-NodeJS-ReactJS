@@ -22,6 +22,7 @@ const userData = {
                 username,
                 password: hashedPass,
                 email,
+                roles: ['User'],
                 salt
             };
             const createdUser = await User.create(user);
