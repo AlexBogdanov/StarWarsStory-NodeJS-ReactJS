@@ -2,6 +2,8 @@ const { characterData } = require('./../data');
 
 module.exports = {
     getAll: (req, res) => {
+        console.log(req.user);
+
         characterData.getAll()
         .then(data => {
             res.success(

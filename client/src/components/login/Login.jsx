@@ -28,6 +28,8 @@ class Login extends Component {
     handleSubmit(e) {
         e.preventDefault();
 
+        debugger;
+
         const user = {
             username: this.state.username,
             password: this.state.password

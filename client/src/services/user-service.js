@@ -1,7 +1,7 @@
 import { baseUrl } from './../constants/urls';
 
-const registerUrl = `${baseUrl}/user/register`;
-const loginUrl = `${baseUrl}/user/login`;
+const registerUrl = `${baseUrl}/register`;
+const loginUrl = `${baseUrl}/login`;
 
 const userService = {
     register: (user) => {
@@ -13,6 +13,7 @@ const userService = {
     },
     
     login: (user) => {
+        debugger;
         return fetch(loginUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
