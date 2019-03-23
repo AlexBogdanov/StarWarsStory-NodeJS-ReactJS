@@ -1,10 +1,8 @@
 const authMiddleware = {
-    isUser: (req, res, next) => {
-
-    },
-
     isAdmin: (req, res, next) => {
-        
+        if (req.user.roles.includes('Admin')) {
+            next();
+        }
     }
 };
 
