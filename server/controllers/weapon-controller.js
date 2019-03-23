@@ -31,18 +31,20 @@ const weaponController = {
     create: async (req, res) => {
         const weapon = cloneOnly(req.body, weaponProperties);
 
-        const ownersIDs = [];
-
-        for (let i = 0; i < weapon.owners.length; i+=1) {
-            try {
-                const character = await characterData.findByName(weapon.owners[i]);
-                ownersIDs.push(character._id);
-            } catch (err) {
-                continue;
+        if (weapon.owners && weapon.owners.length > 0) {
+            const ownersIDs = [];
+    
+            for (let i = 0; i < weapon.owners.length; i+=1) {
+                try {
+                    const character = await characterData.findByName(weapon.owners[i]);
+                    ownersIDs.push(character._id);
+                } catch (err) {
+                    continue;
+                }
             }
+    
+            weapon.owners = ownersIDs;
         }
-
-        weapon.owners = ownersIDs;
 
         try {
             const data = await weaponData.create(weapon);
@@ -56,18 +58,20 @@ const weaponController = {
     edit: async (req, res) => {
         const weapon = cloneOnly(req.body, weaponProperties);
 
-        const ownersIDs = [];
-
-        for (let i = 0; i < weapon.owners.length; i+=1) {
-            try {
-                const character = await characterData.findByName(weapon.owners[i]);
-                ownersIDs.push(character._id);
-            } catch (err) {
-                continue;
+        if (weapon.owners && weapon.owners.length > 0) {
+            const ownersIDs = [];
+    
+            for (let i = 0; i < weapon.owners.length; i+=1) {
+                try {
+                    const character = await characterData.findByName(weapon.owners[i]);
+                    ownersIDs.push(character._id);
+                } catch (err) {
+                    continue;
+                }
             }
+    
+            weapon.owners = ownersIDs;
         }
-
-        weapon.owners = ownersIDs;
 
         try {
             const data = weaponData.edit(req.body.weaponId, weapon);

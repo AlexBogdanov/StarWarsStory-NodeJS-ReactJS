@@ -32,18 +32,20 @@ const spaceshipController = {
     create: async (req, res) => {
         const spaceship = cloneOnly(req.body, spaceshipProperties);
 
-        const pilotsIDs = [];
-
-        for (let i = 0; i < spaceship.pilots.length; i+=1) {
-            try {
-                const character = await characterData.findByName(spaceship.pilots[i]);
-                pilotsIDs.push(character._id);
-            } catch (err) {
-                continue;
+        if (spaceship.pilots && spaceship.pilots.lenght > 0) {
+            const pilotsIDs = [];
+    
+            for (let i = 0; i < spaceship.pilots.length; i+=1) {
+                try {
+                    const character = await characterData.findByName(spaceship.pilots[i]);
+                    pilotsIDs.push(character._id);
+                } catch (err) {
+                    continue;
+                }
             }
+    
+            spaceship.pilots = pilotsIDs;
         }
-
-        spaceship.pilots = pilotsIDs;
 
         try {
             const data = await spaceshipData.create(spaceship);
@@ -57,18 +59,20 @@ const spaceshipController = {
     edit: async (req, res) => {
         const spaceship = cloneOnly(req.body, spaceshipProperties);
 
-        const pilotsIDs = [];
-
-        for (let i = 0; i < spaceship.pilots.length; i+=1) {
-            try {
-                const character = await characterData.findByName(spaceship.pilots[i]);
-                pilotsIDs.push(character._id);
-            } catch (err) {
-                continue;
+        if (spaceship.pilots && spaceship.pilots.lenght > 0) {
+            const pilotsIDs = [];
+    
+            for (let i = 0; i < spaceship.pilots.length; i+=1) {
+                try {
+                    const character = await characterData.findByName(spaceship.pilots[i]);
+                    pilotsIDs.push(character._id);
+                } catch (err) {
+                    continue;
+                }
             }
+    
+            spaceship.pilots = pilotsIDs;
         }
-
-        spaceship.pilots = pilotsIDs;
 
         try {
             const data = await spaceshipData.edit(req.body.spaceshipId, spaceship);

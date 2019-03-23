@@ -33,18 +33,20 @@ const planetController = {
     create: async (req, res) => {
         const planet = cloneOnly(req.body, planetProperties);
 
-        const nativesIDs = [];
-
-        for (let i = 0; i < planet.natives.length; i+=1) {
-            try {
-                const character = await characterData.findByName(planet.natives[i]);
-                nativesIDs.push(character._id);
-            } catch (err) {
-                continue;
+        if (planet.natives && planet.natives.length > 0) {
+            const nativesIDs = [];
+    
+            for (let i = 0; i < planet.natives.length; i+=1) {
+                try {
+                    const character = await characterData.findByName(planet.natives[i]);
+                    nativesIDs.push(character._id);
+                } catch (err) {
+                    continue;
+                }
             }
+    
+            planet.natives = nativesIDs;
         }
-
-        planet.natives = nativesIDs;
 
         try {
             const data = await planetData.create(planet);
@@ -58,18 +60,20 @@ const planetController = {
     edit: async (req, res) => {
         const planet = cloneOnly(req.body, planetProperties);
 
-        const nativesIDs = [];
-
-        for (let i = 0; i < planet.natives.length; i+=1) {
-            try {
-                const character = await characterData.findByName(planet.natives[i]);
-                nativesIDs.push(character._id);
-            } catch (err) {
-                continue;
+        if (planet.natives && planet.natives.length > 0) {
+            const nativesIDs = [];
+    
+            for (let i = 0; i < planet.natives.length; i+=1) {
+                try {
+                    const character = await characterData.findByName(planet.natives[i]);
+                    nativesIDs.push(character._id);
+                } catch (err) {
+                    continue;
+                }
             }
+    
+            planet.natives = nativesIDs;
         }
-
-        planet.natives = nativesIDs;
 
         try {
             const data = await planetData.edit(req.body.planetId, planet);

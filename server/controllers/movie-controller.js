@@ -35,18 +35,20 @@ const movieController = {
     create: async (req, res) => {
         const movie = cloneOnly(req.body, movieProperties);
         
-        const charactersInvolvedIDs = [];
-
-        for (let i = 0; i < movie.charactersInvolved.length; i+=1) {
-            try {
-                const character = await characterData.findByName(movie.charactersInvolved[i]);
-                charactersInvolvedIDs.push(character._id);
-            } catch (err) {
-                continue;
+        if (movie.charactersInvolved && movie.charactersInvolved.length > 0) {
+            const charactersInvolvedIDs = [];
+    
+            for (let i = 0; i < movie.charactersInvolved.length; i+=1) {
+                try {
+                    const character = await characterData.findByName(movie.charactersInvolved[i]);
+                    charactersInvolvedIDs.push(character._id);
+                } catch (err) {
+                    continue;
+                }
             }
+    
+            movie.charactersInvolved = charactersInvolvedIDs;
         }
-
-        movie.charactersInvolved = charactersInvolvedIDs;
         
         try {
             const data = await movieData.create(movie);
@@ -60,18 +62,20 @@ const movieController = {
     edit : async (req, res) => {
         const movie = cloneOnly(req.body, movieProperties);
         
-        const charactersInvolvedIDs = [];
-
-        for (let i = 0; i < movie.charactersInvolved.length; i+=1) {
-            try {
-                const character = await characterData.findByName(movie.charactersInvolved[i]);
-                charactersInvolvedIDs.push(character._id);
-            } catch (err) {
-                continue;
+        if (movie.charactersInvolved && movie.charactersInvolved.length > 0) {
+            const charactersInvolvedIDs = [];
+    
+            for (let i = 0; i < movie.charactersInvolved.length; i+=1) {
+                try {
+                    const character = await characterData.findByName(movie.charactersInvolved[i]);
+                    charactersInvolvedIDs.push(character._id);
+                } catch (err) {
+                    continue;
+                }
             }
+    
+            movie.charactersInvolved = charactersInvolvedIDs;
         }
-
-        movie.charactersInvolved = charactersInvolvedIDs;
 
         try {
             const data = await movieData.edit(req.body.movieId, movie);
