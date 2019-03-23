@@ -6,11 +6,11 @@ const CharacterSchema = new mongoose.Schema({
     sex: { type: String, required: true },
     affilations: [{ type: String }],
     shortStory: { type: String, required: true },
-    birhtday: { type: String, default: 'Unknown' },
+    birhtday: { type: Date, default: 'Unknown' },
     height: { type: String, default: 'Unknown' },
     weight: { type: String, default: 'Unknown' },
-    weapons: [{ type: String, ref: 'Weapon' }],
-    vehicles: [{ type: String, ref: 'Vehicle' }],
+    weapons: [{ type: String }],
+    vehicles: [{ type: String }],
     images: [{ type: String, required: true }]
 });
 
