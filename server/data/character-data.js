@@ -56,6 +56,16 @@ const characterData = {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_DELETE_CHARACTER);
         }
+    },
+    
+    findByName: async (name) => {
+        try {
+            const character = await Character.findOne({ name });
+            return character;
+        } catch (err) {
+            console.log(err);
+            throw new Error(notifMsgs.errors.CHARACTER_DOES_NOT_EXIST);
+        }
     }
 };
 

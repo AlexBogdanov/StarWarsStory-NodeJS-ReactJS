@@ -4,6 +4,7 @@ const movieData = require('./movie-data');
 const planetData = require('./planet-data');
 const spaceshipData = require('./spaceship-data');
 const storyData = require('./story-data');
+const weaponData = require('./weapon-data');
 
 module.exports = {
     userData,
@@ -11,5 +12,6 @@ module.exports = {
     movieData,
     planetData,
     spaceshipData,
-    storyData
+    storyData,
+    weaponData
 };
