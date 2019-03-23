@@ -1,43 +1,36 @@
-const { characterData } = require('./../data');
+const { storyData } = require('./../data');
 const cloneOnly = require('./../utilities/clone-only');
 
-const characterProperties = [
+const storyProperties = [
     'name',
-    'race',
-    'sex',
-    'affilations',
-    'shortStory',
-    'birhtday',
-    'height',
-    'weight',
-    'weapons',
-    'vehicles',
+    'years',
+    'story',
     'images'
 ];
 
-const characterController = {
+const storyController = {
     getAll: (req, res) => {
-        characterData.getAll()
+        storyData.getAll()
           .then(res.success)
           .catch(err => {
-            console.log(err);
-            res.fail({ msg: err.message });
+              console.log(err);
+              res.fail({ msg: err.message });
           });
     },
 
     getById: (req, res) => {
-        characterData.getById(req.params.id)
+        storyData.getById(req.params.id)
           .then(res.success)
           .catch(err => {
-            console.log(err);
-            res.fail({ msg: err.message });
+              console.log(err);
+              res.fail({ msg: err.message });
           });
     },
 
     create: (req, res) => {
-        const character = cloneOnly(req.body, characterProperties);
-        
-        characterData.create(character)
+        const story = cloneOnly(req.body, storyProperties);
+
+        storyData.create(story)
           .then(res.success)
           .catch(err => {
               console.log(err);
@@ -46,9 +39,9 @@ const characterController = {
     },
 
     edit: (req, res) => {
-        const character = cloneOnly(req.body, characterProperties);
+        const story = cloneOnly(req.body, storyProperties);
 
-        characterData.edit(req.body.characterId, character)
+        storyData.edit(req.body.storyId, story)
           .then(res.success)
           .catch(err => {
             console.log(err);
@@ -57,13 +50,13 @@ const characterController = {
     },
 
     delete: (req, res) => {
-        characterData.delete(req.params.id)
+        storyData.delete(req.params.id)
           .then(msg => res.success({ msg }))
           .catch(err => {
             console.log(err);
             res.fail({ msg: err.message });
-          });
+          })
     }
 };
 
-module.exports = characterController;
+module.exports = storyController;
