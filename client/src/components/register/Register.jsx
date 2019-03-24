@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Register.css'
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
+import Loader from 'react-loader-spinner';
 
 import userService from './../../services/user-service';
 import { errorNotifs } from './../../constants/notification-messages';
@@ -64,7 +65,7 @@ class Register extends Component {
                 });
             } else {
                 res.json().then(err => {
-                    NotificationManager.error(err.data.msg);
+                    NotificationManager.error(err.message);
                     this.setState({ isLoading: false });
                 });
             }
@@ -74,6 +75,9 @@ class Register extends Component {
     render() {
         return (
             <div className="Register">
+                {this.state.isLoading ?
+                <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                :
                 <form onSubmit={this.handleSubmit}>
                     <label>Username:</label>
                     <br />
@@ -93,6 +97,7 @@ class Register extends Component {
                     <br />
                     <button type="submit">Register</button>
                 </form>
+                }
 
                 <NotificationContainer />
             </div>

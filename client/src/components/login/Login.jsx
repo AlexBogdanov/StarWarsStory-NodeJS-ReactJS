@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import './Login.css';
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
+import Loader from 'react-loader-spinner';
 
 import userService from './../../services/user-service';
 import { errorNotifs } from './../../constants/notification-messages';
 import { OK } from './../../constants/http-responses';
+import { userRoles } from './../../constants/common';
 
 class Login extends Component {
     constructor(props) {
@@ -54,8 +56,14 @@ class Login extends Component {
                 res.json().then(response => {
                     if (this.state.rememberMe) {
                         localStorage.setItem('token', response.data.token);
+                        const userRole = response.data.user.roles.includes(userRoles.ADMIN)
+                            ? userRoles.ADMIN : userRoles.USER;
+                        localStorage.setItem('userRole', userRole);
                     } else {
                         sessionStorage.setItem('token', response.data.token);
+                        const userRole = response.data.user.roles.includes(userRoles.ADMIN)
+                            ? userRole.ADMIN : userRoles.USER;
+                        sessionStorage.setItem('userRole', userRole);
                     }
 
                     NotificationManager.success(response.data.msg);
@@ -63,7 +71,7 @@ class Login extends Component {
                 });
             } else {
                 res.json().then(err => {
-                    NotificationManager.error(err.data.msg);
+                    NotificationManager.error(err.message);
                     this.setState({ isLoading: false });
                 });
             }
@@ -73,6 +81,9 @@ class Login extends Component {
     render() {
         return (
             <div className="Login">
+                {this.state.isLoading ?
+                <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                :
                 <form onSubmit={this.handleSubmit}>
                     <label>Username:</label>
                     <br />
@@ -86,6 +97,7 @@ class Login extends Component {
                     <br />
                     <button type="submit">Login</button>
                 </form>
+                }
 
                 <NotificationContainer />
             </div>
