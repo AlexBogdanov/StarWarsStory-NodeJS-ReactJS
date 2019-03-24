@@ -28,18 +28,14 @@ passport.use('local', new localStrategy({
                 })
                 .then(user => {
                     if (!user) {
-                        return done(null, false, {
-                            message: 'Invalid username'
-                        });
+                        return done(null, { message: 'Invalid username' });
                     } else {
                         bcrypt.compare(password, user.password)
                             .then(response => {
                                 if (!response) {
                                     const msg = 'Invalid password';
                                     console.log(msg);
-                                    return done(null, false, {
-                                        message: msg
-                                    });
+                                    return done(null, { message: msg });
                                 }
 
                                 console.log('User found and authenticated');

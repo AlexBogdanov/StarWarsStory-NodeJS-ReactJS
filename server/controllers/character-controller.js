@@ -21,7 +21,7 @@ const characterController = {
           .then(res.success)
           .catch(err => {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
           });
     },
 
@@ -30,7 +30,7 @@ const characterController = {
           .then(res.success)
           .catch(err => {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
           });
     },
 
@@ -41,7 +41,7 @@ const characterController = {
           .then(res.success)
           .catch(err => {
               console.log(err);
-              res.fail({ msg: err.message });
+              res.error(err.message, null, 500);
           });
     },
 
@@ -52,7 +52,7 @@ const characterController = {
           .then(res.success)
           .catch(err => {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
           });
     },
 
@@ -61,7 +61,7 @@ const characterController = {
           .then(msg => res.success({ msg }))
           .catch(err => {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
           });
     }
 };

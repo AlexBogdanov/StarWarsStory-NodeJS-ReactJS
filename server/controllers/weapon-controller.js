@@ -15,7 +15,7 @@ const weaponController = {
           .then(res.success)
           .catch(err => {
               console.log(err);
-              res.fail({ msg: err.message });
+              res.error(err.message, null, 500);
           });
     },
 
@@ -24,7 +24,7 @@ const weaponController = {
           .then(res.success)
           .catch(err => {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
           });
     },
 
@@ -51,7 +51,7 @@ const weaponController = {
             res.success(data);
         } catch (err) {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
         }
     },
 
@@ -78,7 +78,7 @@ const weaponController = {
             res.success(data);
         } catch (err) {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
         }
     },
 
@@ -87,7 +87,7 @@ const weaponController = {
           .then(msg => res.success({ msg }))
           .catch(err => {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
           });
     }
 };

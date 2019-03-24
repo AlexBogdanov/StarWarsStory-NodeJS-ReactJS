@@ -7,7 +7,9 @@ const userController = {
 
         userData.register(user.username, user.password, user.email)
             .then(res.success)
-            .catch(res.fail);
+            .catch(err => {
+                res.error(err.message, null, 500);
+            });
     },
 
     login: (req, res) => {
@@ -15,7 +17,9 @@ const userController = {
 
         userData.login(user.username, user.password)
             .then(res.success)
-            .catch(res.fail);
+            .catch(err => {
+                res.error(err.message, null, 500);
+            });
     }
 };
 

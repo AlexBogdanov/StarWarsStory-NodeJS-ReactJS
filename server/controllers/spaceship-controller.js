@@ -16,7 +16,7 @@ const spaceshipController = {
           .then(res.success)
           .catch(err => {
               console.log(err);
-              res.fail({ msg: err.message });
+              res.error(err.message, null, 500);
           });
     },
 
@@ -25,7 +25,7 @@ const spaceshipController = {
           .then(res.success)
           .catch(err => {
               console.log(err);
-              res.fail({ msg: err.message });
+              res.error(err.message, null, 500);
           });
     },
 
@@ -52,7 +52,7 @@ const spaceshipController = {
             res.success(data);
         } catch (err) {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
         }
     },
 
@@ -79,7 +79,7 @@ const spaceshipController = {
             res.success(data);
         } catch (err) {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
         }
     },
 
@@ -88,7 +88,7 @@ const spaceshipController = {
           .then(msg => res.success({ msg }))
           .catch(err => {
             console.log(err);
-            res.fail({ msg: err.message });
+            res.error(err.message, null, 500);
           });
     }
 };
