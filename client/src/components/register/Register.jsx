@@ -14,7 +14,9 @@ class Register extends Component {
         this.state = {
             username: '',
             password: '',
-            repeatPassword: ''
+            repeatPassword: '',
+            email: '',
+            isLoading: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -47,24 +49,26 @@ class Register extends Component {
 
         const user = {
             username: this.state.username,
-            password: this.state.password
+            password: this.state.password,
+            email: this.state.email
         };
-        
-        const promise = userService.register(user);
-        promise.then(res => {
+
+        this.setState({ isLoading: true });
+
+        userService.register(user)
+          .then(res => {
             if (res.status === OK) {
-                res.json()
-                    .then(data => {
-                        NotificationManager.success(data.message);
-                        window.location.href = '/';
-                    });
+                res.json().then(response => {
+                    NotificationManager.success(response.data.msg);
+                    setTimeout(() => { window.location.href = '/'; }, 2000);
+                });
             } else {
-                res.json()
-                    .then(err => {
-                        NotificationManager.error(err.message);
-                    });
+                res.json().then(err => {
+                    NotificationManager.error(err.data.msg);
+                    this.setState({ isLoading: false });
+                });
             }
-        })
+          });
     }
 
     render() {
@@ -74,6 +78,10 @@ class Register extends Component {
                     <label>Username:</label>
                     <br />
                     <input name="username" type="text" onChange={this.handleChange} />
+                    <br />
+                    <label>Email:</label>
+                    <br />
+                    <input name="email" type="email" onChange={this.handleChange} />
                     <br />
                     <label>Password:</label>
                     <br />

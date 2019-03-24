@@ -4,6 +4,7 @@ import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 import userService from './../../services/user-service';
+import { errorNotifs } from './../../constants/notification-messages';
 import { OK } from './../../constants/http-responses';
 
 class Login extends Component {
@@ -12,7 +13,9 @@ class Login extends Component {
 
         this.state = {
             username: '',
-            password: ''
+            password: '',
+            rememberMe: false,
+            isLoading: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -27,36 +30,44 @@ class Login extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        
+        if (this.state.username.lenght < 3) {
+            NotificationManager.error(errorNotifs.USERNAME_SHOULD_BE_ATLEAST_3_CHARACTERS_LONG);
+            return;
+        }
 
-        debugger;
+        if (this.state.password.length < 6) {
+            NotificationManager.error(errorNotifs.PASSWORD_SHOULD_BE_ATLEAST_6_CHARACTERS_LONG);
+            return;
+        }
 
         const user = {
             username: this.state.username,
             password: this.state.password
         };
+
+        this.setState({ isLoading: true });
         
-        const promise = userService.login(user);
-        promise
-            .then(res => {
-                if (res.status === OK) {
-                    res.json()
-                        .then(data => {
-                            const user = {
-                                id: data.result._id,
-                                username: data.result.username,
-                                roles: data.result.roles
-                            };
-                            this.props.setUser(user);
-                            NotificationManager.success(data.message);
-                            window.location.href = '/';
-                        });
-                } else {
-                    res.json()
-                        .then(err => {
-                            NotificationManager.error(err.message);
-                        });
-                }
-            })
+        userService.login(user)
+          .then(res => {
+            if (res.status === OK) {
+                res.json().then(response => {
+                    if (this.state.rememberMe) {
+                        localStorage.setItem('token', response.data.token);
+                    } else {
+                        sessionStorage.setItem('token', response.data.token);
+                    }
+
+                    NotificationManager.success(response.data.msg);
+                    setTimeout(() => { window.location.href = '/'; }, 2000);
+                });
+            } else {
+                res.json().then(err => {
+                    NotificationManager.error(err.data.msg);
+                    this.setState({ isLoading: false });
+                });
+            }
+          });
     }
 
     render() {
@@ -70,6 +81,8 @@ class Login extends Component {
                     <label>Password:</label>
                     <br />
                     <input name="password" type="password" onChange={this.handleChange} />
+                    <br />
+                    <label>Remember me:</label> <input name="rememberMe" type="checkbox" onChange={this.handleChange} />
                     <br />
                     <button type="submit">Login</button>
                 </form>
