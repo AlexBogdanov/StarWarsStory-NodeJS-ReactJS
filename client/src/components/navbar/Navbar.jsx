@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 
 import { userRoles } from './../../constants/common';
 
-const Navbar = () => {
+const Navbar = ({ removeUser }) => {
     const logout = () => {
+        removeUser();
         localStorage.clear();
         sessionStorage.clear();
         window.location.href = '/';

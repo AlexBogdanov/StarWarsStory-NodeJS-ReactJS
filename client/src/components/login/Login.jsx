@@ -54,18 +54,18 @@ class Login extends Component {
           .then(res => {
             if (res.status === OK) {
                 res.json().then(response => {
+                    const userRole = response.data.user.roles.includes(userRoles.ADMIN)
+                        ? userRoles.ADMIN : userRoles.USER;
+
                     if (this.state.rememberMe) {
                         localStorage.setItem('token', response.data.token);
-                        const userRole = response.data.user.roles.includes(userRoles.ADMIN)
-                            ? userRoles.ADMIN : userRoles.USER;
                         localStorage.setItem('userRole', userRole);
                     } else {
                         sessionStorage.setItem('token', response.data.token);
-                        const userRole = response.data.user.roles.includes(userRoles.ADMIN)
-                            ? userRole.ADMIN : userRoles.USER;
                         sessionStorage.setItem('userRole', userRole);
                     }
 
+                    this.props.setUser(userRole);
                     NotificationManager.success(response.data.msg);
                     setTimeout(() => { window.location.href = '/'; }, 2000);
                 });

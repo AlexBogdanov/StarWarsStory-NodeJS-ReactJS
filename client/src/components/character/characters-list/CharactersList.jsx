@@ -11,46 +11,39 @@ class CharactersList extends Component {
         super(props);
         
         this.state = {
-            userRole: null,
             characters: null,
-            doRender: false
+            isLoading: false
         };
 
-        this.fetchCharacters = this.fetchCharacters.bind(this);
         this.openCharacterDetails = this.openCharacterDetails.bind(this);
         this.openCharacterEdit = this.openCharacterEdit.bind(this);
         this.deleteCharacter = this.deleteCharacter.bind(this);
     }
 
     componentDidMount() {
-        const userRole = localStorage.getItem('role');
+        this.setState({ isLoading: true });
 
-        if (userRole) {
-            this.setState({ userRole });
-        }
-
-        this.fetchCharacters();
-    }
-
-    fetchCharacters() {
         characterService.getAllCharacters()
-            .then(res => {
-                if (res.status === OK) {
-                    res.json()
-                        .then(data => {
-                            this.setState({ characters: data.result, doRender: true });
-                        });
-                } else {
-                    res.json()
-                        .then(err => {
-                            NotificationManager.error(err.message);
-                        })
-                }
-            })
+          .then(res => {
+              if (res.status === OK) {
+                  res.json().then(response => {
+                      this.setState({
+                          characters: response.data.characters,
+                          isLoading: false
+                      });
+                      NotificationManager.success(response.data.msg);
+                  });
+              } else {
+                  res.json().then(err => {
+                    NotificationManager.error(err.message);
+                    setTimeout(() => { window.location.href = '/'; }, 2000);
+                  });
+              }
+          })
     }
 
     openCharacterDetails(id) {
-        this.props.history.push(`/character/details/${id}`);
+        this.props.history.push(`/character/${id}`);
     }
 
     openCharacterEdit(id) {
@@ -58,19 +51,22 @@ class CharactersList extends Component {
     }
 
     deleteCharacter(id) {
+        this.setState({ isLoading: true });
+
         characterService.deleteCharacterById(id)
-            .then(res => {
-                if (res.status === OK) {
-                    res.json().then(data => {
-                        NotificationManager.success(data.message);
-                        window.location.reload();
-                    });
-                } else {
-                    res.json().then(err => {
-                        Notification.error(err.message);
-                    });
-                }
-            });
+          .then(res => {
+              if (res.status === OK) {
+                  res.json(response => {
+                    NotificationManager.success(response.data.msg);
+                    setTimeout(() => { window.location.href = '/characters'; }, 2000);
+                  });
+              } else {
+                  res.json().then(err => {
+                    NotificationManager.error(err.message);
+                    this.setState({ isLoading: false });
+                  });
+              }
+          });
     }
 
     render() {
