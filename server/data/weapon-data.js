@@ -43,7 +43,7 @@ const weaponData = {
             });
 
             await weapon.save();
-            return { weapon, msg: notifMsgs.success.WEAPON_EDITED };
+            return { msg: notifMsgs.success.WEAPON_EDITED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_EDIT_WEAPON);

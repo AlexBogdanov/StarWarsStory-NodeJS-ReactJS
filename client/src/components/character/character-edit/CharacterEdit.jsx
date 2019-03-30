@@ -32,7 +32,7 @@ class CharacterEdit extends Component {
         this.setState({ isLoading: true });
         const characterId = this.props.match.params.characterId;
 
-        characterService.getCharacterById(this.props.match.params.characterId)
+        characterService.getCharacterById(characterId)
           .then(res => {
             if (res.status === OK) {
                 res.json().then(response => {
@@ -40,22 +40,20 @@ class CharacterEdit extends Component {
                         characterId,
                         race: response.data.character.race,
                         sex: response.data.character.sex,
-                        affilations: response.data.character.affilations.join(', ').filter(aff => aff),
+                        affilations: response.data.character.affilations.join(', '),
                         shortStory: response.data.character.shortStory,
                         height: response.data.character.height,
                         weight: response.data.character.weight,
-                        weapons: response.data.character.weapons.join(', ').filter(weap => weap),
-                        vehicles: response.data.character.vehicles.join(', ').filter(veh => veh),
-                        images: response.data.character.images.join(', ').filter(img => img),
+                        weapons: response.data.character.weapons.join(', '),
+                        vehicles: response.data.character.vehicles.join(', '),
+                        images: response.data.character.images.join(', '),
                         isLoading: false
                     });
                 });
             } else {
                 res.json().then(err => {
                     this.props.notifHandler(err.message, notifTypes.error);
-                    setTimeout(() => {
-                        this.props.history.push('/characters');
-                    }, 2000);
+                    setTimeout(() => { this.props.history.push('/characters'); }, 2000);
                 });
             }
           });

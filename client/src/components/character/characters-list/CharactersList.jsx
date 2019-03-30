@@ -22,7 +22,7 @@ class CharactersList extends Component {
         this.deleteCharacter = this.deleteCharacter.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.setState({ isLoading: true });
 
         if (localStorage.getItem('userRole')) {
@@ -40,7 +40,7 @@ class CharactersList extends Component {
                         return;
                     }
 
-                    this.setState({ characters: response.data.characters, isLoading: false });
+                    this.setState({ isLoading: false });
                   });
               } else {
                   res.json().then(err => {

@@ -1,56 +1,59 @@
-import React, { Component } from 'react';
-import 'react-notifications/lib/notifications.css';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import React, { Component, Fragment } from 'react';
+import Loader from 'react-loader-spinner';
 
 import ListItem from './../../list-item/ListItem';
 import weaponService from './../../../services/weapon-service';
 import { OK } from './../../../constants/http-responses';
+import { notifTypes } from '../../../constants/common';
 
 class WeaponsList extends Component {
     constructor(props) {
         super(props);
         
         this.state = {
-            userRole: '',
-            weapons: null,
-            doRender: false
+            weapons: [],
+            isLoading: false,
+            doRender: false,
+            userRole: ''
         };
 
-        this.fetchWeapons = this.fetchWeapons.bind(this);
         this.openWeaponDetails = this.openWeaponDetails.bind(this);
         this.openWeaponEdit = this.openWeaponEdit.bind(this);
         this.deleteWeapon = this.deleteWeapon.bind(this);
     }
 
-    componentDidMount() {
-        const userRole = localStorage.getItem('role');
+    componentWillMount() {
+        this.setState({ isLoading: true });
 
-        if (userRole) {
-            this.setState({ userRole });
+        if (localStorage.getItem('userRole')) {
+            this.setState({ userRole: localStorage.getItem('userRole') });
+        } else if (sessionStorage.getItem('userRole')) {
+            this.setState({ userRole: sessionStorage.getItem('userRole') });
         }
 
-        this.fetchWeapons();
-    }
-
-    fetchWeapons() {
         weaponService.getAllWeapons()
-            .then(res => {
-                if (res.status === OK) {
-                    res.json()
-                        .then(data => {
-                            this.setState({ weapons: data.result, doRender: true });
-                        });
-                } else {
-                    res.json()
-                        .then(err => {
-                            NotificationManager.error(err.message);
-                        })
-                }
-            })
+          .then(res => {
+            if (res.status === OK) {
+                res.json().then(response => {
+                    if (response.data.weapons.length > 0) {
+                        this.setState({ weapons: response.data.weapons, doRender: true, isLoading: false });
+                        return;
+                    }
+
+                    this.setState({ isLoading: false });
+                });
+            } else {
+                res.json().then(err => {
+                    this.setState({ isLoading: false });
+                    this.props.notifHandler(err.message, notifTypes.error);
+                    this.props.history.push('/');
+                });
+            }
+          });
     }
 
     openWeaponDetails(id) {
-        this.props.history.push(`/weapon/details/${id}`);
+        this.props.history.push(`/weapon/${id}`);
     }
 
     openWeaponEdit(id) {
@@ -58,44 +61,53 @@ class WeaponsList extends Component {
     }
 
     deleteWeapon(id) {
+        this.setState({ isLoading: true });
+
         weaponService.deleteWeapon(id)
-            .then(res => {
-                if (res.status === OK) {
-                    res.json().then(data => {
-                        NotificationManager.success(data.message);
-                        window.location.reload();
-                    });
-                } else {
-                    res.json().then(err => {
-                        NotificationManager.error(err.message);
-                    });
-                }
-            });
+          .then(res => {
+              if (res.status === OK) {
+                  res.json().then(response => {
+                      this.props.notifHandler(response.data.msg, notifTypes.success);
+                      setTimeout(() => { window.location.reload(); }, 2000);
+                  });
+              } else {
+                  res.json().then(err => {
+                    this.setState({ isLoading: false });
+                    this.props.notifHandler(err.message, notifTypes.error);
+                  });
+              }
+          });
     }
 
     render() {
         return (
             <div className="ListItems">
-                {this.state.doRender ?
-                this.state.weapons.map((weapon, index) => {
-                    return (
-                        <ListItem
-                        key={index}
-                        itemId={weapon._id}
-                        name={weapon.name}
-                        shortDescr={weapon.info}
-                        imageUrl={weapon.images[0]}
-                        userRole={this.state.userRole}
-                        openItemDetails={this.openWeaponDetails}
-                        openItemEdit={this.openWeaponEdit}
-                        deleteItem={this.deleteWeapon} />
-                    );
-                })
-                :
-                <div> No results </div>
+                {
+                    this.state.isLoading ?
+                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                    :
+                    <Fragment>
+                        {this.state.doRender ?
+                        this.state.weapons.map((weapon, index) => {
+                            return (
+                                <ListItem
+                                key={index}
+                                itemId={weapon._id}
+                                name={weapon.name}
+                                shortDescr={weapon.info}
+                                imageUrl={weapon.images[0]}
+                                userRole={this.state.userRole}
+                                openItemDetails={this.openWeaponDetails}
+                                openItemEdit={this.openWeaponEdit}
+                                deleteItem={this.deleteWeapon}
+                                userRole={this.state.userRole} />
+                            );
+                        })
+                        :
+                        <div> No results </div>
+                        }
+                    </Fragment>
                 }
-
-                <NotificationContainer />
             </div>
         );
     };

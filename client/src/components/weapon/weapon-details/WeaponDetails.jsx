@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import './WeaponDetails.css';
-import 'react-notifications/lib/notifications.css';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import Loader from 'react-loader-spinner';
 
 import weaponService from './../../../services/weapon-service';
 import { OK } from './../../../constants/http-responses';
+import { notifTypes } from './../../../constants/common';
+import { errorNotifs } from './../../../constants/notification-messages';
 
 class WeaponDetails extends Component {
     constructor(props) {
@@ -17,27 +18,27 @@ class WeaponDetails extends Component {
     }
 
     componentWillMount() {
+        this.setState({ isLoading: true });
         weaponService.getWeaponById(this.props.match.params.weaponId)
-            .then(res => {
-                if (res.status === OK) {
-                    res.json().then(data => {
-                        this.setState({ weapon: data.result, isLoading: false });
-                    });
-                } else {
-                    res.json().then(err => {
-                        NotificationManager.error(err.message);
-                    });
-                }
-            });
+          .then(res => {
+            if (res.status === OK) {
+                res.json().then(response => {
+                    this.setState({ weapon: response.data.weapon, isLoading: false });
+                });
+            } else {
+                res.json().then(() => {
+                    this.props.notifHandler(errorNotifs.SOMETHING_WENT_WRONG, notifTypes.error);
+                    setTimeout(() => { this.props.history.push('/weapons'); }, 2000);
+                });
+            }
+          });
     }
 
     render() {
         return (
             <div className="WeaponDetails">
-                {this.state.isLoading
-                ? <Fragment>
-                    Loading...
-                </Fragment>
+                {this.state.isLoading ?
+                <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
                 : <Fragment>
                     {this.state.weapon.images.map((image, index) => {
                         return <img key={index} src={image} alt="" />
@@ -55,9 +56,18 @@ class WeaponDetails extends Component {
                             return <li key={index}>{affilation}</li>
                         })}
                     </ul>
+                    <br />
+                    <label>Owners:</label> <br />
+                    <ul>
+                        {this.state.weapon.owners.map((owner, index) => {
+                            return (
+                                <li key={index}>
+                                    <a href={`/character/${owner._id}`}>{owner.name}</a>
+                                </li>
+                            );
+                        })}
+                    </ul>
                 </Fragment>}
-
-                <NotificationContainer />
             </div>
         );
     };

@@ -56,7 +56,7 @@ const weaponController = {
     },
 
     edit: async (req, res) => {
-        const weapon = cloneOnly(req.body, weaponProperties);
+        const weapon = cloneOnly(req.body.weapon, weaponProperties);
 
         if (weapon.owners && weapon.owners.length > 0) {
             const ownersIDs = [];
@@ -74,7 +74,7 @@ const weaponController = {
         }
 
         try {
-            const data = weaponData.edit(req.body.weaponId, weapon);
+            const data = await weaponData.edit(req.body.weaponId, weapon);
             res.success(data);
         } catch (err) {
             console.log(err);

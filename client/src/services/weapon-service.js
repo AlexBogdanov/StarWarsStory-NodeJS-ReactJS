@@ -1,41 +1,30 @@
-import { baseUrl } from './../constants/urls';
+import { get, post, put, del } from './ajax-service';
 
-const weaponUrl = `${baseUrl}/weapon`;
-const getAllWeaponsUrl = `${weaponUrl}/all`;
-const getWeaponByIdUrl = `${weaponUrl}/weapon`;
-const editWeaponByIdUrl = `${weaponUrl}/edit`;
-const deleteWeaponUrl = `${weaponUrl}/delete`;
-const createWeaponUrl = `${weaponUrl}/create`;
+const getAllWeaponsUrl = '/weapon/all';
+const getWeaponByIdUrl = '/weapon/weapon';
+const createWeaponUrl = '/weapon/create';
+const editWeaponUrl = '/weapon/edit';
+const deleteWeaponUrl = '/weapon/delete';
 
 const weaponService = {
     getAllWeapons: () => {
-        return fetch(getAllWeaponsUrl);
+        return get(getAllWeaponsUrl, false);
     },
 
-    getWeaponById: (id) => {
-        return fetch(`${getWeaponByIdUrl}/${id}`);
-    },
-
-    editWeaponById: (id, weapon) => {
-        return fetch(`${editWeaponByIdUrl}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(weapon)
-        });
-    },
-
-    deleteWeapon: (id) => {
-        return fetch(`${deleteWeaponUrl}/${id}`, {
-            method: 'DELETE'
-        });
+    getWeaponById: (weaponId) => {
+        return get(`${getWeaponByIdUrl}/${weaponId}`, true);
     },
 
     createWeapon: (weapon) => {
-        return fetch(createWeaponUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(weapon) 
-        });
+        return post(createWeaponUrl, weapon, true);
+    },
+
+    editWeaponById: (weaponId, weapon) => {
+        return put(editWeaponUrl, { weaponId, weapon }, true);
+    },
+
+    deleteWeapon: (weaponId) => {
+        return del(`${deleteWeaponUrl}/${weaponId}`, true);
     }
 };
 
