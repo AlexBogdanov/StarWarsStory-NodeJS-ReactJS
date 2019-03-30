@@ -1,23 +1,15 @@
-import { baseUrl } from './../constants/urls';
+import { post } from './ajax-service';
 
-const registerUrl = `${baseUrl}/user/register`;
-const loginUrl = `${baseUrl}/user/login`;
+const registerUrl = '/user/register';
+const loginUrl = '/user/login';
 
 const userService = {
     register: (user) => {
-        return fetch(registerUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
-        });
+        return post(registerUrl, user, null);
     },
     
     login: (user) => {
-        return fetch(loginUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
-        });
+        return post(loginUrl, user, null);
     }
 }
 

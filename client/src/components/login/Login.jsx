@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import './Login.css';
-import 'react-notifications/lib/notifications.css';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
 import Loader from 'react-loader-spinner';
 
 import userService from './../../services/user-service';
 import { errorNotifs } from './../../constants/notification-messages';
 import { OK } from './../../constants/http-responses';
-import { userRoles } from './../../constants/common';
+import { userRoles, notifTypes } from './../../constants/common';
 
 class Login extends Component {
     constructor(props) {
@@ -34,12 +32,12 @@ class Login extends Component {
         e.preventDefault();
         
         if (this.state.username.lenght < 3) {
-            NotificationManager.error(errorNotifs.USERNAME_SHOULD_BE_ATLEAST_3_CHARACTERS_LONG);
+            this.props.notifHandler(errorNotifs.USERNAME_SHOULD_BE_ATLEAST_3_CHARACTERS_LONG, notifTypes.error);
             return;
         }
 
         if (this.state.password.length < 6) {
-            NotificationManager.error(errorNotifs.PASSWORD_SHOULD_BE_ATLEAST_6_CHARACTERS_LONG);
+            this.props.notifHandler(errorNotifs.PASSWORD_SHOULD_BE_ATLEAST_6_CHARACTERS_LONG, notifTypes.error);
             return;
         }
 
@@ -65,13 +63,12 @@ class Login extends Component {
                         sessionStorage.setItem('userRole', userRole);
                     }
 
-                    this.props.setUser(userRole);
-                    NotificationManager.success(response.data.msg);
+                    this.props.notifHandler(response.data.msg, notifTypes.success);
                     setTimeout(() => { window.location.href = '/'; }, 2000);
                 });
             } else {
                 res.json().then(err => {
-                    NotificationManager.error(err.message);
+                    this.props.notifHandler(err.message, notifTypes.error);
                     this.setState({ isLoading: false });
                 });
             }
@@ -98,8 +95,6 @@ class Login extends Component {
                     <button type="submit">Login</button>
                 </form>
                 }
-
-                <NotificationContainer />
             </div>
         );
     };
