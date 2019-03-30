@@ -7,7 +7,6 @@ const characterProperties = [
     'sex',
     'affilations',
     'shortStory',
-    'birhtday',
     'height',
     'weight',
     'weapons',
@@ -46,7 +45,7 @@ const characterController = {
     },
 
     edit: (req, res) => {
-        const character = cloneOnly(req.body, characterProperties);
+        const character = cloneOnly(req.body.character, characterProperties);
 
         characterData.edit(req.body.characterId, character)
           .then(res.success)

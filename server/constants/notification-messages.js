@@ -32,7 +32,7 @@ const notifMsgs = {
         FAILED_TO_DELETE_STORY: 'Failed to delete story',
         COULD_NOT_GET_WEAPONS: 'Could not get weapons',
         WEAPON_DOES_NOT_EXIST: 'Weapon does not exist, anymore',
-        UNABLE_TO_CREATE_WEAPON: 'Weapon to create spaceship',
+        UNABLE_TO_CREATE_WEAPON: 'Unable to create weapon',
         FAILED_TO_EDIT_WEAPON: 'Failed to edit weapon',
         FAILED_TO_DELETE_WEAPON: 'Failed to delete weapon'
     },
