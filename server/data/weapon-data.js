@@ -14,7 +14,9 @@ const weaponData = {
 
     getById: async (id) => {
         try {
-            const weapon = await Weapon.findById(id);
+            const weapon = await Weapon.findById(id)
+                .populate('owners', '_id name');
+
             return { weapon, msg: notifMsgs.success.SUCCESS };
         } catch(err) {
             console.log(err);
@@ -25,7 +27,7 @@ const weaponData = {
     create: async (weaponInput) => {
         try {
             const weapon = await Weapon.create(weaponInput);
-            return { weapon, msg: notifMsgs.success.WEAPON_CREATED };
+            return { weaponId: weapon._id, msg: notifMsgs.success.WEAPON_CREATED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.UNABLE_TO_CREATE_WEAPON);

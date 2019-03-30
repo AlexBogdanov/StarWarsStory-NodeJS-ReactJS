@@ -25,7 +25,7 @@ const characterData = {
     create: async (characterInput) => {
         try {
             const character = await Character.create(characterInput);
-            return { character, msg: notifMsgs.success.CHARACTER_CREATED }
+            return {  characterId: character._id, msg: notifMsgs.success.CHARACTER_CREATED }
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.UNABLE_TO_CREATE_CHARACTER);
@@ -41,7 +41,7 @@ const characterData = {
             });
 
             await character.save();
-            return { character, msg: notifMsgs.success.CHARACTER_EDITED };
+            return { msg: notifMsgs.success.CHARACTER_EDITED };
         } catch (err) {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_EDIT_CHARACTER);
