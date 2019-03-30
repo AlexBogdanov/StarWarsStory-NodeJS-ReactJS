@@ -6,7 +6,6 @@ const CharacterSchema = new mongoose.Schema({
     sex: { type: String, required: true },
     affilations: [{ type: String }],
     shortStory: { type: String, required: true },
-    birhtday: { type: Date },
     height: { type: String, default: 'Unknown' },
     weight: { type: String, default: 'Unknown' },
     weapons: [{ type: String }],
