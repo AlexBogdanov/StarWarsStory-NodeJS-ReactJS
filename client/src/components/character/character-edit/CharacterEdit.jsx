@@ -5,6 +5,7 @@ import Loader from 'react-loader-spinner';
 import characterService from './../../../services/character-service';
 import { OK } from './../../../constants/http-responses';
 import { notifTypes } from '../../../constants/common';
+import { errorNotifs } from './../../../constants/notification-messages';
 
 class CharacterEdit extends Component {
     constructor(props) {
@@ -69,17 +70,37 @@ class CharacterEdit extends Component {
         e.preventDefault();
 
         this.setState({ isLoading: true });
+
+        const images = this.state.images.split(', ').filter(img => img);
+
+        if (!this.state.sex) {
+            this.props.notifHandler(errorNotifs.SEX_IS_REQUIRED, notifTypes.error);
+            this.setState({ isLoading: false });
+            return;
+        }
+
+        if (this.state.shortStory.length < 30) {
+            this.props.notifHandler(errorNotifs.SHORT_STORY_TOO_SHORT, notifTypes.error);
+            this.setState({ isLoading: false });
+            return;
+        }
+
+        if (images.length < 1) {
+            this.props.notifHandler(errorNotifs.IMAGE_IS_REQUIRED, notifTypes.error);
+            this.setState({ isLoading: false });
+            return;
+        }
         
         const character = {
             race: this.state.race,
             sex: this.state.sex,
-            affilations: this.state.affilations.split(', '),
+            affilations: this.state.affilations.split(', ').filter(aff => aff),
             shortStory: this.state.shortStory,
             height: this.state.height,
             weight: this.state.weight,
-            weapons: this.state.weapons.split(', '),
-            vehicles: this.state.vehicles.split(', '),
-            images: this.state.images.split(', ')
+            weapons: this.state.weapons.split(', ').filter(weap => weap),
+            vehicles: this.state.vehicles.split(', ').filter(veh => veh),
+            images
         };
         
         characterService.editCharacter(this.state.characterId, character)
@@ -103,7 +124,7 @@ class CharacterEdit extends Component {
             <div className="CharacterEdit">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
                     :
                     <form onSubmit={this.handleSubmit}>
                         <label>Race:</label>

@@ -79,7 +79,7 @@ class Login extends Component {
         return (
             <div className="Login">
                 {this.state.isLoading ?
-                <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
                 :
                 <form onSubmit={this.handleSubmit}>
                     <label>Username:</label>

@@ -75,7 +75,7 @@ class Register extends Component {
         return (
             <div className="Register">
                 {this.state.isLoading ?
-                <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
                 :
                 <form onSubmit={this.handleSubmit}>
                     <label>Username:</label>

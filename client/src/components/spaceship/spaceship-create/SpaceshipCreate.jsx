@@ -34,7 +34,7 @@ class SpaceshipCreate extends Component {
         const spaceship = {
             name: this.state.name,
             dimension: this.state.dimension,
-            affilations: this.state.affilations.split(', '),
+            affilations: this.state.affilations.split(', ').filter(aff => aff),
             info: this.state.info,
             images: this.state.images.split(', ')
         };

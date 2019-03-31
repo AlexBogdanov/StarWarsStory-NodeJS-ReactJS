@@ -84,7 +84,7 @@ class CharactersList extends Component {
             <div className="ListItems">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
                     :
                     <Fragment>
                         {this.state.doRender ?

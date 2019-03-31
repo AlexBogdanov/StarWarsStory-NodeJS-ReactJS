@@ -104,7 +104,7 @@ class CharacterCreate extends Component {
             <div className="CharacterCreate">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" width="750" />
                     :
                     <form onSubmit={this.handleSubmit}>
                         <label>Name:</label>

@@ -40,7 +40,7 @@ class CharacterDetails extends Component {
             <div className="CharacterDetails">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
                     :
                     <Fragment>
                         {this.state.character.images.map((image, index) => {
