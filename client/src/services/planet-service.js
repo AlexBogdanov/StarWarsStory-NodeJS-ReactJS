@@ -1,41 +1,30 @@
-import { baseUrl } from './../constants/urls';
+import { get, post, put, del } from './ajax-service';
 
-const planetUrl = `${baseUrl}/planet`;
-const getAllPlanetsUrl = `${planetUrl}/all`;
-const getPlanetByIdUrl = `${planetUrl}/planet`;
-const editPlanetByIdUrl = `${planetUrl}/edit`;
-const deletePlanetUrl = `${planetUrl}/delete`;
-const createPlanetUrl = `${planetUrl}/create`;
+const getAllPlanetsUrl = '/planet/all';
+const getPlanetByIdUrl = '/planet/planet';
+const createPlanetUrl = '/planet/create';
+const editPlanetUrl = '/planet/edit';
+const deletePlanetUrl = '/planet/delete';
 
 const planetService = {
     getAllPlanets: () => {
-        return fetch(getAllPlanetsUrl);
+        return get(getAllPlanetsUrl, false);
     },
 
-    getPlanetById: (id) => {
-        return fetch(`${getPlanetByIdUrl}/${id}`);
-    },
-
-    editPlanetById: (id, planet) => {
-        return fetch(`${editPlanetByIdUrl}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(planet) 
-        });
-    },
-
-    deletePlanet: (id) => {
-        return fetch(`${deletePlanetUrl}/${id}`, {
-            method: 'DELETE'
-        });
+    getPlanetById: (planetId) => {
+        return get(`${getPlanetByIdUrl}/${planetId}`, true);
     },
 
     createPlanet: (planet) => {
-        return fetch(createPlanetUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(planet)
-        });
+        return post(createPlanetUrl, planet, true);
+    },
+
+    editPlanet: (planetId, planet) => {
+        return put(editPlanetUrl, { planetId, planet }, true);
+    },
+
+    deletePlanet: (planetId) => {
+        return del(`${deletePlanetUrl}/${planetId}`, true);
     }
 };
 

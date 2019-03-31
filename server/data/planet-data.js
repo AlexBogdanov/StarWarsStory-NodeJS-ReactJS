@@ -14,7 +14,8 @@ const planetData = {
 
     getById: async (id) => {
         try {
-            const planet = await Planet.findById(id);
+            const planet = await Planet.findById(id)
+                .populate('natives', '_id name');
             return { planet, msg: notifMsgs.success.SUCCESS };
         } catch(err) {
             console.log(err);
@@ -25,7 +26,7 @@ const planetData = {
     create: async (planetInput) => {
         try {
             const planet = await Planet.create(planetInput);
-            return { planet, msg: notifMsgs.success.PLANET_CREATED };
+            return { planetId: planet._id, msg: notifMsgs.success.PLANET_CREATED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.UNABLE_TO_CREATE_PLANET);
@@ -41,7 +42,7 @@ const planetData = {
             });
 
             await planet.save();
-            return { planet, msg: notifMsgs.success.PLANET_EDITED };
+            return { msg: notifMsgs.success.PLANET_EDITED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_EDIT_PLANET);

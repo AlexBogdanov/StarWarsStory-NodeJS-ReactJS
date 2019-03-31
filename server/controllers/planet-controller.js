@@ -58,7 +58,7 @@ const planetController = {
     },
 
     edit: async (req, res) => {
-        const planet = cloneOnly(req.body, planetProperties);
+        const planet = cloneOnly(req.body.planet, planetProperties);
 
         if (planet.natives && planet.natives.length > 0) {
             const nativesIDs = [];
