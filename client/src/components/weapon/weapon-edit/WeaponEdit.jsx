@@ -109,12 +109,26 @@ class WeaponEdit extends Component {
 
         this.setState({ isLoading: true });
 
+        const images = this.state.images.split(', ').filter(img => img);
+
+        if (this.state.info.length < 10) {
+            this.props.notifHandler(errorNotifs.WEAPON_INFO_TOO_SHORT, notifTypes.error);
+            this.setState({ isLoading: false });
+            return;
+        }
+
+        if (images.length < 1) {
+            this.props.notifHandler(errorNotifs.IMAGE_IS_REQUIRED, notifTypes.error);
+            this.setState({ isLoading: false });
+            return;
+        }
+
         const owners = this.state.owners.map(owner => owner.name);
 
         const weapon = {
             info: this.state.info,
             affilations: this.state.affilations.split(', ').filter(aff => aff),
-            images: this.state.images.split(', ').filter(img => img),
+            images,
             owners,
         };
         
@@ -139,7 +153,7 @@ class WeaponEdit extends Component {
             <div className="WeaponEdit">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
                     :
                     <form onSubmit={this.handleSubmit}>
                         <label>Info:</label>
@@ -156,24 +170,24 @@ class WeaponEdit extends Component {
                         <br />
     
                         <label>Add an owner:</label>
-                            <br />
-                            <input type="text" name="currOwner" value={this.state.currOwner} onChange={this.handleChange} />
-                            <button type="button" onClick={this.addCharacter}>Add</button>
-                            <br />
+                        <br />
+                        <input type="text" name="currOwner" value={this.state.currOwner} onChange={this.handleChange} />
+                        <button type="button" onClick={this.addCharacter}>Add</button>
+                        <br />
     
-                            {this.state.owners.length > 0 ?
-                            <Fragment>
-                                <ul>
-                                    {this.state.owners.map((character, index) => {
-                                        return (
-                                            <li key={index} >{character.name} <button type="button" onClick={() => this.removeCharacter(character.name)}>X</button></li>
-                                        );
-                                    })}
-                                </ul>
-                            </Fragment>
-                            : null
-                            }
-                            <br />
+                        {this.state.owners.length > 0 ?
+                        <Fragment>
+                            <ul>
+                                {this.state.owners.map((character, index) => {
+                                    return (
+                                    <li key={index} >{character.name} <button type="button" onClick={() => this.removeCharacter(character.name)}>X</button></li>
+                                    );
+                                })}
+                            </ul>
+                        </Fragment>
+                        : null
+                        }
+                        <br />
     
                         <button type="submit">Edit</button>
                     </form>

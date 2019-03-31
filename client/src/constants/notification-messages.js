@@ -10,7 +10,9 @@ const errorNotifs = {
     INVALID_CHARACTER: 'Character does not exist',
     CHARACTER_ALREADY_ADDED: 'You have added already this character',
     WEAPON_NAME_TOO_SHORT: 'Weapon name should be atleast 3 characters long',
-    WEAPON_INFO_TOO_SHORT: 'Weapon info should be atleast 10 characters long'
+    WEAPON_INFO_TOO_SHORT: 'Weapon info should be atleast 10 characters long',
+    PLANET_NAME_TOO_SHORT: 'Planet name should be atleast 3 characters long',
+    PLANET_INFO_TOO_SHORT: 'Planet info should be atleast 10 characters long'
 };
 
 const successNotifs = {

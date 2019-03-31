@@ -138,7 +138,7 @@ class WeaponCreate extends Component {
             <div className="WeaponCreate">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" wifth="750" />
+                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
                     :
                     <form onSubmit={this.handleSubmit}>
                         <label>Name:</label>
@@ -174,8 +174,7 @@ class WeaponCreate extends Component {
                                 })}
                             </ul>
                         </Fragment>
-                        : null
-                        }
+                        : null}
                         <br />
 
                         <button type="submit">Create</button>
