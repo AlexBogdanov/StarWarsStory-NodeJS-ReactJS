@@ -28,58 +28,26 @@ const weaponController = {
           });
     },
 
-    create: async (req, res) => {
+    create: (req, res) => {
         const weapon = cloneOnly(req.body, weaponProperties);
 
-        if (weapon.owners && weapon.owners.length > 0) {
-            const ownersIDs = [];
-    
-            for (let i = 0; i < weapon.owners.length; i+=1) {
-                try {
-                    const character = await characterData.findByName(weapon.owners[i]);
-                    ownersIDs.push(character._id);
-                } catch (err) {
-                    continue;
-                }
-            }
-    
-            weapon.owners = ownersIDs;
-        }
-
-        try {
-            const data = await weaponData.create(weapon);
-            res.success(data);
-        } catch (err) {
-            console.log(err);
-            res.error(err.message, null, 500);
-        }
+        weaponData.create(weapon)
+          .then(res.success)
+          .catch(err => {
+              console.log(err);
+              res.error(err.message, null, 500);
+          });
     },
 
-    edit: async (req, res) => {
+    edit: (req, res) => {
         const weapon = cloneOnly(req.body.weapon, weaponProperties);
 
-        if (weapon.owners && weapon.owners.length > 0) {
-            const ownersIDs = [];
-    
-            for (let i = 0; i < weapon.owners.length; i+=1) {
-                try {
-                    const character = await characterData.findByName(weapon.owners[i]);
-                    ownersIDs.push(character._id);
-                } catch (err) {
-                    continue;
-                }
-            }
-    
-            weapon.owners = ownersIDs;
-        }
-
-        try {
-            const data = await weaponData.edit(req.body.weaponId, weapon);
-            res.success(data);
-        } catch (err) {
+        weaponData.edit(req.body.weaponId, weapon)
+          .then(res.success)
+          .catch(err => {
             console.log(err);
             res.error(err.message, null, 500);
-        }
+          });
     },
 
     delete: (req, res) => {

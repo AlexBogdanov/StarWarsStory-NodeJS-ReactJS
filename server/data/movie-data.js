@@ -25,7 +25,7 @@ const movieData = {
     create: async (movieInput) => {
         try {
             const movie = await Movie.create(movieInput);
-            return { movie, msg: notifMsgs.success.MOVIE_CREATED };
+            return { movieId: movie._id, msg: notifMsgs.success.MOVIE_CREATED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.UNABLE_TO_CREATE_MOVIE);
@@ -41,7 +41,7 @@ const movieData = {
             });
 
             await movie.save();
-            return { movie, msg: notifMsgs.success.MOVIE_EDITED };
+            return { msg: notifMsgs.success.MOVIE_EDITED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_EDIT_MOVIE);

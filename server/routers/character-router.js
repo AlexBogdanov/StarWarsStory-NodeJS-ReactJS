@@ -9,6 +9,7 @@ router
     .get('/character/:id', passport.authenticate('jwt'), characterController.getById)
     .post('/create', passport.authenticate('jwt'), auth.isAdmin, characterController.create)
     .put('/edit', passport.authenticate('jwt'), auth.isAdmin, characterController.edit)
-    .delete('/delete/:id', passport.authenticate('jwt'), auth.isAdmin, characterController.delete);
+    .delete('/delete/:id', passport.authenticate('jwt'), auth.isAdmin, characterController.delete)
+    .get('/characterNamesAndIds', passport.authenticate('jwt'), auth.isAdmin, characterController.getAllCharactersNamesAndIds);
 
 module.exports = router;

@@ -30,58 +30,26 @@ const planetController = {
           });
     },
 
-    create: async (req, res) => {
+    create: (req, res) => {
         const planet = cloneOnly(req.body, planetProperties);
-
-        if (planet.natives && planet.natives.length > 0) {
-            const nativesIDs = [];
-    
-            for (let i = 0; i < planet.natives.length; i+=1) {
-                try {
-                    const character = await characterData.findByName(planet.natives[i]);
-                    nativesIDs.push(character._id);
-                } catch (err) {
-                    continue;
-                }
-            }
-    
-            planet.natives = nativesIDs;
-        }
-
-        try {
-            const data = await planetData.create(planet);
-            res.success(data);
-        } catch (err) {
+        
+        planetData.create(planet)
+          .then(res.success)
+          .catch(err => {
             console.log(err);
             res.error(err.message, null, 500);
-        }
+          });
     },
 
-    edit: async (req, res) => {
+    edit: (req, res) => {
         const planet = cloneOnly(req.body.planet, planetProperties);
-
-        if (planet.natives && planet.natives.length > 0) {
-            const nativesIDs = [];
-    
-            for (let i = 0; i < planet.natives.length; i+=1) {
-                try {
-                    const character = await characterData.findByName(planet.natives[i]);
-                    nativesIDs.push(character._id);
-                } catch (err) {
-                    continue;
-                }
-            }
-    
-            planet.natives = nativesIDs;
-        }
-
-        try {
-            const data = await planetData.edit(req.body.planetId, planet);
-            res.success(data);
-        } catch (err) {
+        
+        planetData.edit(req.body.planetId, planet)
+          .then(res.success)
+          .catch(err => {
             console.log(err);
             res.error(err.message, null, 500);
-        }
+          });
     },
 
     delete: (req, res) => {

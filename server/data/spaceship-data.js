@@ -14,7 +14,8 @@ const spaceshipData = {
 
     getById: async (id) => {
         try {
-            const spaceship = await Spaceship.findById(id);
+            const spaceship = await Spaceship.findById(id)
+                .populate('pilots', '_id name');
             return { spaceship, msg: notifMsgs.success.SUCCESS };
         } catch(err) {
             console.log(err);
@@ -25,7 +26,7 @@ const spaceshipData = {
     create: async (spaceshipInput) => {
         try {
             const spaceship = await Spaceship.create(spaceshipInput);
-            return { spaceship, msg: notifMsgs.success.SPACESHIP_CREATED };
+            return { spaceshipId: spaceship._id, msg: notifMsgs.success.SPACESHIP_CREATED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.UNABLE_TO_CREATE_SPACESHIP);
@@ -41,7 +42,7 @@ const spaceshipData = {
             });
 
             await spaceship.save();
-            return { spaceship, msg: notifMsgs.success.SPACESHIP_EDITED };
+            return { msg: notifMsgs.success.SPACESHIP_EDITED };
         } catch(err) {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_EDIT_SPACESHIP);

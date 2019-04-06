@@ -1,41 +1,30 @@
-import { baseUrl } from './../constants/urls';
+import { get, post, put, del } from './ajax-service';
 
-const spaceshipUrl = `${baseUrl}/spaceship`;
-const getAllSpaceshipsUrl = `${spaceshipUrl}/all`;
-const getSpaceshipByIdUrl = `${spaceshipUrl}/spaceship`;
-const editSpaceshipByIdUrl = `${spaceshipUrl}/edit`;
-const deleteSpaceshipUrl = `${spaceshipUrl}/delete`;
-const createSpaceshipUrl = `${spaceshipUrl}/create`;
+const getAllSpaceshipsUrl = '/spaceship/all';
+const getSpaceshipByIdUrl = '/spaceship/spaceship';
+const createSpaceshipUrl = '/spaceship/create';
+const editSpaceshipUrl = '/spaceship/edit';
+const deleteSpaceshipUrl = '/spaceship/delete';
 
 const spaceshipService = {
     getAllSpaceships: () => {
-        return fetch(getAllSpaceshipsUrl);
+        return get(getAllSpaceshipsUrl, false);
     },
 
-    getSpacehipById: (id) => {
-        return fetch(`${getSpaceshipByIdUrl}/${id}`);
-    },
-
-    editSpaceshipById: (id, spaceship) => {
-        return fetch(`${editSpaceshipByIdUrl}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(spaceship) 
-        });
-    },
-
-    deleteSpaceship: (id) => {
-        return fetch(`${deleteSpaceshipUrl}/${id}`, {
-            method: 'DELETE'
-        });
+    getSpacehipById: (spaceshipId) => {
+        return get(`${getSpaceshipByIdUrl}/${spaceshipId}`, true);
     },
 
     createSpaceship: (spaceship) => {
-        return fetch(createSpaceshipUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(spaceship)
-        });
+        return post(createSpaceshipUrl, spaceship, true);
+    },
+
+    editSpaceshipById: (spaceshipId, spaceship) => {
+        return put(editSpaceshipUrl, { spaceshipId, spaceship }, true);
+    },
+
+    deleteSpaceship: (spaceshipId) => {
+        return del(`${deleteSpaceshipUrl}/${spaceshipId}`, true);
     }
 };
 

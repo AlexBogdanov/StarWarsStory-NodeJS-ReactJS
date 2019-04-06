@@ -1,4 +1,4 @@
-const { characterData } = require('./../data');
+const { characterData, weaponData, spaceshipData } = require('./../data');
 const cloneOnly = require('./../utilities/clone-only');
 
 const characterProperties = [
@@ -62,6 +62,16 @@ const characterController = {
             console.log(err);
             res.error(err.message, null, 500);
           });
+    },
+
+    getAllCharactersNamesAndIds: (req, res) => {
+      characterData.getAllCharactersNamesAndIds()
+        .then(data => {
+          res.success({ characters: data.characters });
+        }).catch(err => {
+          console.log(err);
+          res.error(err.message, null, 500);
+        });
     }
 };
 

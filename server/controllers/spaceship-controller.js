@@ -29,58 +29,26 @@ const spaceshipController = {
           });
     },
 
-    create: async (req, res) => {
+    create: (req, res) => {
         const spaceship = cloneOnly(req.body, spaceshipProperties);
 
-        if (spaceship.pilots && spaceship.pilots.lenght > 0) {
-            const pilotsIDs = [];
-    
-            for (let i = 0; i < spaceship.pilots.length; i+=1) {
-                try {
-                    const character = await characterData.findByName(spaceship.pilots[i]);
-                    pilotsIDs.push(character._id);
-                } catch (err) {
-                    continue;
-                }
-            }
-    
-            spaceship.pilots = pilotsIDs;
-        }
-
-        try {
-            const data = await spaceshipData.create(spaceship);
-            res.success(data);
-        } catch (err) {
+        spaceshipData.create(spaceship)
+          .then(res.success)
+          .catch(err => {
             console.log(err);
             res.error(err.message, null, 500);
-        }
+          });
     },
 
-    edit: async (req, res) => {
-        const spaceship = cloneOnly(req.body, spaceshipProperties);
+    edit: (req, res) => {
+        const spaceship = cloneOnly(req.body.spaceship, spaceshipProperties);
 
-        if (spaceship.pilots && spaceship.pilots.lenght > 0) {
-            const pilotsIDs = [];
-    
-            for (let i = 0; i < spaceship.pilots.length; i+=1) {
-                try {
-                    const character = await characterData.findByName(spaceship.pilots[i]);
-                    pilotsIDs.push(character._id);
-                } catch (err) {
-                    continue;
-                }
-            }
-    
-            spaceship.pilots = pilotsIDs;
-        }
-
-        try {
-            const data = await spaceshipData.edit(req.body.spaceshipId, spaceship);
-            res.success(data);
-        } catch (err) {
+        spaceshipData.edit(req.body.spaceshipId, spaceship)
+          .then(res.success)
+          .catch(err => {
             console.log(err);
             res.error(err.message, null, 500);
-        }
+          });
     },
 
     delete: (req, res) => {

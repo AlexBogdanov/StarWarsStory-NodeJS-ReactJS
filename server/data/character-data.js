@@ -14,7 +14,9 @@ const characterData = {
 
     getById: async (id) => {
         try {
-            const character = await Character.findById(id);
+            const character = await Character.findById(id)
+                .populate('weapons', '_id name')
+                .populate('vehicles', '_id name');
             return { character, msg: notifMsgs.success.SUCCESS };
         } catch(err) {
             console.log(err);
@@ -65,6 +67,17 @@ const characterData = {
         } catch (err) {
             console.log(err);
             throw new Error(notifMsgs.errors.CHARACTER_DOES_NOT_EXIST);
+        }
+    },
+
+    getAllCharactersNamesAndIds: async () => {
+        try {
+            const characters = await Character.find({})
+                .select('_id name');
+            return { characters, msg: notifMsgs.success.SUCCESS };
+        } catch (err) {
+            console.log(err);
+            throw new Error(notifMsgs.errors.COULD_NOT_GET_CHARACTERS);
         }
     }
 };

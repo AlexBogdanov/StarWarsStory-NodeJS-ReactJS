@@ -9,7 +9,6 @@ const movieProperties = [
     'writers',
     'actors',
     'info',
-    'charactersInvolved',
     'cover'
 ];
 
@@ -32,58 +31,26 @@ const movieController = {
           });
     },
 
-    create: async (req, res) => {
+    create: (req, res) => {
         const movie = cloneOnly(req.body, movieProperties);
-        
-        if (movie.charactersInvolved && movie.charactersInvolved.length > 0) {
-            const charactersInvolvedIDs = [];
-    
-            for (let i = 0; i < movie.charactersInvolved.length; i+=1) {
-                try {
-                    const character = await characterData.findByName(movie.charactersInvolved[i]);
-                    charactersInvolvedIDs.push(character._id);
-                } catch (err) {
-                    continue;
-                }
-            }
-    
-            movie.charactersInvolved = charactersInvolvedIDs;
-        }
-        
-        try {
-            const data = await movieData.create(movie);
-            res.success(data);
-        } catch (err) {
-            console.log(err);
-            res.error(err.message, null, 500);
-        }
+
+        movieData.create(movie)
+          .then(res.success)
+          .catch(err => {
+              console.log(err);
+              res.error(err.message, null, 500);
+          });
     },
 
-    edit : async (req, res) => {
-        const movie = cloneOnly(req.body, movieProperties);
-        
-        if (movie.charactersInvolved && movie.charactersInvolved.length > 0) {
-            const charactersInvolvedIDs = [];
-    
-            for (let i = 0; i < movie.charactersInvolved.length; i+=1) {
-                try {
-                    const character = await characterData.findByName(movie.charactersInvolved[i]);
-                    charactersInvolvedIDs.push(character._id);
-                } catch (err) {
-                    continue;
-                }
-            }
-    
-            movie.charactersInvolved = charactersInvolvedIDs;
-        }
+    edit: (req, res) => {
+        const movie = cloneOnly(req.body.movie, movieProperties);
 
-        try {
-            const data = await movieData.edit(req.body.movieId, movie);
-            res.success(data);
-        } catch (err) {
-            console.log(err);
-            res.error(err.message, null, 500);
-        }
+        movieData.edit(req.body.movieId, movie)
+          .then(res.success)
+          .catch(err => {
+              console.log(err);
+              res.error(err.message, null, 500);
+          });
     },
 
     delete: (req, res) => {

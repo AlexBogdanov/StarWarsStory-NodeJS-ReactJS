@@ -8,8 +8,8 @@ const CharacterSchema = new mongoose.Schema({
     shortStory: { type: String, required: true },
     height: { type: String, default: 'Unknown' },
     weight: { type: String, default: 'Unknown' },
-    weapons: [{ type: String }],
-    vehicles: [{ type: String }],
+    weapons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Weapon' }],
+    vehicles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Spaceship' }],
     images: [{ type: String, required: true }]
 });
 
