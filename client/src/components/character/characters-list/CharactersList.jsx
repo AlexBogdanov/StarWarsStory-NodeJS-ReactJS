@@ -99,8 +99,7 @@ class CharactersList extends Component {
                                 userRole={this.state.userRole}
                                 openItemDetails={this.openCharacterDetails}
                                 openItemEdit={this.openCharacterEdit}
-                                deleteItem={this.deleteCharacter}
-                                userRole={this.state.userRole} />
+                                deleteItem={this.deleteCharacter} />
                             );
                         })
                         :

@@ -1,11 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import './CharacterEdit.css';
 import Loader from 'react-loader-spinner';
 
 import characterService from './../../../services/character-service';
+import weaponService from './../../../services/weapon-service';
+import vehicleService from './../../../services/spaceship-service';
+
 import { OK } from './../../../constants/http-responses';
 import { notifTypes } from '../../../constants/common';
 import { errorNotifs } from './../../../constants/notification-messages';
+import collectionManager from './../../../utilities/collection-manager';
+import spaceshipService from './../../../services/spaceship-service';
+
+const collectionNames = {
+    affilations: 0,
+    images: 1,
+    weapons: 2,
+    vehicles: 3
+};
 
 class CharacterEdit extends Component {
     constructor(props) {
@@ -15,49 +27,132 @@ class CharacterEdit extends Component {
             characterId: '',
             race: '',
             sex: '',
-            affilations: '',
             shortStory: '',
             height: '',
             weight: '',
-            weapons: '',
-            vehicles: '',
-            images: '',
+            affilations: [],
+            weapons: [],
+            vehicles: [],
+            images: [],
+            currAffilation: '',
+            currWeapon: '',
+            currVehicle: '',
+            currImg: '',
+            weaponsDB: [],
+            vehiclesDB: [],
             isLoading: false
         };
 
+        this.addItem = this.addItem.bind(this);
+        this.removeItem = this.removeItem.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentWillMount() {
+    async componentWillMount() {
         this.setState({ isLoading: true });
         const characterId = this.props.match.params.characterId;
+        
+        try {
+            const resWeapons = await weaponService.getAllWeapons();
+            const resVehicles = await spaceshipService.getAllSpaceships();
+            const resCharacter = await characterService.getCharacterById(characterId);
 
-        characterService.getCharacterById(characterId)
-          .then(res => {
-            if (res.status === OK) {
-                res.json().then(response => {
+            if (resWeapons.status === OK && resVehicles.status === OK && resCharacter.status === OK) {
+                resWeapons.json().then(res => {
+                    this.setState({ weaponsDB: res.data.weapons });
+                    return resVehicles.json();
+                }).then(res => {
+                    this.setState({ vehiclesDB: res.data.spacehips });
+                    return resCharacter.json();
+                }).then(res => {
                     this.setState({
                         characterId,
-                        race: response.data.character.race,
-                        sex: response.data.character.sex,
-                        affilations: response.data.character.affilations.join(', '),
-                        shortStory: response.data.character.shortStory,
-                        height: response.data.character.height,
-                        weight: response.data.character.weight,
-                        weapons: response.data.character.weapons.join(', '),
-                        vehicles: response.data.character.vehicles.join(', '),
-                        images: response.data.character.images.join(', '),
+                        race: res.data.character.race,
+                        sex: res.data.character.sex,
+                        shortStory: res.data.character.shortStory,
+                        height: res.data.character.height,
+                        weight: res.data.character.weight,
+                        affilations: res.data.character.affilations,
+                        weapons: res.data.character.weapons,
+                        vehicles: res.data.character.vehicles,
+                        images: res.data.character.images,
                         isLoading: false
                     });
                 });
             } else {
-                res.json().then(err => {
-                    this.props.notifHandler(err.message, notifTypes.error);
-                    setTimeout(() => { this.props.history.push('/characters'); }, 2000);
-                });
+                this.props.notifHandler(errorNotifs.SOMETHING_WENT_WRONG, notifTypes.error);
+                setTimeout(() => { this.props.history.push('/characters'); }, 2000);
             }
-          });
+        } catch (err) {
+            this.props.notifHandler(errorNotifs.SOMETHING_WENT_WRONG, notifTypes.error);
+            setTimeout(() => { this.props.history.push('/characters'); }, 2000);
+        }
+    }
+    addItem(collectionName) {
+        if (collectionName === collectionNames.affilations) {
+            const doAdd = collectionManager.doAddItem(this.state.currAffilation, this.state.affilations);
+
+            if (doAdd) {
+                const newAffilations = collectionManager.addItem(this.state.currAffilation, this.state.affilations);
+                this.setState({ affilations: newAffilations, currAffilation: '' });
+            }
+        } else if (collectionName === collectionNames.images) {
+            const doAdd = collectionManager.doAddItem(this.state.currImg, this.state.images);
+
+            if (doAdd) {
+                const newImgs = collectionManager.addItem(this.state.currImg, this.state.images);
+                this.setState({ images: newImgs, currImg: '' });
+            }
+        } else if (collectionName === collectionNames.weapons) {
+            const weapon = collectionManager.getItemNameAndId(this.state.currWeapon, this.state.weaponsDB);
+            const doAdd = collectionManager.doAddItem(weapon, this.state.weapons);
+
+            if (weapon && doAdd) {
+                const newWeapons = collectionManager.addItem(weapon, this.state.weapons);
+                this.setState({ weapons: newWeapons, currWeapon: '' });
+            }
+        } else if (collectionName === collectionNames.vehicles) {
+            const vehicle = collectionManager.getItemNameAndId(this.state.currVehicle, this.state.vehiclesDB);
+            const doAdd = collectionManager.doAddItem(vehicle, this.state.vehicles);
+
+            if (vehicle && doAdd) {
+                const newVehicles = collectionManager.addItem(vehicle, this.state.vehicles);
+                this.setState({ vehicles: newVehicles, currVehicle: '' });
+            }
+        }
+    }
+
+    removeItem(collectionName, item) {
+        if (collectionName === collectionNames.affilations) {
+            const index = collectionManager.getIndexOfItem(item, this.state.affilations);
+
+            if (index !== -1) {
+                const newAffilations = collectionManager.removeItem(index, this.state.affilations);
+                this.setState({ affilations: newAffilations });
+            }
+        } else if (collectionName === collectionNames.images) {
+            const index = collectionManager.getIndexOfItem(item, this.state.images);
+
+            if (index !== -1) {
+                const newImgs = collectionManager.removeItem(index, this.state.images);
+                this.setState({ images: newImgs });
+            }
+        } else if (collectionName === collectionNames.weapons) {
+            const index = collectionManager.getIndexOfItem(item, this.state.weapons);
+
+            if (index !== -1) {
+                const newWeapons = collectionManager.removeItem(index, this.state.weapons);
+                this.setState({ weapons: newWeapons });
+            }
+        } else if (collectionName === collectionNames.vehicles) {
+            const index = collectionManager.getIndexOfItem(item, this.state.vehicles);
+
+            if (index !== -1) {
+                const newVehicles = collectionManager.removeItem(index, this.state.vehicles);
+                this.setState({ vehicles: newVehicles });
+            }
+        }
     }
 
     handleChange(e) {
@@ -71,8 +166,6 @@ class CharacterEdit extends Component {
 
         this.setState({ isLoading: true });
 
-        const images = this.state.images.split(', ').filter(img => img);
-
         if (!this.state.sex) {
             this.props.notifHandler(errorNotifs.SEX_IS_REQUIRED, notifTypes.error);
             this.setState({ isLoading: false });
@@ -85,7 +178,7 @@ class CharacterEdit extends Component {
             return;
         }
 
-        if (images.length < 1) {
+        if (this.state.images.length < 1) {
             this.props.notifHandler(errorNotifs.IMAGE_IS_REQUIRED, notifTypes.error);
             this.setState({ isLoading: false });
             return;
@@ -94,13 +187,13 @@ class CharacterEdit extends Component {
         const character = {
             race: this.state.race,
             sex: this.state.sex,
-            affilations: this.state.affilations.split(', ').filter(aff => aff),
             shortStory: this.state.shortStory,
             height: this.state.height,
             weight: this.state.weight,
-            weapons: this.state.weapons.split(', ').filter(weap => weap),
-            vehicles: this.state.vehicles.split(', ').filter(veh => veh),
-            images
+            affilations: this.state.affilations,
+            weapons: this.state.weapons.map(weapon => weapon._id),
+            vehicles: this.state.vehicles.map(vehicle => vehicle._id),
+            images: this.state.images
         };
         
         characterService.editCharacter(this.state.characterId, character)
@@ -135,10 +228,6 @@ class CharacterEdit extends Component {
                         <br />
                         <input type="text" name="sex" value={this.state.sex} onChange={this.handleChange} />
                         <br />
-                        <label>Affilations:</label>
-                        <br />
-                        <textarea type="text" name="affilations" value={this.state.affilations} onChange={this.handleChange}></textarea>
-                        <br />
                         <label>Short story:</label>
                         <br />
                         <textarea type="text" name="shortStory" value={this.state.shortStory} onChange={this.handleChange}></textarea>
@@ -149,20 +238,83 @@ class CharacterEdit extends Component {
                         <br />
                         <label>Weight:</label>
                         <br />
-                        <input type="text" name="weight" value={this.state.weight} onChange={this.handleChange} />
+                        
+                        <label>Add an affilation:</label>
                         <br />
-                        <label>Weapons:</label>
+                        <input type="text" name="currAffilation" value={this.state.currAffilation} onChange={this.handleChange} />
+                        <button type="button" onClick={() => this.addItem(collectionNames.affilations)}>Add</button>
                         <br />
-                        <textarea type="text" name="weapons" value={this.state.weapons} onChange={this.handleChange}></textarea>
+                        {this.state.affilations.length > 0 ?
+                        <Fragment>
+                            <label>Affilations:</label>
+                            <br />
+                            <ul>
+                                {this.state.affilations.map((affilation, index) => {
+                                    return (
+                                        <li key={index}>{affilation} <button type="button" onClick={() => this.removeItem(collectionNames.affilations, affilation)}>X</button></li>
+                                    );
+                                })}
+                            </ul>
+                        </Fragment>:null}
                         <br />
-                        <label>Vehicles:</label>
+                        
+                        <label>Add weapon:</label>
                         <br />
-                        <textarea type="text" name="vehicles" value={this.state.vehicles} onChange={this.handleChange}></textarea>
+                        <input type="text" name="currWeapon" value={this.state.currWeapon} onChange={this.handleChange} />
+                        <button type="button" onClick={() => this.addItem(collectionNames.weapons)}>Add</button>
                         <br />
-                        <label>Images:</label>
+                        {this.state.weapons.length > 0 ?
+                        <Fragment>
+                            <label>Weapons:</label>
+                            <br />
+                            <ul>
+                                {this.state.weapons.map((weapon, index) => {
+                                    return (
+                                        <li key={index}>{weapon.name} <button type="button" onClick={() => this.removeItem(collectionNames.weapons, weapon)}>X</button></li>
+                                    );
+                                })}
+                            </ul>
+                        </Fragment>:null}
                         <br />
-                        <textarea type="text" name="images" value={this.state.images} onChange={this.handleChange}></textarea>
+                        
+                        <label>Add vehicle:</label>
                         <br />
+                        <input type="text" name="currVehicle" value={this.state.currVehicle} onChange={this.handleChange} />
+                        <button type="button" onClick={() => this.addItem(collectionNames.vehicles)}>Add</button>
+                        <br />
+                        {this.state.vehicles.length > 0 ?
+                        <Fragment>
+                            <label>Vehicles:</label>
+                            <br />
+                            <ul>
+                                {this.state.vehicles.map((vehicle, index) => {
+                                    return (
+                                        <li key={index}>{vehicle.name} <button type="button" onClick={() => this.removeItem(collectionNames.vehicles, vehicle)}>X</button></li>
+                                    );
+                                })}
+                            </ul>
+                        </Fragment>:null}
+                        <br />
+                        
+                        <label>Add an image:</label>
+                        <br />
+                        <input type="text" name="currImg" value={this.state.currImg} onChange={this.handleChange} />
+                        <button type="button" onClick={() => this.addItem(collectionNames.images)}>Add</button>
+                        <br />
+                        {this.state.images.length > 0 ?
+                        <Fragment>
+                            <label>Images:</label>
+                            <br />
+                            <ul>
+                                {this.state.images.map((img, index) => {
+                                    return (
+                                        <li key={index}>{img} <button type="button" onClick={() => this.removeItem(collectionNames.images, img)}>X</button></li>
+                                    );
+                                })}
+                            </ul>
+                        </Fragment>:null}
+                        <br />
+
                         <button type="submit">Edit</button>
                     </form>
                 }

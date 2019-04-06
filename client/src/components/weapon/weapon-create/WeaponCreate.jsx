@@ -7,6 +7,13 @@ import characterService from './../../../services/character-service';
 import { OK } from './../../../constants/http-responses';
 import { notifTypes } from './../../../constants/common';
 import { errorNotifs } from './../../../constants/notification-messages';
+import collectionManager from '../../../utilities/collection-manager';
+
+const collectionNames = {
+    affilations: 0,
+    images: 1,
+    owners: 2
+};
 
 class WeaponCreate extends Component {
     constructor(props) {
@@ -14,18 +21,19 @@ class WeaponCreate extends Component {
 
         this.state = {
             name: '',
-            affilations: '',
             info: '',
-            images: '',
-            owners: [],
-
-            characters: [],
+            currAffilation: '',
+            currImg: '',
             currOwner: '',
+            affilations: [],
+            images: [],
+            owners: [],
+            characters: [],
             isLoading: false
         };
 
-        this.addCharacter = this.addCharacter.bind(this);
-        this.removeCharacter = this.removeCharacter.bind(this);
+        this.addItem = this.addItem.bind(this);
+        this.removeItem = this.removeItem.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -33,7 +41,7 @@ class WeaponCreate extends Component {
     componentWillMount() {
         this.setState({ isLoading: true });
 
-        characterService.getAllCharacters()
+        characterService.getCharactersNamesAndIds()
           .then(res => {
             if (res.status === OK) {
                 res.json().then(response => {
@@ -47,33 +55,56 @@ class WeaponCreate extends Component {
             }
           });
     }
+    
+    addItem(collectionName) {
+        if (collectionName === collectionNames.affilations) {
+            const doAdd = collectionManager.doAddItem(this.state.currAffilation, this.state.affilations);
 
-    addCharacter() {
-        const character = this.state.characters.find(ch => ch.name === this.state.currOwner);
+            if (doAdd) {
+                const newAffilations = collectionManager.addItem(this.state.currAffilation, this.state.affilations);
+                this.setState({ affilations: newAffilations, currAffilation: '' });
+            }
+        } else if (collectionName === collectionNames.images) {
+            const doAdd = collectionManager.doAddItem(this.state.currImg, this.state.images);
 
-        if (!character) {
-            this.props.notifHandler(errorNotifs.INVALID_CHARACTER, notifTypes.warning);
-            return;
+            if (doAdd) {
+                const newImgs = collectionManager.addItem(this.state.currImg, this.state.images);
+                this.setState({ images: newImgs, currImg: '' });
+            }
+        } else if (collectionName === collectionNames.owners) {
+            const owner = collectionManager.getItemNameAndId(this.state.currOwner, this.state.characters);
+            const doAdd = collectionManager.doAddItem(owner, this.state.owners);
+
+            if (owner && doAdd) {
+                const newOwners = collectionManager.addItem(owner, this.state.owners);
+                this.setState({ owners: newOwners, currOwner: '' });
+            }
         }
-
-        if (this.state.owners.includes(character)) {
-            this.props.notifHandler(errorNotifs.CHARACTER_ALREADY_ADDED, notifTypes.warning);
-            return;
-        }
-
-        const newOwners = this.state.owners.slice();
-        newOwners.push(character);
-
-        this.setState({ owners: newOwners, currOwner: '' });
     }
 
-    removeCharacter(name) {
-        const character = this.state.owners.find(ch => ch.name === name);
-        const index = this.state.owners.indexOf(character);
-        const newOwners = this.state.owners.slice();
-        newOwners.splice(index, 1);
+    removeItem(collectionName, item) {
+        if (collectionName === collectionNames.affilations) {
+            const index = collectionManager.getIndexOfItem(item, this.state.affilations);
 
-        this.setState({ owners: newOwners });
+            if (index !== -1) {
+                const newAffilations = collectionManager.removeItem(index, this.state.affilations);
+                this.setState({ affilations: newAffilations });
+            }
+        } else if (collectionName === collectionNames.images) {
+            const index = collectionManager.getIndexOfItem(item, this.state.images);
+
+            if (index !== -1) {
+                const newImgs = collectionManager.removeItem(index, this.state.images);
+                this.setState({ images: newImgs });
+            }
+        } else if (collectionName === collectionNames.owners) {
+            const index = collectionManager.getIndexOfItem(item, this.state.owners);
+
+            if (index !== -1) {
+                const newOwners = collectionManager.removeItem(index, this.state.owners);
+                this.setState({ owners: newOwners });
+            }
+        }
     }
 
     handleChange(e) {
@@ -87,8 +118,6 @@ class WeaponCreate extends Component {
         
         this.setState({ isLoading: true });
 
-        const images = this.state.images.split(', ').filter(img => img);
-
         if (this.state.name.length < 3) {
             this.props.notifHandler(errorNotifs.WEAPON_NAME_TOO_SHORT, notifTypes.error);
             this.setState({ isLoading: false });
@@ -101,20 +130,18 @@ class WeaponCreate extends Component {
             return;
         }
 
-        if (images.length < 1) {
+        if (this.state.images.length < 1) {
             this.props.notifHandler(errorNotifs.IMAGE_IS_REQUIRED, notifTypes.error);
             this.setState({ isLoading: false });
             return;
         }
 
-        const owners = this.state.owners.map(owner => owner.name);
-
         const weapon = {
             name: this.state.name,
-            affilations: this.state.affilations.split(', ').filter(aff => aff),
+            affilations: this.state.affilations,
             info: this.state.info,
-            images,
-            owners
+            images: this.state.images,
+            owners: this.state.owners.map(owner => owner._id)
         };
         
         weaponService.createWeapon(weapon)
@@ -149,32 +176,62 @@ class WeaponCreate extends Component {
                         <br />
                         <textarea type="text" name="info" onChange={this.handleChange}></textarea>
                         <br />
-                        <label>Affilations:</label>
+                        
+                        <label>Add an affilation:</label>
                         <br />
-                        <textarea type="text" name="affilations" onChange={this.handleChange}></textarea>
+                        <input type="text" name="currAffilation" value={this.state.currAffilation} onChange={this.handleChange} />
+                        <button type="button" onClick={() => this.addItem(collectionNames.affilations)}>Add</button>
                         <br />
-                        <label>Images:</label>
+                        {this.state.affilations.length > 0 ?
+                        <Fragment>
+                            <label>Affilations:</label>
+                            <br />
+                            <ul>
+                                {this.state.affilations.map((affilation, index) => {
+                                    return (
+                                        <li key={index}>{affilation} <button type="button" onClick={() => this.removeItem(collectionNames.affilations, affilation)}>X</button></li>
+                                    );
+                                })}
+                            </ul>
+                        </Fragment>:null}
                         <br />
-                        <textarea type="text" name="images" onChange={this.handleChange}></textarea>
+
+                        <label>Add an image:</label>
+                        <br />
+                        <input type="text" name="currImg" value={this.state.currImg} onChange={this.handleChange} />
+                        <button type="button" onClick={() => this.addItem(collectionNames.images)}>Add</button>
+                        <br />
+                        {this.state.images.length > 0 ?
+                        <Fragment>
+                            <label>Images:</label>
+                            <br />
+                            <ul>
+                                {this.state.images.map((img, index) => {
+                                    return (
+                                        <li key={index}>{img} <button type="button" onClick={() => this.removeItem(collectionNames.images, img)}>X</button></li>
+                                    );
+                                })}
+                            </ul>
+                        </Fragment>:null}
                         <br />
 
                         <label>Add an owner:</label>
                         <br />
                         <input type="text" name="currOwner" value={this.state.currOwner} onChange={this.handleChange} />
-                        <button type="button" onClick={this.addCharacter}>Add</button>
+                        <button type="button" onClick={() => this.addItem(collectionNames.owners)}>Add</button>
                         <br />
-
                         {this.state.owners.length > 0 ?
                         <Fragment>
+                            <label>Owners:</label>
+                            <br />
                             <ul>
-                                {this.state.owners.map((character, index) => {
+                                {this.state.owners.map((owner, index) => {
                                     return (
-                                        <li key={index} >{character.name} <button type="button" onClick={() => this.removeCharacter(character.name)}>X</button></li>
+                                        <li key={index}>{owner.name} <button type="button" onClick={() => this.removeItem(collectionNames.owners, owner)}>X</button></li>
                                     );
                                 })}
                             </ul>
-                        </Fragment>
-                        : null}
+                        </Fragment>:null}
                         <br />
 
                         <button type="submit">Create</button>

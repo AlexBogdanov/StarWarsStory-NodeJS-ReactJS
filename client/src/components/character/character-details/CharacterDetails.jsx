@@ -80,14 +80,22 @@ class CharacterDetails extends Component {
                         <label>Weapons:</label> <br />
                         <ul>
                             {this.state.character.weapons.map((weapon, index) => {
-                                return <li key={index}>{weapon}</li>
+                                return (
+                                    <li key={index}>
+                                        <a href={`/weapon/${weapon._id}`}>{weapon.name}</a>
+                                    </li>
+                                );
                             })}
                         </ul>
                         <br />
                         <label>Vehicles:</label> <br />
                         <ul>
                             {this.state.character.vehicles.map((vehicle, index) => {
-                                return <li key={index}>{vehicle}</li>
+                                return (
+                                    <li key={index}>
+                                        <a href={`/spaceship/${vehicle._id}`}>{vehicle.name}</a>
+                                    </li>
+                                );
                             })}
                         </ul>
                     </Fragment>

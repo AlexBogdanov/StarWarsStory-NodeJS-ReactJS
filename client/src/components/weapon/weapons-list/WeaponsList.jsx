@@ -99,8 +99,7 @@ class WeaponsList extends Component {
                                 userRole={this.state.userRole}
                                 openItemDetails={this.openWeaponDetails}
                                 openItemEdit={this.openWeaponEdit}
-                                deleteItem={this.deleteWeapon}
-                                userRole={this.state.userRole} />
+                                deleteItem={this.deleteWeapon} />
                             );
                         })
                         :

@@ -1,56 +1,59 @@
-import React, { Component } from 'react';
-import 'react-notifications/lib/notifications.css';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import React, { Component, Fragment } from 'react';
+import Loader from 'react-loader-spinner';
 
 import ListItem from './../../list-item/ListItem';
 import spaceshipService from './../../../services/spaceship-service';
 import { OK } from './../../../constants/http-responses';
+import { notifTypes } from '../../../constants/common';
 
 class SpaceshipsList extends Component {
     constructor(props) {
         super(props);
         
         this.state = {
-            userRole: '',
-            spaceships: null,
-            doRender: false
+            spaceships: [],
+            isLoading: false,
+            doRender: false,
+            userRole: ''
         };
 
-        this.fetchSpaceships = this.fetchSpaceships.bind(this);
         this.openSpaceshipDetails = this.openSpaceshipDetails.bind(this);
         this.openSpaceshipEdit = this.openSpaceshipEdit.bind(this);
         this.deleteSpaceship = this.deleteSpaceship.bind(this);
     }
 
-    componentDidMount() {
-        const userRole = localStorage.getItem('role');
+    componentWillMount() {
+        this.setState({ isLoading: true });
 
-        if (userRole) {
-            this.setState({ userRole });
+        if (localStorage.getItem('userRole')) {
+            this.setState({ userRole: localStorage.getItem('userRole') });
+        } else if (sessionStorage.getItem('userRole')) {
+            this.setState({ userRole: sessionStorage.getItem('userRole') });
         }
 
-        this.fetchSpaceships();
-    }
-
-    fetchSpaceships() {
         spaceshipService.getAllSpaceships()
-            .then(res => {
-                if (res.status === OK) {
-                    res.json()
-                        .then(data => {
-                            this.setState({ spaceships: data.result, doRender: true });
-                        });
-                } else {
-                    res.json()
-                        .then(err => {
-                            NotificationManager.error(err.message);
-                        });
-                }
-            })
+          .then(res => {
+            if (res.status === OK) {
+                res.json().then(response => {
+                    if (response.data.spaceships.length > 0) {
+                        this.setState({ spaceships: response.data.spaceships, doRender: true, isLoading: false });
+                        return;
+                    }
+
+                    this.setState({ isLoading: false });
+                });
+            } else {
+                res.json().then(err => {
+                    this.setState({ isLoading: false });
+                    this.props.notifHandler(err.message, notifTypes.error);
+                    this.props.history.push('/');
+                });
+            }
+          });
     }
 
     openSpaceshipDetails(id) {
-        this.props.history.push(`/spaceship/details/${id}`);
+        this.props.history.push(`/spaceship/${id}`);
     }
 
     openSpaceshipEdit(id) {
@@ -58,44 +61,53 @@ class SpaceshipsList extends Component {
     }
 
     deleteSpaceship(id) {
+        this.setState({ isLoading: true });
+
         spaceshipService.deleteSpaceship(id)
-            .then(res => {
-                if (res.status === OK) {
-                    res.json().then(data => {
-                        NotificationManager.success(data.message);
-                        window.location.reload();
-                    });
-                } else {
-                    res.json().then(err => {
-                        NotificationManager.error(err.message);
-                    });
-                }
-            });
+          .then(res => {
+            if (res.status === OK) {
+                res.json().then(response => {
+                    this.props.notifHandler(response.data.msg, notifTypes.success);
+                    setTimeout(() => { window.location.reload(); }, 2000);
+                });
+            } else {
+                res.json().then(err => {
+                    this.setState({ isLoading: false });
+                    this.props.notifHandler(err.message, notifTypes.error);
+                });
+            }
+          });
     }
 
     render() {
         return (
             <div className="ListItems">
-                {this.state.doRender ?
-                this.state.spaceships.map((spaceship, index) => {
-                    return (
-                        <ListItem
-                        key={index}
-                        itemId={spaceship._id}
-                        name={spaceship.name}
-                        shortDescr={spaceship.info}
-                        imageUrl={spaceship.images[0]}
-                        userRole={this.state.userRole}
-                        openItemDetails={this.openSpaceshipDetails}
-                        openItemEdit={this.openSpaceshipEdit}
-                        deleteItem={this.deleteSpaceship} />
-                    );
-                })
-                :
-                <div> No results </div>
+                {
+                    this.state.isLoading ?
+                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
+                    :
+                    <Fragment>
+                        {
+                            this.state.doRender ?
+                            this.state.spaceships.map((spaceship, index) => {
+                                return (
+                                    <ListItem
+                                    key={index}
+                                    itemId={spaceship._id}
+                                    name={spaceship.name}
+                                    shortDescr={spaceship.info}
+                                    imageUrl={spaceship.images[0]}
+                                    userRole={this.state.userRole}
+                                    openItemDetails={this.openSpaceshipDetails}
+                                    openItemEdit={this.openSpaceshipEdit}
+                                    deleteItem={this.deleteSpaceship} />
+                                );
+                            })
+                            :
+                            <div> No results </div>
+                        }
+                    </Fragment>
                 }
-
-                <NotificationContainer />
             </div>
         );
     };

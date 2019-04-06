@@ -13,7 +13,7 @@ class WeaponDetails extends Component {
 
         this.state = {
             weapon: null,
-            isLoading: true
+            isLoading: false
         };
     }
 

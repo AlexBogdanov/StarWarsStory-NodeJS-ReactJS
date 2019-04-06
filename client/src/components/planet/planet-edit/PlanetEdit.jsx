@@ -7,6 +7,13 @@ import characterService from './../../../services/character-service';
 import { OK } from './../../../constants/http-responses';
 import { notifTypes } from '../../../constants/common';
 import { errorNotifs } from '../../../constants/notification-messages';
+import collectionManager from './../../../utilities/collection-manager';
+
+const collectionNames = {
+    affilations: 0,
+    images: 1,
+    natives: 2
+};
 
 class PlanetEdit extends Component {
     constructor(props) {
@@ -15,18 +22,20 @@ class PlanetEdit extends Component {
         this.state = {
             planetId: '',
             info: '',
-            affilations: '',
             climate: '',
             terrain: '',
-            images: '',
+            affilations: [],
+            images: [],
             natives: [],
+            currAffilation: '',
+            currImg: '',
             currNative: '',
             characters: [],
             isLoading: false
         };
 
-        this.addCharacter = this.addCharacter.bind(this);
-        this.removeCharacter = this.removeCharacter.bind(this);
+        this.addItem = this.addItem.bind(this);
+        this.removeItem = this.removeItem.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -42,10 +51,10 @@ class PlanetEdit extends Component {
                     this.setState({
                         planetId,
                         info: response.data.planet.info,
-                        affilations: response.data.planet.affilations.join(', '),
+                        affilations: response.data.planet.affilations,
                         climate: response.data.planet.climate,
                         terrain: response.data.planet.terrain,
-                        images: response.data.planet.images.join(', '),
+                        images: response.data.planet.images,
                         natives: response.data.planet.natives
                     });
                 });
@@ -72,34 +81,55 @@ class PlanetEdit extends Component {
           });
     }
 
-    addCharacter() {
-        const character = this.state.characters.find(ch => ch.name === this.state.currNative);
+    addItem(collectionName) {
+        if (collectionName === collectionNames.affilations) {
+            const doAdd = collectionManager.doAddItem(this.state.currAffilation, this.state.affilations);
 
-        if (!character) {
-            this.props.notifHandler(errorNotifs.INVALID_CHARACTER, notifTypes.warning);
-            return;
+            if (doAdd) {
+                const newAffilations = collectionManager.addItem(this.state.currAffilation, this.state.affilations);
+                this.setState({ affilations: newAffilations, currAffilation: '' });
+            }
+        } else if (collectionName === collectionNames.images) {
+            const doAdd = collectionManager.doAddItem(this.state.currImg, this.state.images);
+
+            if (doAdd) {
+                const newImgs = collectionManager.addItem(this.state.currImg, this.state.images);
+                this.setState({ images: newImgs, currImg: '' });
+            }
+        } else if (collectionName === collectionNames.natives) {
+            const native = collectionManager.getItemNameAndId(this.state.currNative, this.state.characters);
+            const doAdd = collectionManager.doAddItem(native, this.state.natives);
+
+            if (native && doAdd) {
+                const newNatives = collectionManager.addItem(native, this.state.natives);
+                this.setState({ natives: newNatives, currNative: '' });
+            }
         }
-
-        if (this.state.natives.find(ch => ch.name === this.state.currNative)) {
-            this.props.notifHandler(errorNotifs.CHARACTER_ALREADY_ADDED, notifTypes.warning);
-            return;
-        }
-
-
-
-        const newNatives = this.state.natives.slice();
-        newNatives.push(character);
-
-        this.setState({ natives: newNatives, currNative: '' });
     }
+    
+    removeItem(collectionName, item) {
+        if (collectionName === collectionNames.affilations) {
+            const index = collectionManager.getIndexOfItem(item, this.state.affilations);
 
-    removeCharacter(name) {
-        const character = this.state.natives.find(ch => ch.name === name);
-        const index = this.state.natives.indexOf(character);
-        const newNatives = this.state.natives.slice();
-        newNatives.splice(index, 1);
+            if (index !== -1) {
+                const newAffilations = collectionManager.removeItem(index, this.state.affilations);
+                this.setState({ affilations: newAffilations });
+            }
+        } else if (collectionName === collectionNames.images) {
+            const index = collectionManager.getIndexOfItem(item, this.state.images);
 
-        this.setState({ natives: newNatives });
+            if (index !== -1) {
+                const newImgs = collectionManager.removeItem(index, this.state.images);
+                this.setState({ images: newImgs });
+            }
+        } else if (collectionName === collectionNames.natives) {
+            const index = collectionManager.getIndexOfItem(item, this.state.natives);
+
+            if (index !== -1) {
+                const newNatives = collectionManager.removeItem(index, this.state.natives);
+                this.setState({ natives: newNatives });
+            }
+        }
     }
 
     handleChange(e) {
@@ -119,23 +149,19 @@ class PlanetEdit extends Component {
             return;
         }
 
-        const images = this.state.images.split(', ').filter(img => img);
-
-        if (images.length < 1) {
+        if (this.state.images.length < 1) {
             this.props.notifHandler(errorNotifs.IMAGE_IS_REQUIRED, notifTypes.error);
             this.setState({ isLoading: false });
             return;
         }
 
-        const natives = this.state.natives.map(native => native.name);
-
         const planet = {
             info: this.state.info,
-            affilations: this.state.affilations.split(', ').filter(aff => aff),
+            affilations: this.state.affilations,
             climate: this.state.climate,
             terrain: this.state.terrain,
-            images,
-            natives
+            images: this.state.images,
+            natives: this.state.natives.map(native => native._id)
         };
 
         planetService.editPlanet(this.state.planetId, planet)
@@ -166,10 +192,6 @@ class PlanetEdit extends Component {
                         <br />
                         <textarea type="text" name="info" value={this.state.info} onChange={this.handleChange}></textarea>
                         <br />
-                        <label>Affilations:</label>
-                        <br />
-                        <textarea type="text" name="affilations" value={this.state.affilations} onChange={this.handleChange}></textarea>
-                        <br />
                         <label>Climate:</label>
                         <br />
                         <input type="text" name="climate" value={this.state.climate} onChange={this.handleChange} />
@@ -178,30 +200,62 @@ class PlanetEdit extends Component {
                         <br />
                         <input type="text" name="terrain" value={this.state.terrain} onChange={this.handleChange} />
                         <br />
-                        <label>Images:</label>
+                        
+                        <label>Add an affilation:</label>
                         <br />
-                        <textarea type="text" name="images" value={this.state.images} onChange={this.handleChange}></textarea>
+                        <input type="text" name="currAffilation" value={this.state.currAffilation} onChange={this.handleChange} />
+                        <button type="button" onClick={() => this.addItem(collectionNames.affilations)}>Add</button>
+                        <br />
+                        {this.state.affilations.length > 0 ?
+                        <Fragment>
+                            <label>Affilations:</label>
+                            <br />
+                            <ul>
+                                {this.state.affilations.map((affilation, index) => {
+                                    return (
+                                        <li key={index}>{affilation} <button type="button" onClick={() => this.removeItem(collectionNames.affilations, affilation)}>X</button></li>
+                                    );
+                                })}
+                            </ul>
+                        </Fragment>:null}
+                        <br />
+
+                        <label>Add an image:</label>
+                        <br />
+                        <input type="text" name="currImg" value={this.state.currImg} onChange={this.handleChange} />
+                        <button type="button" onClick={() => this.addItem(collectionNames.images)}>Add</button>
+                        <br />
+                        {this.state.images.length > 0 ?
+                        <Fragment>
+                            <label>Images:</label>
+                            <br />
+                            <ul>
+                                {this.state.images.map((img, index) => {
+                                    return (
+                                        <li key={index}>{img} <button type="button" onClick={() => this.removeItem(collectionNames.images, img)}>X</button></li>
+                                    );
+                                })}
+                            </ul>
+                        </Fragment>:null}
                         <br />
 
                         <label>Add native:</label>
                         <br />
                         <input type="text" name="currNative" value={this.state.currNative} onChange={this.handleChange} />
-                        <button type="button" onClick={this.addCharacter}>Add</button>
+                        <button type="button" onClick={() => this.addItem(collectionNames.natives)}>Add</button>
                         <br />
-
-                        {
-                            this.state.natives.length > 0 ?
-                            <Fragment>
-                                <ul>
-                                    {this.state.natives.map((character, index) => {
-                                        return(
-                                            <li key={index} >{character.name} <button type="button" onClick={() => this.removeCharacter(character.name)}>X</button></li>
-                                        );
-                                    })}
-                                </ul>
-                            </Fragment>
-                            : null
-                        }
+                        {this.state.natives.length > 0 ?
+                        <Fragment>
+                            <label>Natives:</label>
+                            <br />
+                            <ul>
+                                {this.state.natives.map((native, index) => {
+                                    return (
+                                        <li key={index}>{native.name} <button type="button" onClick={() => this.removeItem(collectionNames.natives, native)}>X</button></li>
+                                    );
+                                })}
+                            </ul>
+                        </Fragment>:null}
                         <br />
 
                         <button type="submit">Edit</button>
