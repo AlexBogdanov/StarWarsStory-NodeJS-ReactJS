@@ -4,13 +4,12 @@ import Loader from 'react-loader-spinner';
 
 import characterService from './../../../services/character-service';
 import weaponService from './../../../services/weapon-service';
-import vehicleService from './../../../services/spaceship-service';
+import spaceshipService from './../../../services/spaceship-service';
 
 import { OK } from './../../../constants/http-responses';
 import { notifTypes } from '../../../constants/common';
 import { errorNotifs } from './../../../constants/notification-messages';
 import collectionManager from './../../../utilities/collection-manager';
-import spaceshipService from './../../../services/spaceship-service';
 
 const collectionNames = {
     affilations: 0,
