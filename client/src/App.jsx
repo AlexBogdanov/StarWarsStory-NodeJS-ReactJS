@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import 'react-notifications/lib/notifications.css';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import { NotificationContainer, NotificationManager, Button } from 'react-notifications';
 
 import Navbar from './components/navbar/Navbar';
 import { notifTypes } from './constants/common';
