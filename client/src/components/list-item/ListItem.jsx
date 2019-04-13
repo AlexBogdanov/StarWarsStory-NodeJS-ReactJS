@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import './ListItem.css';
+import { MDBBtn, MDBCard, MDBCardBody, MDBCardImage, MDBCardTitle, MDBCardText, MDBCol, MDBRow } from 'mdbreact'
 
 import { userRoles } from './../../constants/common';
 
@@ -8,28 +9,32 @@ const ListItem = (props) => {
     shortDescription += '...';
 
     return (
-        <div className="ListItem">
-            <img src={props.imageUrl} alt="" />
-            <span>{props.name}</span>
-            <span>{shortDescription}</span>
-            {props.userRole === userRoles.ADMIN ?
-            <Fragment>
-                <br />
-                <button onClick={() => props.openItemDetails(props.itemId)}>Details</button>
-                <button onClick={() => props.openItemEdit(props.itemId)}>Edit</button>
-                <button onClick={() => props.deleteItem(props.itemId)}>Delete</button>
-            </Fragment>
-            : props.userRole === userRoles.USER ?
-            <Fragment>
-                <br />
-                <button onClick={() => props.openItemDetails(props.itemId)}>Details</button>
-            </Fragment>
-            : <Fragment>
-                <br />
-                <span>Log in for more options</span>
-              </Fragment>
-            }
-        </div>
+            <MDBCol className="col-md-3">
+                <MDBCard style={{ width: '22rem' }}>
+                    <MDBCardImage className="img-fluid" src={props.imageUrl} waves />
+                    <MDBCardBody>
+                        <MDBCardTitle>{props.name}</MDBCardTitle>
+                        <MDBCardText>{shortDescription}</MDBCardText>
+                        
+                        {
+                            props.userRole === userRoles.ADMIN ?
+                            <Fragment>
+                                <MDBBtn onClick={() => props.openItemDetails(props.itemId)}>Details</MDBBtn>
+                                <MDBBtn onClick={() => props.openItemEdit(props.itemId)}>Edit</MDBBtn>
+                                <MDBBtn onClick={() => props.deleteItem(props.itemId)}>Delete</MDBBtn>
+                            </Fragment>
+                            : props.userRole === userRoles.USER ?
+                            <Fragment>
+                                <MDBBtn onClick={() => props.opentItemDetails(props.itemId)}>Details</MDBBtn>
+                            </Fragment>
+                            :
+                            <Fragment>
+                                <MDBCardText>Log in for more options</MDBCardText>
+                            </Fragment>
+                        }
+                    </MDBCardBody>
+                </MDBCard>
+            </MDBCol>
     );
 };
 

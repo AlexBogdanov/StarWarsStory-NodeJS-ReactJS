@@ -39,7 +39,7 @@ class WeaponDetails extends Component {
         return (
             <div className="WeaponDetails">
                 {this.state.isLoading ?
-                <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
+                <Loader type="Ball-Triangle" color="black" height="750" />
                 : <Fragment>
                     {this.state.weapon.images.map((image, index) => {
                         return <img key={index} src={image} alt="" />

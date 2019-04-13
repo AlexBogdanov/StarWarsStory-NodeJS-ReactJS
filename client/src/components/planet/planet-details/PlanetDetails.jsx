@@ -40,7 +40,7 @@ class PlanetDetails extends Component {
             <div className="PlanetDetails">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
+                    <Loader type="Ball-Triangle" color="black" height="750" />
                     :
                     <Fragment>
                         {this.state.planet.images.map((image, index) => {

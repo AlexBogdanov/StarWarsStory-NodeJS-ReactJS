@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './Login.css';
 import Loader from 'react-loader-spinner';
+import { MDBModal, MDBModalHeader, MDBModalBody, MDBRow, MDBCol, MDBInput, MDBBtn, MDBContainer, MDBFooter } from 'mdbreact';
 
 import userService from './../../services/user-service';
 import { errorNotifs } from './../../constants/notification-messages';
@@ -14,7 +14,6 @@ class Login extends Component {
         this.state = {
             username: '',
             password: '',
-            rememberMe: false,
             isLoading: false
         };
 
@@ -28,10 +27,8 @@ class Login extends Component {
         this.setState(change);
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
-        
-        if (this.state.username.lenght < 3) {
+    handleSubmit() {
+        if (this.state.username.length < 3) {
             this.props.notifHandler(errorNotifs.USERNAME_SHOULD_BE_ATLEAST_3_CHARACTERS_LONG, notifTypes.error);
             return;
         }
@@ -55,13 +52,9 @@ class Login extends Component {
                     const userRole = response.data.user.roles.includes(userRoles.ADMIN)
                         ? userRoles.ADMIN : userRoles.USER;
 
-                    if (this.state.rememberMe) {
-                        localStorage.setItem('token', response.data.token);
-                        localStorage.setItem('userRole', userRole);
-                    } else {
-                        sessionStorage.setItem('token', response.data.token);
-                        sessionStorage.setItem('userRole', userRole);
-                    }
+                    // Setting credentials
+                    localStorage.setItem('token', response.data.token);
+                    localStorage.setItem('userRole', userRole);
 
                     this.props.notifHandler(response.data.msg, notifTypes.success);
                     setTimeout(() => { window.location.href = '/'; }, 2000);
@@ -69,7 +62,7 @@ class Login extends Component {
             } else {
                 res.json().then(err => {
                     this.props.notifHandler(err.message, notifTypes.error);
-                    this.setState({ isLoading: false });
+                    setTimeout(() => { this.setState({ isLoading: false }); }, 1000);
                 });
             }
           });
@@ -77,25 +70,40 @@ class Login extends Component {
 
     render() {
         return (
-            <div className="Login">
-                {this.state.isLoading ?
-                <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
-                :
-                <form onSubmit={this.handleSubmit}>
-                    <label>Username:</label>
-                    <br />
-                    <input name="username" type="text" onChange={this.handleChange} />
-                    <br />
-                    <label>Password:</label>
-                    <br />
-                    <input name="password" type="password" onChange={this.handleChange} />
-                    <br />
-                    <label>Remember me:</label> <input name="rememberMe" type="checkbox" onChange={this.handleChange} />
-                    <br />
-                    <button type="submit">Login</button>
-                </form>
-                }
-            </div>
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="750" />
+            :
+            <MDBModal isOpen={this.props.isOpen}>
+                <MDBModalHeader toggle={this.props.toggle}>Sign in</MDBModalHeader>
+                <MDBModalBody>
+                    <MDBContainer>
+                        <MDBRow>
+                            <MDBCol>
+                                <MDBInput
+                                name="username"
+                                onChange={this.handleChange}
+                                label="Type your username"
+                                type="text"
+                                validate
+                                success="right"
+                                error="wrong" />
+
+                                <MDBInput
+                                name="password"
+                                onChange={this.handleChange}
+                                label="Type your password"
+                                type="password"
+                                validate
+                                success="right"
+                                error="wrong" />
+                            </MDBCol>
+                        </MDBRow>
+                    </MDBContainer>
+                </MDBModalBody>
+                <MDBFooter>
+                    <MDBBtn onClick={this.handleSubmit}>Login</MDBBtn>
+                </MDBFooter>
+            </MDBModal>
         );
     };
 };

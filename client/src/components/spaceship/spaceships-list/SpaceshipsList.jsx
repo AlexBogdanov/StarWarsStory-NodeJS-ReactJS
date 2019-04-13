@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Loader from 'react-loader-spinner';
+import { MDBRow } from 'mdbreact';
 
 import ListItem from './../../list-item/ListItem';
 import spaceshipService from './../../../services/spaceship-service';
@@ -84,12 +85,13 @@ class SpaceshipsList extends Component {
             <div className="ListItems">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
+                    <Loader type="Ball-Triangle" color="black" height="750" />
                     :
                     <Fragment>
                         {
                             this.state.doRender ?
-                            this.state.spaceships.map((spaceship, index) => {
+                            <MDBRow>
+                            {this.state.spaceships.map((spaceship, index) => {
                                 return (
                                     <ListItem
                                     key={index}
@@ -102,7 +104,8 @@ class SpaceshipsList extends Component {
                                     openItemEdit={this.openSpaceshipEdit}
                                     deleteItem={this.deleteSpaceship} />
                                 );
-                            })
+                            })}
+                            </MDBRow>
                             :
                             <div> No results </div>
                         }

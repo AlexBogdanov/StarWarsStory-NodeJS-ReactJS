@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Loader from 'react-loader-spinner';
+import { MDBRow } from 'mdbreact';
 
 import ListItem from './../../list-item/ListItem';
 import weaponService from './../../../services/weapon-service';
@@ -84,11 +85,12 @@ class WeaponsList extends Component {
             <div className="ListItems">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
+                    <Loader type="Ball-Triangle" color="black" height="750" />
                     :
                     <Fragment>
                         {this.state.doRender ?
-                        this.state.weapons.map((weapon, index) => {
+                        <MDBRow>
+                        {this.state.weapons.map((weapon, index) => {
                             return (
                                 <ListItem
                                 key={index}
@@ -101,7 +103,8 @@ class WeaponsList extends Component {
                                 openItemEdit={this.openWeaponEdit}
                                 deleteItem={this.deleteWeapon} />
                             );
-                        })
+                        })}
+                        </MDBRow>
                         :
                         <div> No results </div>
                         }

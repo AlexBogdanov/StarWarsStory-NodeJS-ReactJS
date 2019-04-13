@@ -164,7 +164,7 @@ class MovieEdit extends Component {
             <div className="WeaponEdit">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
+                    <Loader type="Ball-Triangle" color="black" height="750" />
                     :
                     <form onSubmit={this.handleSubmit}>
                         <select value={this.state.type} onChange={this.selectOption}>

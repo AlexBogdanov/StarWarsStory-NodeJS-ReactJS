@@ -169,7 +169,7 @@ class PlanetCreate extends Component {
             <div className="PlanetCreate">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
+                    <Loader type="Ball-Triangle" color="black" height="750" />
                     :
                     <form onSubmit={this.handleSubmit}>
                         <label>Name:</label>

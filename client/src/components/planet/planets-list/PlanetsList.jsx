@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Loader from 'react-loader-spinner';
+import { MDBRow } from 'mdbreact';
 
 import ListItem from './../../list-item/ListItem';
 import planetService from './../../../services/planet-service';
@@ -84,12 +85,13 @@ class PlanetsList extends Component {
             <div className="ListItems">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
+                    <Loader type="Ball-Triangle" color="black" height="750" />
                     :
                     <Fragment>
                         {
                             this.state.doRender ?
-                            this.state.planets.map((planet, index) => {
+                            <MDBRow>
+                            {this.state.planets.map((planet, index) => {
                                 return (
                                     <ListItem
                                     key={index}
@@ -102,7 +104,8 @@ class PlanetsList extends Component {
                                     openItemEdit={this.openPlanetEdit}
                                     deleteItem={this.deletePlanet} />
                                 );
-                            })
+                            })}
+                            </MDBRow>
                             :
                             <div> No results </div>
                         }

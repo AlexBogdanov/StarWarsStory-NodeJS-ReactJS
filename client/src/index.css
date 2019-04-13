@@ -8,6 +8,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body, html {
+  /* margin: 0;
+  background-image: url('./assets/backgrounds/star-wars-battlefront-4k-hd-wallpaper_2560x1440.jpg');
+  width: 300px;
+  height: auto; */
+  
+  font: "Avenir Next", Helvetica;
+  background-image: url("./assets/backgrounds/star-wars-battlefront-4k-hd-wallpaper_2560x1440.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

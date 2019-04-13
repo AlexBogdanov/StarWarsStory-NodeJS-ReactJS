@@ -31,39 +31,35 @@ import MovieDetails from './../components/movie/movie-details/MovieDetails';
 import MovieCreate from './../components/movie/movie-create/MovieCreate';
 import MovieEdit from './../components/movie/movie-edit/MovieEdit';
 
-const AdminRoutes = ({ notifHandler }) => {
+const AdminRoutes = (props) => {
     return (
         <Fragment>
+            <CharacterCreate notifHandler={props.notifHandler} isOpen={props.openCharacterCreate} toggle={props.toggleCharacter} />
+            <WeaponCreate notifHandler={props.notifHandler} isOpen={props.openWeaponCreate} toggle={props.toggleWeapon} />
+            <PlanetCreate notifHandler={props.notifHandler} isOpen={props.openPlanetCreate} toggle={props.togglePlanet} />
+            <SpaceshipCreate notifHandler={props.notifHandler} isOpen={props.openSpaceshipCreate} toggle={props.toggleSpaceship} />
+            <MovieCreate notifHandler={props.notifHandler} isOpen={props.openMovieCreate} toggle={props.toggleMovie} />
             <Switch>
                 {/* Character */}
-                <Route exact path="/characters" render={({ history }) => <CharacterList history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/character/create" render={({ history }) => <CharacterCreate history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/character/edit/:characterId" render={({ match, history }) => <CharacterEdit match={match} history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/character/:characterId" render={({ match, history }) => <CharacterDetails match={match} history={history} notifHandler={notifHandler} />} />
+                <Route exact path="/characters" render={({ history }) => <CharacterList history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/character/edit/:characterId" render={({ match, history }) => <CharacterEdit match={match} history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/character/:characterId" render={({ match, history }) => <CharacterDetails match={match} history={history} notifHandler={props.notifHandler} />} />
 
                 {/* Weapon */}
-                <Route exact path="/weapons" render={({ history }) => <WeaponList history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/weapon/create" render={({ history }) => <WeaponCreate history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/weapon/edit/:weaponId" render={({ match, history }) => <WeaponEdit match={match} history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/weapon/:weaponId" render={({ match, history }) => <WeaponDetails match={match} history={history} notifHandler={notifHandler} />} />
+                <Route exact path="/weapons" render={({ history }) => <WeaponList history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/weapon/:weaponId" render={({ match, history }) => <WeaponDetails match={match} history={history} notifHandler={props.notifHandler} />} />
 
                 {/* Planet */}
-                <Route exact path="/planets" render={({ history }) => <PlanetList history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/planet/create" render={({ history }) => <PlanetCreate history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/planet/edit/:planetId" render={({ match, history }) => <PlanetEdit match={match} history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/planet/:planetId" render={({ match, history }) => <PlanetDetails match={match} history={history} notifHandler={notifHandler} />} />
+                <Route exact path="/planets" render={({ history }) => <PlanetList history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/planet/:planetId" render={({ match, history }) => <PlanetDetails match={match} history={history} notifHandler={props.notifHandler} />} />
 
                 {/* Spaceship */}
-                <Route exact path="/spaceships" render={({ history }) => <SpaceshipList history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/spaceship/create" render={({ history }) => <SpaceshipCreate history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/spaceship/edit/:spaceshipId" render={({ match, history }) => <SpaceshipEdit match={match} history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/spaceship/:spaceshipId" render={({ match, history }) => <SpaceshipDetails match={match} history={history} notifHandler={notifHandler} />} />
+                <Route exact path="/spaceships" render={({ history }) => <SpaceshipList history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/spaceship/:spaceshipId" render={({ match, history }) => <SpaceshipDetails match={match} history={history} notifHandler={props.notifHandler} />} />
                        
                 {/* Movie */}
-                <Route exact path="/movies" render={({ history }) => <MovieList history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/movie/create" render={({ history }) => <MovieCreate history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/movie/edit/:movieId" render={({ match, history }) => <MovieEdit match={match} history={history} notifHandler={notifHandler} />} />
-                <Route exact path="/movie/:movieId" render={({ match, history }) => <MovieDetails match={match} history={history} notifHandler={notifHandler} />} />
+                <Route exact path="/movies" render={({ history }) => <MovieList history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/movie/:movieId" render={({ match, history }) => <MovieDetails match={match} history={history} notifHandler={props.notifHandler} />} />
             </Switch>
         </Fragment>
     );

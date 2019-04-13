@@ -11,14 +11,19 @@ const collectionManager = {
         return false;
     },
 
-    getItemNameAndId: (itemName, collection) => {
-        const item = collection.find(el => el.name === itemName);
-
+    getItemNameAndId: (itemName, collection, item) => {
         if (item) {
-            return {_id: item._id, name: item.name};
-        }
+            return { _id: item._id, name: item.name };
+        } else {
+            const currItem = collection.find(el => el.name === itemName);
+    
+            if (currItem) {
+                return {_id: currItem._id, name: currItem.name};
+            }
+    
+            return null;
 
-        return null;
+        }
     },
 
     getIndexOfItem: (item, collection) => {

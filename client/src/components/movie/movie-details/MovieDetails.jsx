@@ -46,7 +46,7 @@ class MovieDetails extends Component {
         return (
             <div className="MovieDetails">
                 {this.state.isLoading ?
-                <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
+                <Loader type="Ball-Triangle" color="black" height="750" />
                 : <Fragment>
                     <img src={this.state.movie.cover} alt=""></img>
                     <br />

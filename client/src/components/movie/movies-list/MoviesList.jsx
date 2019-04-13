@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Loader from 'react-loader-spinner';
+import { MDBRow } from 'mdbreact';
 
 import ListItem from './../../list-item/ListItem';
 import movieService from './../../../services/movie-service';
@@ -85,11 +86,12 @@ class MovieList extends Component {
             <div className="ListItems">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
+                    <Loader type="Ball-Triangle" color="black" height="750" />
                     :
                     <Fragment>
                         {this.state.doRender ?
-                        this.state.movies.map((movie, index) => {
+                        <MDBRow>
+                        {this.state.movies.map((movie, index) => {
                             return (
                                 <ListItem
                                 key={index}
@@ -102,7 +104,8 @@ class MovieList extends Component {
                                 openItemEdit={this.openMovieEdit}
                                 deleteItem={this.deleteMovie} />
                             );
-                        })
+                        })}
+                        </MDBRow>
                         :
                         <div> No results </div>
                         }

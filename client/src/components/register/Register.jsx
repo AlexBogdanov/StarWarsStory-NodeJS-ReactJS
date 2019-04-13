@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './Register.css';
 import Loader from 'react-loader-spinner';
+import { MDBModal, MDBModalHeader, MDBModalBody, MDBRow, MDBCol, MDBInput, MDBBtn, MDBContainer, MDBFooter } from 'mdbreact';
 
 import userService from './../../services/user-service';
 import { errorNotifs } from './../../constants/notification-messages';
@@ -65,7 +65,7 @@ class Register extends Component {
             } else {
                 res.json().then(err => {
                     this.props.notifHandler(err.message, notifTypes.error);
-                    this.setState({ isLoading: false });
+                    setTimeout(() => { this.setState({ isLoading: false }); });
                 });
             }
           });
@@ -73,31 +73,58 @@ class Register extends Component {
 
     render() {
         return (
-            <div className="Register">
-                {this.state.isLoading ?
-                <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
-                :
-                <form onSubmit={this.handleSubmit}>
-                    <label>Username:</label>
-                    <br />
-                    <input name="username" type="text" onChange={this.handleChange} />
-                    <br />
-                    <label>Email:</label>
-                    <br />
-                    <input name="email" type="email" onChange={this.handleChange} />
-                    <br />
-                    <label>Password:</label>
-                    <br />
-                    <input name="password" type="password" onChange={this.handleChange} />
-                    <br />
-                    <label>Repeat password:</label>
-                    <br />
-                    <input name="repeatPassword" type="password" onChange={this.handleChange} />
-                    <br />
-                    <button type="submit">Register</button>
-                </form>
-                }
-            </div>
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="750" />
+            :
+            <MDBModal isOpen={this.props.isOpen}>
+                <MDBModalHeader toggle={this.props.toggle}>Sign up</MDBModalHeader>
+                <MDBModalBody>
+                    <MDBContainer>
+                        <MDBRow>
+                            <MDBCol>
+                                <MDBInput
+                                name="username"
+                                onChange={this.handleChange}
+                                label="Type your username"
+                                type="text"
+                                validate
+                                success="right"
+                                error="wrong" />
+
+                                <MDBInput
+                                name="email"
+                                onChange={this.handleChange}
+                                label="Type your email"
+                                type="email"
+                                validate
+                                success="right"
+                                error="wrong" />
+
+                                <MDBInput
+                                name="password"
+                                onChange={this.handleChange}
+                                label="Type your password"
+                                type="password"
+                                validate
+                                success="right"
+                                error="wrong" />
+
+                                <MDBInput
+                                name="repeatPassword"
+                                onChange={this.handleChange}
+                                label="Confirm your password"
+                                type="password"
+                                validate
+                                success="right"
+                                error="wrong" />
+                            </MDBCol>
+                        </MDBRow>
+                    </MDBContainer>
+                </MDBModalBody>
+                <MDBFooter>
+                    <MDBBtn onClick={this.handleSubmit}>Register</MDBBtn>
+                </MDBFooter>
+            </MDBModal>
         );
     };
 };
