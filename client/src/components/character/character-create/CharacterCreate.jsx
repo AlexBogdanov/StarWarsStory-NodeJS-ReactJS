@@ -1,13 +1,14 @@
-import React, { Component, Fragment } from 'react';
-import './CharacterCreate.css';
+import React, { Component } from 'react';
 import Loader from 'react-loader-spinner';
+import { MDBModal, MDBModalHeader, MDBModalBody, MDBRow, MDBCol, MDBInput, MDBBtn, MDBContainer, MDBFooter,
+    MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem } from 'mdbreact';
 
 import characterService from './../../../services/character-service';
 import weaponService from './../../../services/weapon-service';
 import spaceshipService from './../../../services/spaceship-service';
 
 import { OK } from './../../../constants/http-responses';
-import { notifTypes } from './../../../constants/common';
+import { notifTypes, componentsTypes } from './../../../constants/common';
 import { errorNotifs } from './../../../constants/notification-messages';
 import collectionManager from './../../../utilities/collection-manager';
 
@@ -34,8 +35,6 @@ class CharacterCreate extends Component {
             vehicles: [],
             images: [],
             currAffilation: '',
-            currWeapon: '',
-            currVehicle: '',
             currImg: '',
             weaponsDB: [],
             vehiclesDB: [],
@@ -78,36 +77,44 @@ class CharacterCreate extends Component {
           })
     }
 
-    addItem(collectionName) {
-        if (collectionName === collectionNames.affilations) {
-            const doAdd = collectionManager.doAddItem(this.state.currAffilation, this.state.affilations);
+    addItem(collectionName, item) {
+        if (item) {
+            if (collectionName === collectionNames.weapons) {
+                const weapon = collectionManager.getItemNameAndId(null, this.state.weaponsDB, item);
+                const doAdd = collectionManager.doAddItem(weapon, this.state.weapons);
 
-            if (doAdd) {
-                const newAffilations = collectionManager.addItem(this.state.currAffilation, this.state.affilations);
-                this.setState({ affilations: newAffilations, currAffilation: '' });
+                if (weapon && doAdd) {
+                    const newWeapons = collectionManager.addItem(weapon, this.state.weapons);
+                    const index = collectionManager.getIndexOfItem(item, this.state.weaponsDB);
+                    const newWeaponsDb = collectionManager.removeItem(index, this.state.weaponsDB);
+                    this.setState({ weapons: newWeapons, weaponsDB: newWeaponsDb });
+                }
+            } else if (collectionName === collectionNames.vehicles) {
+                const vehicle = collectionManager.getItemNameAndId(null, this.state.vehiclesDB, item);
+                const doAdd = collectionManager.doAddItem(vehicle, this.state.vehicles);
+
+                if (vehicle && doAdd) {
+                    const newVehicles = collectionManager.addItem(vehicle, this.state.vehicles);
+                    const index = collectionManager.getIndexOfItem(item, this.state.vehiclesDB);
+                    const newVehiclesDB = collectionManager.removeItem(index, this.state.vehiclesDB);
+                    this.setState({ vehicles: newVehicles, vehiclesDB: newVehiclesDB });
+                }
             }
-        } else if (collectionName === collectionNames.images) {
-            const doAdd = collectionManager.doAddItem(this.state.currImg, this.state.images);
+        } else {
+            if (collectionName === collectionNames.affilations) {
+                const doAdd = collectionManager.doAddItem(this.state.currAffilation, this.state.affilations);
 
-            if (doAdd) {
-                const newImgs = collectionManager.addItem(this.state.currImg, this.state.images);
-                this.setState({ images: newImgs, currImg: '' });
-            }
-        } else if (collectionName === collectionNames.weapons) {
-            const weapon = collectionManager.getItemNameAndId(this.state.currWeapon, this.state.weaponsDB);
-            const doAdd = collectionManager.doAddItem(weapon, this.state.weapons);
+                if (doAdd) {
+                    const newAffilations = collectionManager.addItem(this.state.currAffilation, this.state.affilations);
+                    this.setState({ affilations: newAffilations, currAffilation: '' });
+                }
+            } else if (collectionName === collectionNames.images) {
+                const doAdd = collectionManager.doAddItem(this.state.currImg, this.state.images);
 
-            if (weapon && doAdd) {
-                const newWeapons = collectionManager.addItem(weapon, this.state.weapons);
-                this.setState({ weapons: newWeapons, currWeapon: '' });
-            }
-        } else if (collectionName === collectionNames.vehicles) {
-            const vehicle = collectionManager.getItemNameAndId(this.state.currVehicle, this.state.vehiclesDB);
-            const doAdd = collectionManager.doAddItem(vehicle, this.state.vehicles);
-
-            if (vehicle && doAdd) {
-                const newVehicles = collectionManager.addItem(vehicle, this.state.vehicles);
-                this.setState({ vehicles: newVehicles, currVehicle: '' });
+                if (doAdd) {
+                    const newImgs = collectionManager.addItem(this.state.currImg, this.state.images);
+                    this.setState({ images: newImgs, currImg: '' });
+                }
             }
         }
     }
@@ -132,14 +139,16 @@ class CharacterCreate extends Component {
 
             if (index !== -1) {
                 const newWeapons = collectionManager.removeItem(index, this.state.weapons);
-                this.setState({ weapons: newWeapons });
+                const newWeaponsDB = collectionManager.addItem(item, this.state.weaponsDB);
+                this.setState({ weapons: newWeapons, weaponsDB: newWeaponsDB });
             }
         } else if (collectionName === collectionNames.vehicles) {
             const index = collectionManager.getIndexOfItem(item, this.state.vehicles);
 
             if (index !== -1) {
                 const newVehicles = collectionManager.removeItem(index, this.state.vehicles);
-                this.setState({ vehicles: newVehicles });
+                const newVehiclesDB = collectionManager.addItem(item, this.state.vehiclesDB);
+                this.setState({ vehicles: newVehicles, vehiclesDB: newVehiclesDB });
             }
         }
     }
@@ -150,9 +159,7 @@ class CharacterCreate extends Component {
         this.setState(change);
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
-
+    handleSubmit() {
         this.setState({ isLoading: true });
 
         if (this.state.name.length < 2) {
@@ -167,7 +174,7 @@ class CharacterCreate extends Component {
             return;
         }
 
-        if (this.state.shortStory.length < 30) {
+        if (this.state.shortStory.length < 20) {
             this.props.notifHandler(errorNotifs.SHORT_STORY_TOO_SHORT, notifTypes.error);
             this.setState({ isLoading: false });
             return;
@@ -196,13 +203,14 @@ class CharacterCreate extends Component {
             .then(res => {
                 if (res.status === OK) {
                     res.json().then(response => {
+                        console.log(this.props);
                         this.props.notifHandler(response.data.msg, notifTypes.success);
-                        setTimeout(() => { this.props.history.push(`/character/${response.data.characterId}`); }, 2000);
+                        setTimeout(() => { window.location.href = `/character/${response.data.characterId}`; }, 2000);
                     });
                 } else {
                     res.json().then(err => {
                         this.props.notifHandler(err.message, notifTypes.error);
-                        this.setState({ isLoading: false });
+                        setTimeout(() => { this.setState({ isLoading: false }); });
                     });
                 }
             });
@@ -210,117 +218,185 @@ class CharacterCreate extends Component {
 
     render() {
         return (
-            <div className="CharacterCreate">
-                {
-                    this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="#00BFFF" height="750" />
-                    :
-                    <form onSubmit={this.handleSubmit}>
-                        <label>Name:</label>
-                        <br />
-                        <input type="text" name="name" onChange={this.handleChange} />
-                        <br />
-                        <label>Race:</label>
-                        <br />
-                        <input type="text" name="race" onChange={this.handleChange} />
-                        <br />
-                        <label>Sex:</label>
-                        <br />
-                        <input type="text" name="sex" onChange={this.handleChange} />
-                        <br />
-                        <label>Short story:</label>
-                        <br />
-                        <textarea type="text" name="shortStory" onChange={this.handleChange}></textarea>
-                        <br />
-                        <label>Height:</label>
-                        <br />
-                        <input type="text" name="height" onChange={this.handleChange} />
-                        <br />
-                        <label>Weight:</label>
-                        <br />
-                        <input type="text" name="weight" onChange={this.handleChange} />
-                        <br />
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="750" />
+            :
+            <MDBModal isOpen={this.props.isOpen}>
+                <MDBModalHeader toggle={this.props.toggle}>Create character</MDBModalHeader>
+                <MDBModalBody>
+                    <MDBContainer>
+                        <MDBRow>
+                            <MDBCol>
+                                <MDBInput
+                                label="Name"
+                                type="text"
+                                name="name"
+                                onChange={this.handleChange} />
 
-                        <label>Add an affilation:</label>
-                        <br />
-                        <input type="text" name="currAffilation" value={this.state.currAffilation} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.affilations)}>Add</button>
-                        <br />
-                        {this.state.affilations.length > 0 ?
-                        <Fragment>
-                            <label>Affilations:</label>
-                            <br />
-                            <ul>
-                                {this.state.affilations.map((affilation, index) => {
-                                    return (
-                                        <li key={index}>{affilation} <button type="button" onClick={() => this.removeItem(collectionNames.affilations, affilation)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
-                        
-                        <label>Add weapon:</label>
-                        <br />
-                        <input type="text" name="currWeapon" value={this.state.currWeapon} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.weapons)}>Add</button>
-                        <br />
-                        {this.state.weapons.length > 0 ?
-                        <Fragment>
-                            <label>Weapons:</label>
-                            <br />
-                            <ul>
-                                {this.state.weapons.map((weapon, index) => {
-                                    return (
-                                        <li key={index}>{weapon.name} <button type="button" onClick={() => this.removeItem(collectionNames.weapons, weapon)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
-                        
-                        <label>Add vehicle:</label>
-                        <br />
-                        <input type="text" name="currVehicle" value={this.state.currVehicle} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.vehicles)}>Add</button>
-                        <br />
-                        {this.state.vehicles.length > 0 ?
-                        <Fragment>
-                            <label>Vehicles:</label>
-                            <br />
-                            <ul>
-                                {this.state.vehicles.map((vehicle, index) => {
-                                    return (
-                                        <li key={index}>{vehicle.name} <button type="button" onClick={() => this.removeItem(collectionNames.vehicles, vehicle)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
-                        
-                        <label>Add an image:</label>
-                        <br />
-                        <input type="text" name="currImg" value={this.state.currImg} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.images)}>Add</button>
-                        <br />
-                        {this.state.images.length > 0 ?
-                        <Fragment>
-                            <label>Images:</label>
-                            <br />
-                            <ul>
-                                {this.state.images.map((img, index) => {
-                                    return (
-                                        <li key={index}>{img} <button type="button" onClick={() => this.removeItem(collectionNames.images, img)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
+                                <MDBInput
+                                label="Race"
+                                type="text"
+                                name="race"
+                                onChange={this.handleChange} />
 
-                        <button type="submit">Create</button>
-                    </form>
-                }
-            </div>
+                                <MDBInput
+                                label="Sex"
+                                type="text"
+                                name="sex"
+                                onChange={this.handleChange} />
+
+                                <MDBInput
+                                label="Short story"
+                                type="textarea"
+                                rows="5"
+                                name="shortStory"
+                                onChange={this.handleChange} />
+
+                                <MDBInput
+                                label="Height"
+                                type="number"
+                                name="height"
+                                onChange={this.handleChange} />
+
+                                <MDBInput
+                                label="Weight"
+                                type="number"
+                                name="weight"
+                                onChange={this.handleChange} />
+
+                                <MDBInput
+                                label="Affilaton"
+                                type="text"
+                                name="currAffilation"
+                                value={this.state.currAffilation}
+                                onChange={this.handleChange} />
+                                {
+                                    this.state.affilations.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Affilations
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.affilations.map((affilation, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.affilations, affilation)}>{affilation}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                <MDBBtn type="button" onClick={() => this.addItem(collectionNames.affilations)}>Add</MDBBtn>
+
+                                {
+                                    this.state.weaponsDB.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Weapons
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.weaponsDB.map((weapon, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.addItem(collectionNames.weapons, weapon)}>{weapon.name}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                {
+                                    this.state.weapons.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Selected Weapons
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.weapons.map((weapon, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.weapons, weapon)}>{weapon.name}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+
+                                {
+                                    this.state.vehiclesDB.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Spaceships
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.vehiclesDB.map((vehicle, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.addItem(collectionNames.vehicles, vehicle)}>{vehicle.name}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                {
+                                    this.state.vehicles.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Selected Spaceships
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.vehicles.map((vehicle, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.vehicles, vehicle)}>{vehicle.name}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+
+                                <MDBInput
+                                label="Image"
+                                type="text"
+                                name="currImg"
+                                value={this.state.currImg}
+                                onChange={this.handleChange} />
+                                {
+                                    this.state.images.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Images
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.images.map((img, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.images, img)}>{img}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                <MDBBtn type="button" onClick={() => this.addItem(collectionNames.images)}>Add</MDBBtn>
+                            </MDBCol>
+                        </MDBRow>
+                    </MDBContainer>
+                </MDBModalBody>
+                <MDBFooter>
+                    <MDBBtn onClick={this.handleSubmit}>Create</MDBBtn>
+                </MDBFooter>
+            </MDBModal>
         );
     };
 }
