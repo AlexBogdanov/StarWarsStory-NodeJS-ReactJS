@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import './SpaceshipDetails.css';
 import Loader from 'react-loader-spinner';
+import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 
 import spaceshipService from './../../../services/spaceship-service';
 import { OK } from './../../../constants/http-responses';
@@ -37,45 +37,67 @@ class SpaceshipDetails extends Component {
 
     render() {
         return (
-            <div className="SpaceshipDetails">
-                {
-                    this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="black" height="750" />
-                    :
-                    <Fragment>
-                        {this.state.spaceship.images.map((image, index) => {
-                            return <img key={index} src={image} alt="" />
-                        })}
-                        <br />
-                        <label>Name:</label>
-                        <span> {this.state.spaceship.name}</span>
-                        <br />
-                        <label>Dimension:</label>
-                        <span> {this.state.spaceship.dimension}</span>
-                        <br />
-                        <label>Info:</label>
-                        <span> {this.state.spaceship.info}</span>
-                        <br />
-                        <label>Affilations:</label> <br />
-                        <ul>
-                            {this.state.spaceship.affilations.map((affilation, index) => {
-                                return <li key={index}>{affilation}</li>
-                            })}
-                        </ul>
-                        <br />
-                        <label>Pilots:</label> <br />
-                        <ul>
-                            {this.state.spaceship.pilots.map((pilot, index) => {
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="120" />
+            :
+            <MDBContainer style={{ 'background-color': "white", opacity: "0.9 " }}>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6">{this.state.spaceship.name}</MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6">
+                        {
+                            this.state.spaceship.images.map((img, index) => {
                                 return (
-                                    <li key={index}>
-                                        <a href={`/character/${pilot._id}`}>{pilot.name}</a>
-                                    </li>
+                                    <Fragment>
+                                        <img src={img} alt="" className="img-fluid" key={index} />
+                                        <hr />
+                                    </Fragment>
                                 );
-                            })}
-                        </ul>
-                    </Fragment>
-                }
-            </div>
+                            })
+                        }
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6"><span>{this.state.spaceship.info}</span></MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="3">
+                        Pilots:
+                        {
+                            this.state.spaceship.pilots.length > 0 ?
+                            this.state.spaceship.pilots.map((pilot, index) => {
+                                return (
+                                    <div key={index}><a href={`/character/${pilot._id}`}>{pilot.name}</a></div>
+                                );
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol md="3">
+                        Affilations:
+                        {
+                            this.state.spaceship.affilations.length > 0 ?
+                            this.state.spaceship.affilations.map((affilation, index) => {
+                                return (
+                                    <div key={index}>{affilation}</div>
+                                );
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+            </MDBContainer>
         );
     };
 };

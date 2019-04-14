@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import './CharacterDetails.css';
 import Loader from 'react-loader-spinner';
+import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 
 import characterService from './../../../services/character-service';
 import { OK } from './../../../constants/http-responses';
@@ -37,70 +37,110 @@ class CharacterDetails extends Component {
 
     render() {
         return (
-            <div className="CharacterDetails">
-                {
-                    this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="black" height="750" />
-                    :
-                    <Fragment>
-                        {this.state.character.images.map((image, index) => {
-                            return <img key={index} src={image} alt="" />
-                        })}
-                        <br />
-                        <label>Name:</label>
-                        <span> {this.state.character.name}</span>
-                        <br />
-                        <label>Race:</label>
-                        <span> {this.state.character.race}</span>
-                        <br />
-                        <label>Sex:</label>
-                        <span> {this.state.character.sex}</span>
-                        <br />
-                        <label>Home planet:</label>
-                        <span> {this.state.character.homePlanet}</span>
-                        <br />
-                        <label>Birthday:</label>
-                        <span> {this.state.character.birthdat}</span>
-                        <br />
-                        <label>Height:</label>
-                        <span> {this.state.character.height}</span>
-                        <br />
-                        <label>Weight:</label>
-                        <span> {this.state.character.weight}</span>
-                        <br />
-                        <div>{this.state.character.shortStory}</div>
-                        <br />
-                        <label>Affilations:</label> <br />
-                        <ul>
-                            {this.state.character.affilations.map((affilation, index) => {
-                                return <li key={index}>{affilation}</li>
-                            })}
-                        </ul>
-                        <br />
-                        <label>Weapons:</label> <br />
-                        <ul>
-                            {this.state.character.weapons.map((weapon, index) => {
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="120" />
+            :
+            <MDBContainer style={{ 'background-color': "white", opacity: "0.9 " }}>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6">{this.state.character.name}</MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6">
+                        {
+                            this.state.character.images.map((img, index) => {
                                 return (
-                                    <li key={index}>
+                                    <Fragment>
+                                        <img src={img} alt="" className="img-fluid" key={index} />
+                                        <hr />
+                                    </Fragment>
+                                );
+                            })
+                        }
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6"><span>{this.state.character.shortStory}</span></MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="3">
+                        Race: {this.state.character.race ? this.state.character.race : 'Unknown'}
+                    </MDBCol>
+                    <MDBCol md="3">
+                        Sex: {this.state.character.sex ? this.state.character.sex : 'Unknown'}
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="3">
+                        Weapons:
+                        {
+                            this.state.character.weapons.length > 0 ?
+                            this.state.character.weapons.map((weapon, index) => {
+                                return (
+                                    <div key={index}>
                                         <a href={`/weapon/${weapon._id}`}>{weapon.name}</a>
-                                    </li>
+                                    </div>
                                 );
-                            })}
-                        </ul>
-                        <br />
-                        <label>Vehicles:</label> <br />
-                        <ul>
-                            {this.state.character.vehicles.map((vehicle, index) => {
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol md="3">
+                        Spaceships:
+                        {
+                            this.state.character.vehicles.length > 0 ?
+                            this.state.character.vehicles.map((vehicle, index) => {
                                 return (
-                                    <li key={index}>
-                                        <a href={`/spaceship/${vehicle._id}`}>{vehicle.name}</a>
-                                    </li>
+                                    <div key={index}>
+                                        <a href={`/vehicle/${vehicle._id}`}>{vehicle.name}</a>
+                                    </div>
                                 );
-                            })}
-                        </ul>
-                    </Fragment>
-                }
-            </div>
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="3">
+                        Height: {this.state.character.height ? this.state.character.height : 'Unknow'}
+                    </MDBCol>
+                    <MDBCol md="3">
+                        Weight: {this.state.character.weight ? this.state.character.weight : 'Unknown'}
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6">
+                        Affilations:
+                        {
+                            this.state.character.affilations.length > 0 ?
+                            this.state.character.affilations.map((affilation, index) => {
+                                return (
+                                    <div key={index}>{affilation}</div>
+                                );
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+            </MDBContainer>
         );
     };
 };

@@ -1,6 +1,7 @@
-import React, { Component, Fragment } from 'react';
-import './MovieEdit.css';
+import React, { Component } from 'react';
 import Loader from 'react-loader-spinner';
+import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn,
+    MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem } from 'mdbreact';
 
 import movieService from './../../../services/movie-service';
 import { OK } from './../../../constants/http-responses';
@@ -19,6 +20,7 @@ class MovieEdit extends Component {
 
         this.state = {
             movieId: '',
+            name: '',
             type: NaN,
             info: '',
             director: '',
@@ -32,7 +34,7 @@ class MovieEdit extends Component {
 
         this.addItem = this.addItem.bind(this);
         this.removeItem = this.removeItem.bind(this);
-        this.selectOption = this.selectOption.bind(this);
+        this.setMovieType = this.setMovieType.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -47,6 +49,7 @@ class MovieEdit extends Component {
                 res.json().then(response => {
                     this.setState({
                         movieId,
+                        name: response.data.movie.name,
                         type: response.data.movie.type,
                         info: response.data.movie.info,
                         director: response.data.movie.director,
@@ -101,8 +104,8 @@ class MovieEdit extends Component {
         }
     }
 
-    selectOption(e) {
-        this.setState({ type: e.target.value });
+    setMovieType(movieType) {
+        this.setState({ type: movieTypes[movieType] });
     }
 
     handleChange(e) {
@@ -116,7 +119,7 @@ class MovieEdit extends Component {
 
         this.setState({ isLoading: true });
 
-        if (!this.state.type) {
+        if (this.state.type < 0 && this.state.type > 3) {
             this.props.notifHandler(errorNotifs.MOVIE_TYPE_REQUIRED, notifTypes.error);
             this.setState({ isLoading: false });
             return;
@@ -161,76 +164,113 @@ class MovieEdit extends Component {
 
     render() {
         return (
-            <div className="WeaponEdit">
-                {
-                    this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="black" height="750" />
-                    :
-                    <form onSubmit={this.handleSubmit}>
-                        <select value={this.state.type} onChange={this.selectOption}>
-                            <option hidden>Choose type</option>
-                            {Object.keys(movieTypes).map((movieType, index) => {
-                                return (
-                                    <option key={index} value={movieTypes[movieType]}>{movieTypesName[movieTypes[movieType]]}</option>
-                                );
-                            })}
-                        </select>
-                        <br />
-                        <label>Info:</label>
-                        <br />
-                        <textarea type="text" name="info" value={this.state.info} onChange={this.handleChange}></textarea>
-                        <br />
-                        <label>Director:</label>
-                        <br />
-                        <input type="text" name="director" value={this.state.director} onChange={this.handleChange} />
-                        <br />
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="120" />
+            :
+            <MDBContainer>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6" style={{ 'background-color': "white", opacity: "0.9" }}>
+                        <form onSubmit={this.handleSubmit}>
+                            <p className="h5 text-center mb-4">{this.state.name}</p>
+                            <div className="grey-text">
+                                <MDBDropdown>
+                                    <MDBDropdownToggle caret color="primary">
+                                        Select a type
+                                    </MDBDropdownToggle>
+                                    <MDBDropdownMenu basic>
+                                        {
+                                            Object.keys(movieTypes).map((movieType, index) => {
+                                                return (
+                                                    <MDBDropdownItem key={index} onClick={() => this.setMovieType(movieType)}>{movieType}</MDBDropdownItem>
+                                                );
+                                            })
+                                        }
+                                    </MDBDropdownMenu>
+                                </MDBDropdown>
 
-                        <label>Add a writer:</label>
-                        <br />
-                        <input type="text" name="currWriter" value={this.state.currWriter} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.writers)}>Add</button>
-                        <br />
-                        {this.state.writers.length > 0 ?
-                        <Fragment>
-                            <label>Writers:</label>
-                            <br />
-                            <ul>
-                                {this.state.writers.map((writer, index) => {
-                                    return (
-                                        <li key={index}>{writer} <button type="button" onClick={() => this.removeItem(collectionNames.writers, writer)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
+                                <MDBInput
+                                label="Info"
+                                type="textarea"
+                                rows="5"
+                                name="info"
+                                value={this.state.info}
+                                onChange={this.handleChange} />
 
-                        <label>Add an actor:</label>
-                        <br />
-                        <input type="text" name="currActor" value={this.state.currActor} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.actors)}>Add</button>
-                        <br />
-                        {this.state.actors.length > 0 ?
-                        <Fragment>
-                            <label>Actors:</label>
-                            <br />
-                            <ul>
-                                {this.state.actors.map((actor, index) => {
-                                    return (
-                                        <li key={index}>{actor} <button type="button" onClick={() => this.removeItem(collectionNames.actors, actor)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
-    
-                        <label>Cover:</label>
-                        <br />
-                        <input type="text" name="cover" value={this.state.cover} onChange={this.handleChange} />
-                        <br />
-                        <button type="submit">Edit</button>
-                    </form>
-                }
-            </div>
+                                <MDBInput
+                                label="Director"
+                                type="text"
+                                name="director"
+                                value={this.state.director}
+                                onChange={this.handleChange} />
+
+                                <MDBInput
+                                label="Writer"
+                                type="text"
+                                name="currWriter"
+                                value={this.state.currWriter}
+                                onChange={this.handleChange} />
+                                {
+                                    this.state.writers.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Writers
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.writers.map((writer, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.writers, writer)}>{writer}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                <MDBBtn type="button" onClick={() => this.addItem(collectionNames.writers)}>Add</MDBBtn>
+
+                                <MDBInput
+                                label="Actor"
+                                type="text"
+                                name="currActor"
+                                value={this.state.currActor}
+                                onChange={this.handleChange} />
+                                {
+                                    this.state.actors.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Actors
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.actors.map((actor, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.actors, actor)}>{actor}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                <MDBBtn type="button" onClick={() => this.addItem(collectionNames.actors)}>Add</MDBBtn>
+
+                                <MDBInput
+                                label="Cover"
+                                type="text"
+                                name="cover"
+                                value={this.state.cover}
+                                onChange={this.handleChange} />
+                            </div>
+                            <div className="text-center">
+                                <MDBBtn type="submit" color="primary">Edit</MDBBtn>
+                            </div>
+                        </form>
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+            </MDBContainer>
         );
     };
 };

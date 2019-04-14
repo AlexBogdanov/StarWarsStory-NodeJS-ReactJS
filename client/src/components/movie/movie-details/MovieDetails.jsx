@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import './MovieDetails.css';
 import Loader from 'react-loader-spinner';
+import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 
 import movieService from './../../../services/movie-service';
 import { OK } from './../../../constants/http-responses';
@@ -26,7 +26,9 @@ class MovieDetails extends Component {
           .then(res => {
             if (res.status === OK) {
                 res.json().then(response => {
-                    this.setState({ movie: response.data.movie, isLoading: false });
+                    const movie = response.data.movie;
+                    movie.releaseDate = new Date(movie.releaseDate);
+                    this.setState({ movie, isLoading: false });
                 });
             } else {
                 res.json().then(() => {
@@ -44,43 +46,67 @@ class MovieDetails extends Component {
 
     render() {
         return (
-            <div className="MovieDetails">
-                {this.state.isLoading ?
-                <Loader type="Ball-Triangle" color="black" height="750" />
-                : <Fragment>
-                    <img src={this.state.movie.cover} alt=""></img>
-                    <br />
-                    <label>Name:</label>
-                    <span> {this.state.movie.name}</span>
-                    <br />
-                    <label>Type: </label>
-                    <span>{movieTypesName[this.state.movie.type]}</span>
-                    <br />
-                    <label>Info:</label>
-                    <span> {this.state.movie.info}</span>
-                    <br />
-                    <label>Release date: </label>
-                    <span>{this.getDate(this.state.movie.releaseDate)}</span>
-                    <br />
-                    <label>Director: </label>
-                    <span>{this.state.movie.director}</span>
-                    <br />
-                    <label>Writers:</label> <br />
-                    <ul>
-                        {this.state.movie.writers.map((writer, index) => {
-                            return <li key={index}>{writer}</li>
-                        })}
-                    </ul>
-                    <br />
-                    <label>Actors:</label> <br />
-                    <ul>
-                        {this.state.movie.actors.map((actor, index) => {
-                            return <li key={index}>{actor}</li>
-                        })}
-                    </ul>
-                    <br />
-                </Fragment>}
-            </div>
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="120" />
+            :
+            <MDBContainer style={{ 'background-color': "white", opacity: "0.9 " }}>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="3">{this.state.movie.name}</MDBCol>
+                    <MDBCol md="3">{movieTypesName[this.state.movie.type]}</MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6">
+                        <img src={this.state.movie.cover} alt="" className="img-fluid" />
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6"><span>{this.state.movie.info}</span></MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol  md="3">Release date: {`${this.state.movie.releaseDate.getDate()} - ${this.state.movie.releaseDate.getMonth() + 1} - ${this.state.movie.releaseDate.getFullYear()}`}</MDBCol>
+                    <MDBCol md="3">Director: {this.state.movie.director ? this.state.movie.director : 'Unknown'}</MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="3">
+                        Writers:
+                        {
+                            this.state.movie.writers.lenght > 0 ?
+                            this.state.movie.writers.map((writer, index) => {
+                                return (
+                                    <div key={index}>{writer}</div>
+                                );
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol md="3">
+                        Actors:
+                        {
+                            this.state.movie.actors.length > 0 ?
+                            this.state.movie.actors.map((actor, index) => {
+                                return (
+                                    <div key={index}>{actor}</div>
+                                );
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+            </MDBContainer>
         );
     };
 };

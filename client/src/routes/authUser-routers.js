@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
+import Home from './../components/home/Home';
 import CharacterList from './../components/character/characters-list/CharactersList';
 import CharacterDetails from './../components/character/character-details/CharacterDetails';
 import WeaponList from './../components/weapon/weapons-list/WeaponsList';
@@ -16,6 +17,7 @@ const AuthUserRoutes = ({ notifHandler }) => {
     return (
         <Fragment>
             <Switch>
+                <Route exact path="/" render={({ history }) => <Home history={history} />} />
                 <Route exact path="/characters" render={({ history }) => <CharacterList history={history} notifHandler={notifHandler} />} />
                 <Route exact path="/character/:characterId" render={({ match, history }) => <CharacterDetails match={match} history={history} notifHandler={notifHandler} />} />
                 <Route exact path="/weapons" render={({ history }) => <WeaponList history={history} notifHandler={notifHandler} />} />

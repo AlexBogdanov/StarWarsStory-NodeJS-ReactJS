@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Loader from 'react-loader-spinner';
 import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn,
     MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem } from 'mdbreact';
@@ -25,6 +25,7 @@ class CharacterEdit extends Component {
 
         this.state = {
             characterId: '',
+            name: '',
             race: '',
             sex: '',
             shortStory: '',
@@ -50,47 +51,62 @@ class CharacterEdit extends Component {
     async componentWillMount() {
         this.setState({ isLoading: true });
         const characterId = this.props.match.params.characterId;
-        
-        try {
-            const resWeapons = await weaponService.getAllWeapons();
-            const resVehicles = await spaceshipService.getAllSpaceships();
-            const resCharacter = await characterService.getCharacterById(characterId);
 
-            if (resWeapons.status === OK && resVehicles.status === OK && resCharacter.status === OK) {
-                resWeapons.json().then(res => {
-                    if (res.data.weapons) {
-                        this.setState({ weaponsDB: res.data.weapons });
-                    }
-                    return resVehicles.json();
-                }).then(res => {
-                    if (res.data.spacehips) {
-                        this.setState({ vehiclesDB: res.data.spacehips });
-                    }
-                    return resCharacter.json();
-                }).then(res => {
+        characterService.getCharacterById(characterId)
+          .then(res => {
+            if (res.status === OK) {
+                res.json().then(response => {
                     this.setState({
                         characterId,
-                        race: res.data.character.race,
-                        sex: res.data.character.sex,
-                        shortStory: res.data.character.shortStory,
-                        height: res.data.character.height,
-                        weight: res.data.character.weight,
-                        affilations: res.data.character.affilations,
-                        weapons: res.data.character.weapons,
-                        vehicles: res.data.character.vehicles,
-                        images: res.data.character.images,
-                        isLoading: false
+                        name: response.data.character.name,
+                        race: response.data.character.race,
+                        sex: response.data.character.sex,
+                        shortStory: response.data.character.shortStory,
+                        height: response.data.character.height,
+                        weight: response.data.character.weight,
+                        affilations: response.data.character.affilations,
+                        weapons: response.data.character.weapons,
+                        vehicles: response.data.character.vehicles,
+                        images: response.data.character.images
                     });
-                });
+                    return weaponService.getAllWeapons();
+                }).then(res => {
+                    if (res.status === OK) {
+                        res.json().then(response => {
+                            const weaponsName = this.state.weapons.map(weapon => weapon.name);
+                            const weaponsDB = response.data.weapons.filter(weapon => !weaponsName.includes(weapon.name));
+                            this.setState({ weaponsDB });
+                            return spaceshipService.getAllSpaceships();
+                        }).then(res => {
+                            if (res.status === OK) {
+                                res.json().then(response => {
+                                    const vehiclesName = this.state.vehicles.map(vehicle => vehicle.name);
+                                    const vehiclesDB = response.data.spaceships.filter(spaceship => !vehiclesName.includes(spaceship.name));
+                                    this.setState({ vehiclesDB, isLoading: false });
+                                });
+                            } else {
+                                res.json().then(() => {
+                                    this.props.notifHandler(errorNotifs.SOMETHING_WENT_WRONG, notifTypes.error);
+                                    setTimeout(() => { this.props.history.push('/characters'); }, 2000);
+                                });
+                            }
+                        });
+                    } else {
+                        res.json().then(() => {
+                            this.props.notifHandler(errorNotifs.SOMETHING_WENT_WRONG, notifTypes.error);
+                            setTimeout(() => { this.props.history.push('/characters'); }, 2000);
+                        });
+                    }
+                })
             } else {
-                this.props.notifHandler(errorNotifs.SOMETHING_WENT_WRONG, notifTypes.error);
-                setTimeout(() => { this.props.history.push('/characters'); }, 2000);
+                res.json().then(() => {
+                    this.props.notifHandler(errorNotifs.SOMETHING_WENT_WRONG, notifTypes.error);
+                    setTimeout(() => { this.props.history.push('/characters'); }, 2000);
+                });
             }
-        } catch (err) {
-            this.props.notifHandler(errorNotifs.SOMETHING_WENT_WRONG, notifTypes.error);
-            setTimeout(() => { this.props.history.push('/characters'); }, 2000);
-        }
+          });
     }
+    
     addItem(collectionName, item) {
         if (item) {
             if (collectionName === collectionNames.weapons) {
@@ -173,7 +189,9 @@ class CharacterEdit extends Component {
         this.setState(change);
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
+        e.preventDefault();
+
         this.setState({ isLoading: true });
 
         if (!this.state.sex) {
@@ -225,14 +243,14 @@ class CharacterEdit extends Component {
     render() {
         return (
             this.state.isLoading ?
-            <Loader type="Ball-Triangle" color="black" height="750" />
+            <Loader type="Ball-Triangle" color="black" height="120" />
             :
             <MDBContainer>
                 <MDBRow>
                     <MDBCol></MDBCol>
                     <MDBCol md="6" style={{ 'background-color': "white", opacity: "0.9 " }}>
                         <form onSubmit={this.handleSubmit}>
-                            <p className="h5 text-center mb-4">Edit Character</p>
+                            <p className="h5 text-center mb-4">{this.state.name}</p>
                             <div className="grey-text">
                                 <MDBInput
                                 label="Race"

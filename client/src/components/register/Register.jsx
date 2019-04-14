@@ -74,7 +74,7 @@ class Register extends Component {
     render() {
         return (
             this.state.isLoading ?
-            <Loader type="Ball-Triangle" color="black" height="750" />
+            <Loader type="Ball-Triangle" color="black" height="120" />
             :
             <MDBModal isOpen={this.props.isOpen}>
                 <MDBModalHeader toggle={this.props.toggle}>Sign up</MDBModalHeader>

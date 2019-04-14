@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import Loader from 'react-loader-spinner';
-import { MDBRow } from 'mdbreact';
+import { MDBRow, MDBContainer } from 'mdbreact';
 
 import ListItem from './../../list-item/ListItem';
 import characterService from '../../../services/character-service';
 import { OK } from '../../../constants/http-responses';
-import { notifTypes, userRoles } from '../../../constants/common';
+import { notifTypes } from '../../../constants/common';
 
 class CharactersList extends Component {
     constructor(props) {
@@ -85,26 +85,26 @@ class CharactersList extends Component {
             <div className="ListItems">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="black" height="750" />
+                    <Loader type="Ball-Triangle" color="black" height="120" />
                     :
                     <Fragment>
                         {this.state.doRender ?
-                        <MDBRow>
-                        {this.state.characters.map((character, index) => {
-                            return (
-                                <ListItem
-                                key={index}
-                                itemId={character._id}
-                                name={character.name}
-                                shortDescr={character.shortStory}
-                                imageUrl={character.images[0]}
-                                userRole={this.state.userRole}
-                                openItemDetails={this.openCharacterDetails}
-                                openItemEdit={this.openCharacterEdit}
-                                deleteItem={this.deleteCharacter} />
-                            );
-                        })}
-                        </MDBRow>
+                            <MDBRow className="padding">
+                            {this.state.characters.map((character, index) => {
+                                return (
+                                    <ListItem
+                                    key={index}
+                                    itemId={character._id}
+                                    name={character.name}
+                                    shortDescr={character.shortStory}
+                                    imageUrl={character.images[0]}
+                                    userRole={this.state.userRole}
+                                    openItemDetails={this.openCharacterDetails}
+                                    openItemEdit={this.openCharacterEdit}
+                                    deleteItem={this.deleteCharacter} />
+                                );
+                            })}
+                            </MDBRow>
                         :
                         <div> No results </div>
                         }

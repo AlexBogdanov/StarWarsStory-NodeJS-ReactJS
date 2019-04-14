@@ -1,6 +1,7 @@
-import React, { Component, Fragment } from 'react';
-import './WeaponEdit.css';
+import React, { Component } from 'react';
 import Loader from 'react-loader-spinner';
+import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn,
+    MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem } from 'mdbreact';
 
 import weaponService from './../../../services/weapon-service';
 import characterService from './../../../services/character-service';
@@ -21,13 +22,13 @@ class WeaponEdit extends Component {
 
         this.state = {
             weaponId: '',
+            name: '',
             info: '',
             affilations: [],
             images: [],
             owners: [],
             currAffilation: '',
             currImg: '',
-            currOwner: '',
             characters: [],
             isLoading: false
         };
@@ -48,6 +49,7 @@ class WeaponEdit extends Component {
                   res.json().then(response => {
                     this.setState({
                         weaponId,
+                        name: response.data.weapon.name,
                         info: response.data.weapon.info,
                         affilations: response.data.weapon.affilations,
                         images: response.data.weapon.images,
@@ -59,7 +61,9 @@ class WeaponEdit extends Component {
                     .then(res => {
                         if (res.status === OK) {
                             res.json().then(response => {
-                                this.setState({ characters: response.data.characters, isLoading: false });
+                                const ownerNames = this.state.owners.map(owner => owner.name);
+                                const characters = response.data.characters.filter(ch => !ownerNames.includes(ch.name));
+                                this.setState({ characters, isLoading: false });
                             });
                         } else {
                             res.json().then(() => {
@@ -77,28 +81,34 @@ class WeaponEdit extends Component {
           });
     }
 
-    addItem(collectionName) {
-        if (collectionName === collectionNames.affilations) {
-            const doAdd = collectionManager.doAddItem(this.state.currAffilation, this.state.affilations);
+    addItem(collectionName, item) {
+        if (item) {
+            if (collectionName === collectionNames.owners) {
+                const owner = collectionManager.getItemNameAndId(null, this.state.characters, item);
+                const doAdd = collectionManager.doAddItem(owner, this.state.owners);
 
-            if (doAdd) {
-                const newAffilations = collectionManager.addItem(this.state.currAffilation, this.state.affilations);
-                this.setState({ affilations: newAffilations, currAffilation: '' });
+                if (owner && doAdd) {
+                    const newOwners = collectionManager.addItem(owner, this.state.owners);
+                    const index = collectionManager.getIndexOfItem(item, this.state.characters);
+                    const newCharacters = collectionManager.removeItem(index, this.state.characters);
+                    this.setState({ owners: newOwners, characters: newCharacters });
+                }
             }
-        } else if (collectionName === collectionNames.images) {
-            const doAdd = collectionManager.doAddItem(this.state.currImg, this.state.images);
-
-            if (doAdd) {
-                const newImgs = collectionManager.addItem(this.state.currImg, this.state.images);
-                this.setState({ images: newImgs, currImg: '' });
-            }
-        } else if (collectionName === collectionNames.owners) {
-            const owner = collectionManager.getItemNameAndId(this.state.currOwner, this.state.characters);
-            const doAdd = collectionManager.doAddItem(owner, this.state.owners);
-
-            if (owner && doAdd) {
-                const newOwners = collectionManager.addItem(owner, this.state.owners);
-                this.setState({ owners: newOwners, currOwner: '' });
+        } else {
+            if (collectionName === collectionNames.affilations) {
+                const doAdd = collectionManager.doAddItem(this.state.currAffilation, this.state.affilations);
+    
+                if (doAdd) {
+                    const newAffilations = collectionManager.addItem(this.state.currAffilation, this.state.affilations);
+                    this.setState({ affilations: newAffilations, currAffilation: '' });
+                }
+            } else if (collectionName === collectionNames.images) {
+                const doAdd = collectionManager.doAddItem(this.state.currImg, this.state.images);
+    
+                if (doAdd) {
+                    const newImgs = collectionManager.addItem(this.state.currImg, this.state.images);
+                    this.setState({ images: newImgs, currImg: '' });
+                }
             }
         }
     }
@@ -123,7 +133,8 @@ class WeaponEdit extends Component {
 
             if (index !== -1) {
                 const newOwners = collectionManager.removeItem(index, this.state.owners);
-                this.setState({ owners: newOwners });
+                const newCharacters = collectionManager.addItem(item, this.state.characters);
+                this.setState({ owners: newOwners, characters: newCharacters });
             }
         }
     }
@@ -176,78 +187,121 @@ class WeaponEdit extends Component {
 
     render() {
         return (
-            <div className="WeaponEdit">
-                {
-                    this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="black" height="750" />
-                    :
-                    <form onSubmit={this.handleSubmit}>
-                        <label>Info:</label>
-                        <br />
-                        <textarea type="text" name="info" value={this.state.info} onChange={this.handleChange}></textarea>
-                        <br />
-                        
-                        <label>Add an affilation:</label>
-                        <br />
-                        <input type="text" name="currAffilation" value={this.state.currAffilation} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.affilations)}>Add</button>
-                        <br />
-                        {this.state.affilations.length > 0 ?
-                        <Fragment>
-                            <label>Affilations:</label>
-                            <br />
-                            <ul>
-                                {this.state.affilations.map((affilation, index) => {
-                                    return (
-                                        <li key={index}>{affilation} <button type="button" onClick={() => this.removeItem(collectionNames.affilations, affilation)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="120" />
+            :
+            <MDBContainer>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6" style={{ 'background-color': "white", opacity: "0.9" }}>
+                        <form  onSubmit={this.handleSubmit}>
+                            <p className="h5 text-center mb-4">{this.state.name}</p>
+                            <div className="grey-text">
+                                <MDBInput
+                                label="Info"
+                                type="textarea"
+                                rows="5"
+                                name="info"
+                                value={this.state.info}
+                                onChange={this.handleChange} />
 
-                        <label>Add an image:</label>
-                        <br />
-                        <input type="text" name="currImg" value={this.state.currImg} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.images)}>Add</button>
-                        <br />
-                        {this.state.images.length > 0 ?
-                        <Fragment>
-                            <label>Images:</label>
-                            <br />
-                            <ul>
-                                {this.state.images.map((img, index) => {
-                                    return (
-                                        <li key={index}>{img} <button type="button" onClick={() => this.removeItem(collectionNames.images, img)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
-    
-                        <label>Add an owner:</label>
-                        <br />
-                        <input type="text" name="currOwner" value={this.state.currOwner} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.owners)}>Add</button>
-                        <br />
-                        {this.state.owners.length > 0 ?
-                        <Fragment>
-                            <label>Owners:</label>
-                            <br />
-                            <ul>
-                                {this.state.owners.map((owner, index) => {
-                                    return (
-                                        <li key={index}>{owner.name} <button type="button" onClick={() => this.removeItem(collectionNames.owners, owner)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
-    
-                        <button type="submit">Edit</button>
-                    </form>
-                }
-            </div>
+                                <MDBInput
+                                label="Affilaton"
+                                type="text"
+                                name="currAffilation"
+                                value={this.state.currAffilation}
+                                onChange={this.handleChange} />
+                                {
+                                    this.state.affilations.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Affilations
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.affilations.map((affilation, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.affilations, affilation)}>{affilation}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                <MDBBtn type="button" onClick={() => this.addItem(collectionNames.affilations)}>Add</MDBBtn>
+
+                                <MDBInput
+                                label="Image"
+                                type="text"
+                                name="currImg"
+                                value={this.state.currImg}
+                                onChange={this.handleChange} />
+                                {
+                                    this.state.images.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Images
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.images.map((img, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.images, img)}>{img}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                <MDBBtn type="button" onClick={() => this.addItem(collectionNames.images)}>Add</MDBBtn>
+
+                                {
+                                    this.state.characters.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Characters
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.characters.map((character, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.addItem(collectionNames.owners, character)}>{character.name}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                {
+                                    this.state.owners.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Owners
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.owners.map((owner, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.owners, owner)}>{owner.name}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                            </div>
+                            <div className="text-center">
+                                <MDBBtn type="submit" color="primary">Edit</MDBBtn>
+                            </div>
+                        </form>
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+            </MDBContainer>
         );
     };
 };

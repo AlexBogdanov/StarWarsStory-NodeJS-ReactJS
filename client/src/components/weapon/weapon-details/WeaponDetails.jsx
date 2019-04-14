@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import './WeaponDetails.css';
 import Loader from 'react-loader-spinner';
+import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 
 import weaponService from './../../../services/weapon-service';
 import { OK } from './../../../constants/http-responses';
@@ -37,39 +37,67 @@ class WeaponDetails extends Component {
 
     render() {
         return (
-            <div className="WeaponDetails">
-                {this.state.isLoading ?
-                <Loader type="Ball-Triangle" color="black" height="750" />
-                : <Fragment>
-                    {this.state.weapon.images.map((image, index) => {
-                        return <img key={index} src={image} alt="" />
-                    })}
-                    <br />
-                    <label>Name:</label>
-                    <span> {this.state.weapon.name}</span>
-                    <br />
-                    <label>Info:</label>
-                    <span> {this.state.weapon.info}</span>
-                    <br />
-                    <label>Affilations:</label> <br />
-                    <ul>
-                        {this.state.weapon.affilations.map((affilation, index) => {
-                            return <li key={index}>{affilation}</li>
-                        })}
-                    </ul>
-                    <br />
-                    <label>Owners:</label> <br />
-                    <ul>
-                        {this.state.weapon.owners.map((owner, index) => {
-                            return (
-                                <li key={index}>
-                                    <a href={`/character/${owner._id}`}>{owner.name}</a>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </Fragment>}
-            </div>
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="120" />
+            :
+            <MDBContainer style={{ 'background-color': "white", opacity: "0.9 " }}>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6">{this.state.weapon.name}</MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6">
+                        {
+                            this.state.weapon.images.map((img, index) => {
+                                return (
+                                    <Fragment>
+                                        <img src={img} alt="" className="img-fluid" key={index} />
+                                        <hr />
+                                    </Fragment>
+                                );
+                            })
+                        }
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6"><span>{this.state.weapon.info}</span></MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="3">
+                        Owners:
+                        {
+                            this.state.weapon.owners.length > 0 ?
+                            this.state.weapon.owners.map((owner, index) => {
+                                return (
+                                    <div key={index}><a href={`/character/${owner._id}`}>{owner.name}</a></div>
+                                );
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol md="3">
+                        Affilations:
+                        {
+                            this.state.weapon.affilations.length > 0 ?
+                            this.state.weapon.affilations.map((affilation, index) => {
+                                return (
+                                    <div key={index}>{affilation}</div>
+                                );
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+            </MDBContainer>
         );
     };
 };

@@ -8,7 +8,7 @@ import weaponService from './../../../services/weapon-service';
 import spaceshipService from './../../../services/spaceship-service';
 
 import { OK } from './../../../constants/http-responses';
-import { notifTypes, componentsTypes } from './../../../constants/common';
+import { notifTypes } from './../../../constants/common';
 import { errorNotifs } from './../../../constants/notification-messages';
 import collectionManager from './../../../utilities/collection-manager';
 
@@ -219,7 +219,7 @@ class CharacterCreate extends Component {
     render() {
         return (
             this.state.isLoading ?
-            <Loader type="Ball-Triangle" color="black" height="750" />
+            <Loader type="Ball-Triangle" color="black" height="120" />
             :
             <MDBModal isOpen={this.props.isOpen}>
                 <MDBModalHeader toggle={this.props.toggle}>Create character</MDBModalHeader>

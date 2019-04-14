@@ -24,16 +24,9 @@ const movieTypesName = {
     3: 'Standalone movie'
 };
 
-const componentsTypes = {
-    CREATE: 0,
-    EDIT: 1,
-    DETAILS: 2
-};
-
 export {
     userRoles,
     notifTypes,
     movieTypes,
-    movieTypesName,
-    componentsTypes
+    movieTypesName
 };

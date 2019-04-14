@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
+import Home from './../components/home/Home';
 import Register from './../components/register/Register';
 import Login from './../components/login/Login';
 import CharacterList from './../components/character/characters-list/CharactersList';
@@ -15,6 +16,7 @@ const UnauthUserRoutes = ({ notifHandler, openLogin, toggleLogin, openRegister, 
             <Login notifHandler={notifHandler} isOpen={openLogin} toggle={toggleLogin} />
             <Register notifHandler={notifHandler} isOpen={openRegister} toggle={toggleRegister} />
             <Switch>
+                <Route exact path="/" render={({ history }) => <Home history={history} />} />
                 <Route exact path="/characters" render={({ history }) => <CharacterList history={history} notifHandler={notifHandler} />} />
                 <Route exact path="/weapons" render={({ history }) => <WeaponList history={history} notifHandler={notifHandler} />} />
                 <Route exact path="/planets" render={({ history }) => <PlanetList history={history} notifHandler={notifHandler} />} />

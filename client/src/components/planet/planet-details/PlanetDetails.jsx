@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import './PlanetDetails.css';
 import Loader from 'react-loader-spinner';
+import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 
 import planetService from './../../../services/planet-service';
 import { OK } from './../../../constants/http-responses';
@@ -37,47 +37,74 @@ class PlanetDetails extends Component {
 
     render() {
         return (
-            <div className="PlanetDetails">
-                {
-                    this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="black" height="750" />
-                    :
-                    <Fragment>
-                        {this.state.planet.images.map((image, index) => {
-                            return <img key={index} src={image} alt="" />
-                        })}
-                        <br />
-                        <label>Name:</label>
-                        <span> {this.state.planet.name}</span>
-                        <br />
-                        <label>Info:</label>
-                        <span> {this.state.planet.info}</span>
-                        <br />
-                        <label>Affilations:</label> <br />
-                        <ul>
-                            {this.state.planet.affilations.map((affilation, index) => {
-                                return <li key={index}>{affilation}</li>
-                            })}
-                        </ul>
-                        <label>Climate:</label>
-                        <span> {this.state.planet.climate}</span>
-                        <br />
-                        <label>Terrain:</label>
-                        <span> {this.state.planet.terrain}</span>
-                        <br />
-                        <label>Natives:</label> <br />
-                        <ul>
-                            {this.state.planet.natives.map((native, index) => {
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="120" />
+            :
+            <MDBContainer style={{ 'background-color': "white", opacity: "0.9 " }}>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6">{this.state.planet.name}</MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6">
+                        {
+                            this.state.planet.images.map((img, index) => {
                                 return (
-                                    <li key={index}>
-                                        <a href={`/character/${native._id}`}>{native.name}</a>
-                                    </li>
+                                    <Fragment>
+                                        <img src={img} alt="" className="img-fluid" key={index} />
+                                        <hr />
+                                    </Fragment>
                                 );
-                            })}
-                        </ul>
-                    </Fragment>
-                }
-            </div>
+                            })
+                        }
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="6"><span>{this.state.planet.info}</span></MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol  md="3">Terrain: {this.state.planet.terrain ? this.state.planet.terrain : 'Unknown'}</MDBCol>
+                    <MDBCol md="3">Climate: {this.state.planet.climate ? this.state.planet.climate : 'Unknown'}</MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+                <hr />
+                <MDBRow>
+                    <MDBCol></MDBCol>
+                    <MDBCol md="3">
+                        Natives:
+                        {
+                            this.state.planet.natives.lenght > 0 ?
+                            this.state.planet.natives.map((native, index) => {
+                                return (
+                                    <div key={index}><a href={`/character/${native._id}`}>{native.name}</a></div>
+                                );
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol md="3">
+                        Affilations:
+                        {
+                            this.state.planet.affilations.length > 0 ?
+                            this.state.planet.affilations.map((affilation, index) => {
+                                return (
+                                    <div key={index}>{affilation}</div>
+                                );
+                            })
+                            : ' Unknown'
+                        }
+                    </MDBCol>
+                    <MDBCol></MDBCol>
+                </MDBRow>
+            </MDBContainer>
         );
     };
 };

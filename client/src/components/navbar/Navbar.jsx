@@ -1,15 +1,14 @@
 import React, { Component, Fragment } from 'react';
-import './Navbar.css';
-import { Link, Switch, Route } from 'react-router-dom';
 import {
-    MDBNavbar, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBModal,
-    MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBIcon
+    MDBNavbar, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse,
+    MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBIcon,
+    MDBFormInline
 } from 'mdbreact';
 
 import AdminRoutes from './../../routes/admin-routes';
 import AuthUserRoutes from './../../routes/authUser-routers';
 import UnauthUserRoutes from './../../routes/unauthUser-routes';
-import { userRoles, componentsTypes } from './../../constants/common';
+import { userRoles } from './../../constants/common';
 
 class Navbar extends Component {
     constructor(props) {
@@ -25,7 +24,13 @@ class Navbar extends Component {
             openWeaponCreate: false,
             openSpaceshipCreate: false,
             openPlanetCreate: false,
-            openMovieCreate: false
+            openMovieCreate: false,
+            characters: [],
+            weapons: [],
+            spaceships: [],
+            planets: [],
+            movies: [],
+            searchStr: ''
         };
 
         this.logout = this.logout.bind(this);
@@ -190,6 +195,13 @@ class Navbar extends Component {
                     </MDBNavbarNav>
 
                     <MDBNavbarNav right>
+                        <MDBNavItem>
+                            <MDBFormInline waves>
+                                <div className="md-form my-0">
+                                    <input className="form-control mr-sm-2" type="text" name="searchStr" placeholder="Search" arial-label="Search" />
+                                </div>
+                            </MDBFormInline>
+                        </MDBNavItem>
                         <MDBNavItem>
                             <MDBDropdown>
                                 <MDBDropdownToggle nav caret>

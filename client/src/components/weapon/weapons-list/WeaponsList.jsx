@@ -85,11 +85,11 @@ class WeaponsList extends Component {
             <div className="ListItems">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="black" height="750" />
+                    <Loader type="Ball-Triangle" color="black" height="120" />
                     :
                     <Fragment>
                         {this.state.doRender ?
-                        <MDBRow>
+                        <MDBRow className="padding">
                         {this.state.weapons.map((weapon, index) => {
                             return (
                                 <ListItem

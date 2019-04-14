@@ -85,12 +85,12 @@ class PlanetsList extends Component {
             <div className="ListItems">
                 {
                     this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="black" height="750" />
+                    <Loader type="Ball-Triangle" color="black" height="120" />
                     :
                     <Fragment>
                         {
                             this.state.doRender ?
-                            <MDBRow>
+                            <MDBRow className="padding">
                             {this.state.planets.map((planet, index) => {
                                 return (
                                     <ListItem

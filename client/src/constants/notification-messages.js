@@ -21,7 +21,8 @@ const errorNotifs = {
     MOVIE_RELEASE_DATE_REQUIRED: 'Please provide a release date',
     MOVIE_INFO_TOO_SHORT: 'Movie info should be atleast 30 characters long',
     MOVIE_COVER_REQUIRED: 'Please provide a cover',
-    INVALID_DATE: 'Invalid date'
+    INVALID_DATE: 'Invalid date',
+    SEARCH_UNREACHABLE: 'Search bar is not working in the moment, please try to use it later.'
 };
 
 const successNotifs = {

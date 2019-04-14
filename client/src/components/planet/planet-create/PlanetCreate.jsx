@@ -1,6 +1,7 @@
-import React, { Component, Fragment } from 'react';
-import './PlanetCreate.css';
+import React, { Component } from 'react';
 import Loader from 'react-loader-spinner';
+import { MDBModal, MDBModalHeader, MDBModalBody, MDBRow, MDBCol, MDBInput, MDBBtn, MDBContainer,
+    MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBModalFooter } from 'mdbreact';
 
 import planetService from './../../../services/planet-service';
 import characterService from './../../../services/character-service';
@@ -58,28 +59,34 @@ class PlanetCreate extends Component {
           });
     }
 
-    addItem(collectionName) {
-        if (collectionName === collectionNames.affilations) {
-            const doAdd = collectionManager.doAddItem(this.state.currAffilation, this.state.affilations);
+    addItem(collectionName, item) {
+        if (item) {
+            if (collectionName === collectionNames.natives) {
+                const native = collectionManager.getItemNameAndId(null, this.state.characters, item);
+                const doAdd = collectionManager.doAddItem(native, this.state.natives);
 
-            if (doAdd) {
-                const newAffilations = collectionManager.addItem(this.state.currAffilation, this.state.affilations);
-                this.setState({ affilations: newAffilations, currAffilation: '' });
+                if (native && doAdd) {
+                    const newNatives = collectionManager.addItem(native, this.state.natives);
+                    const index = collectionManager.getIndexOfItem(item, this.state.characters);
+                    const newCharacters = collectionManager.removeItem(index, this.state.characters);
+                    this.setState({ natives: newNatives, characters: newCharacters });
+                }
             }
-        } else if (collectionName === collectionNames.images) {
-            const doAdd = collectionManager.doAddItem(this.state.currImg, this.state.images);
-
-            if (doAdd) {
-                const newImgs = collectionManager.addItem(this.state.currImg, this.state.images);
-                this.setState({ images: newImgs, currImg: '' });
-            }
-        } else if (collectionName === collectionNames.natives) {
-            const native = collectionManager.getItemNameAndId(this.state.currNative, this.state.characters);
-            const doAdd = collectionManager.doAddItem(native, this.state.natives);
-
-            if (native && doAdd) {
-                const newNatives = collectionManager.addItem(native, this.state.natives);
-                this.setState({ natives: newNatives, currNative: '' });
+        } else {
+            if (collectionName === collectionNames.affilations) {
+                const doAdd = collectionManager.doAddItem(this.state.currAffilation, this.state.affilations);
+    
+                if (doAdd) {
+                    const newAffilations = collectionManager.addItem(this.state.currAffilation, this.state.affilations);
+                    this.setState({ affilations: newAffilations, currAffilation: '' });
+                }
+            } else if (collectionName === collectionNames.images) {
+                const doAdd = collectionManager.doAddItem(this.state.currImg, this.state.images);
+    
+                if (doAdd) {
+                    const newImgs = collectionManager.addItem(this.state.currImg, this.state.images);
+                    this.setState({ images: newImgs, currImg: '' });
+                }
             }
         }
     }
@@ -104,7 +111,8 @@ class PlanetCreate extends Component {
 
             if (index !== -1) {
                 const newNatives = collectionManager.removeItem(index, this.state.natives);
-                this.setState({ natives: newNatives });
+                const newCharacters = collectionManager.addItem(item, this.state.characters);
+                this.setState({ natives: newNatives, characters: newCharacters });
             }
         }
     }
@@ -115,9 +123,7 @@ class PlanetCreate extends Component {
         this.setState(change);
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
-        
+    handleSubmit() {
         this.setState({ isLoading: true });
 
         if (this.state.name.length < 3) {
@@ -153,7 +159,7 @@ class PlanetCreate extends Component {
             if (res.status === OK) {
                 res.json().then(response => {
                     this.props.notifHandler(response.data.msg, notifTypes.success);
-                    setTimeout(() => { this.props.history.push(`/planet/${response.data.planetId}`); }, 2000);
+                    setTimeout(() => { window.location.href = `/planet/${response.data.planetId}`; }, 2000);
                 });
             } else {
                 res.json().then(err => {
@@ -166,90 +172,136 @@ class PlanetCreate extends Component {
 
     render() {
         return (
-            <div className="PlanetCreate">
-                {
-                    this.state.isLoading ?
-                    <Loader type="Ball-Triangle" color="black" height="750" />
-                    :
-                    <form onSubmit={this.handleSubmit}>
-                        <label>Name:</label>
-                        <br />
-                        <input type="text" name="name" onChange={this.handleChange} />
-                        <br />
-                        <label>Info:</label>
-                        <br />
-                        <textarea type="text" name="info" onChange={this.handleChange}></textarea>
-                        <br />
-                        <label>Climate:</label>
-                        <br />
-                        <input type="text" name="climate" onChange={this.handleChange} />
-                        <br />
-                        <label>Terrain:</label>
-                        <br />
-                        <input type="text" name="terrain" onChange={this.handleChange} />
-                        <br />
-                        
-                        <label>Add an affilation:</label>
-                        <br />
-                        <input type="text" name="currAffilation" value={this.state.currAffilation} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.affilations)}>Add</button>
-                        <br />
-                        {this.state.affilations.length > 0 ?
-                        <Fragment>
-                            <label>Affilations:</label>
-                            <br />
-                            <ul>
-                                {this.state.affilations.map((affilation, index) => {
-                                    return (
-                                        <li key={index}>{affilation} <button type="button" onClick={() => this.removeItem(collectionNames.affilations, affilation)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
+            this.state.isLoading ?
+            <Loader type="Ball-Triangle" color="black" height="120" />
+            :
+            <MDBModal isOpen={this.props.isOpen}>
+                <MDBModalHeader toggle={this.props.toggle}>Create planet</MDBModalHeader>
+                <MDBModalBody>
+                    <MDBContainer>
+                        <MDBRow>
+                            <MDBCol>
+                                <MDBInput
+                                label="Name"
+                                type="text"
+                                name="name"
+                                onChange={this.handleChange} />
 
-                        <label>Add an image:</label>
-                        <br />
-                        <input type="text" name="currImg" value={this.state.currImg} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.images)}>Add</button>
-                        <br />
-                        {this.state.images.length > 0 ?
-                        <Fragment>
-                            <label>Images:</label>
-                            <br />
-                            <ul>
-                                {this.state.images.map((img, index) => {
-                                    return (
-                                        <li key={index}>{img} <button type="button" onClick={() => this.removeItem(collectionNames.images, img)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
+                                <MDBInput
+                                label="Info"
+                                type="textarea"
+                                rows="5"
+                                name="info"
+                                onChange={this.handleChange} />
 
-                        <label>Add native:</label>
-                        <br />
-                        <input type="text" name="currNative" value={this.state.currNative} onChange={this.handleChange} />
-                        <button type="button" onClick={() => this.addItem(collectionNames.natives)}>Add</button>
-                        <br />
-                        {this.state.natives.length > 0 ?
-                        <Fragment>
-                            <label>Natives:</label>
-                            <br />
-                            <ul>
-                                {this.state.natives.map((native, index) => {
-                                    return (
-                                        <li key={index}>{native.name} <button type="button" onClick={() => this.removeItem(collectionNames.natives, native)}>X</button></li>
-                                    );
-                                })}
-                            </ul>
-                        </Fragment>:null}
-                        <br />
+                                <MDBInput
+                                label="Climate"
+                                type="text"
+                                name="climate"
+                                onChange={this.handleChange} />
 
-                        <button type="submit">Create</button>
-                    </form>
-                }
-            </div>
+                                <MDBInput
+                                label="Terrain"
+                                type="text"
+                                name="terrain"
+                                onChange={this.handleChange} />
+
+                                <MDBInput
+                                label="Affilaton"
+                                type="text"
+                                name="currAffilation"
+                                value={this.state.currAffilation}
+                                onChange={this.handleChange} />
+                                {
+                                    this.state.affilations.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Affilations
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.affilations.map((affilation, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.affilations, affilation)}>{affilation}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                <MDBBtn type="button" onClick={() => this.addItem(collectionNames.affilations)}>Add</MDBBtn>
+
+                                <MDBInput
+                                label="Image"
+                                type="text"
+                                name="currImg"
+                                value={this.state.currImg}
+                                onChange={this.handleChange} />
+                                {
+                                    this.state.images.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Images
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.images.map((img, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.images, img)}>{img}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                <MDBBtn type="button" onClick={() => this.addItem(collectionNames.images)}>Add</MDBBtn>
+
+                                {
+                                    this.state.characters.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Characters
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.characters.map((character, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.addItem(collectionNames.natives, character)}>{character.name}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                                {
+                                    this.state.natives.length > 0 ?
+                                    <MDBDropdown>
+                                        <MDBDropdownToggle caret color="primary">
+                                            Natives
+                                        </MDBDropdownToggle>
+                                        <MDBDropdownMenu basic>
+                                            {
+                                                this.state.natives.map((native, index) => {
+                                                    return (
+                                                        <MDBDropdownItem key={index} onClick={() => this.removeItem(collectionNames.natives, native)}>{native.name}</MDBDropdownItem>
+                                                    );
+                                                })
+                                            }
+                                        </MDBDropdownMenu>
+                                    </MDBDropdown>
+                                    : null
+                                }
+                            </MDBCol>
+                        </MDBRow>
+                    </MDBContainer>
+                </MDBModalBody>
+                <MDBModalFooter>
+                    <MDBBtn onClick={this.handleSubmit}>Create</MDBBtn>
+                </MDBModalFooter>
+            </MDBModal>
         );
     };
 };

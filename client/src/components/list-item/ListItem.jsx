@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
-import './ListItem.css';
-import { MDBBtn, MDBCard, MDBCardBody, MDBCardImage, MDBCardTitle, MDBCardText, MDBCol, MDBRow } from 'mdbreact'
+import { MDBBtn, MDBCard, MDBCardBody, MDBCardImage, MDBCardTitle, MDBCardText, MDBCol } from 'mdbreact'
 
 import { userRoles } from './../../constants/common';
 
