@@ -70,6 +70,17 @@ const movieController = {
             console.log(err);
             res.error(err.message, null, 500);
           });
+    },
+
+    searchMovies: (req, res) => {
+      const search = req.query.search;
+
+      movieData.serachMovies(search)
+        .then(res.success)
+        .catch(err => {
+          console.log(err);
+          res.error(err.message, null, 500);
+        });
     }
 };
 

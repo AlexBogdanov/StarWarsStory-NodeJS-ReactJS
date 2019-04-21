@@ -10,6 +10,7 @@ router
     .post('/create', passport.authenticate('jwt'), weaponController.create)
     .put('/edit', passport.authenticate('jwt'), weaponController.edit)
     .delete('/delete/:id', passport.authenticate('jwt'), weaponController.delete)
-    .get('/userWeapons', passport.authenticate('jwt'), weaponController.getUserWeapons);
+    .get('/userWeapons', passport.authenticate('jwt'), weaponController.getUserWeapons)
+    .get('/find', weaponController.searchWeapons);
 
 module.exports = router;

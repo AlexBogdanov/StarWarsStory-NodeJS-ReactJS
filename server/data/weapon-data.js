@@ -69,6 +69,17 @@ const weaponData = {
 
             res(weapons);
         });
+    }),
+
+    searchWeapons: (search) => new Promise((rej, res) => {
+        Weapon.find({ name: { $regex: "^" + search } }, (err, weapons) => {
+            if (err) {
+                console.log(err);
+                rej(new Error(notifMsgs.errors.COULD_NOT_GET_WEAPONS));
+            }
+
+            res(weapons);
+        });
     })
 };
 

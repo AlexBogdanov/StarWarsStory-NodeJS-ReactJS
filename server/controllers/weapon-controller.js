@@ -67,6 +67,17 @@ const weaponController = {
           console.log(err);
           res.error(err.message, null, 500);
         });
+    },
+
+    searchWeapons: (req, res) => {
+      const search = req.query.search;
+
+      weaponData.searchWeapons(search)
+        .then(res.success)
+        .catch(err => {
+          console.log(err);
+          res.error(err.message, null, 500);
+        });
     }
 };
 

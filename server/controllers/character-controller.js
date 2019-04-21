@@ -82,6 +82,17 @@ const characterController = {
           console.log(err);
           res.error(err.message, null, 500);
         });
+    },
+
+    searchCharacters: (req, res) => {
+      const search = req.query.search;
+
+      characterData.searchCharacters(search)
+        .then(res.success)
+        .catch(err => {
+          console.log(err);
+          res.error(err.message, null, 500);
+        });
     }
 };
 

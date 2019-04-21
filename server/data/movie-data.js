@@ -67,6 +67,17 @@ const movieData = {
 
             res(movies);
         });
+    }),
+
+    serachMovies: (search) => new Promise((res, rej) => {
+        Movie.find({ name: { $regex: "^" + search } }, (err, movies) => {
+            if (err) {
+                console.log(err);
+                rej(new Error(notifMsgs.errors.COULD_NOT_GET_MOVIES));
+            }
+
+            res(movies);
+        });
     })
 };
 

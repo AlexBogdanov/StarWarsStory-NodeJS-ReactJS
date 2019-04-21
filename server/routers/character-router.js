@@ -11,6 +11,7 @@ router
     .put('/edit', passport.authenticate('jwt'), characterController.edit)
     .delete('/delete/:id', passport.authenticate('jwt'), characterController.delete)
     .get('/characterNamesAndIds', passport.authenticate('jwt'), characterController.getAllCharactersNamesAndIds)
-    .get('/userCharacters', passport.authenticate('jwt'), characterController.getUserCharacters);
+    .get('/userCharacters', passport.authenticate('jwt'), characterController.getUserCharacters)
+    .get('/find', characterController.searchCharacters);
 
 module.exports = router;

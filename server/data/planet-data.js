@@ -68,6 +68,17 @@ const planetData = {
 
             res(planets);
         });
+    }),
+
+    searchPlanets: (search) => new Promise((res, rej) => {
+        Planet.find({ name: { $regex: "^" + search } }, (err, planets) => {
+            if (err) {
+                console.log(err);
+                rej(new Error(notifMsgs.errors.COULD_NOT_GET_PLANETS));
+            }
+
+            res(planets);
+        });
     })
 };
 

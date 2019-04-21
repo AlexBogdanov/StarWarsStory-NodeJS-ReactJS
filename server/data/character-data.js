@@ -85,7 +85,18 @@ const characterData = {
         Character.find({ creator: userId }, (err, characters) => {
             if (err) {
                 console.log(err);
-                rej(new Error(notifMsgs.COULD_NOT_GET_CHARACTERS));
+                rej(new Error(notifMsgs.errors.COULD_NOT_GET_CHARACTERS));
+            }
+
+            res(characters);
+        });
+    }),
+
+    searchCharacters: (search) => new Promise((res, rej) => {
+        Character.find({ name: { $regex: "^" + search } }, (err, characters) => {
+            if (err) {
+                console.log(err);
+                rej(new Error(notifMsgs.errors.COULD_NOT_GET_CHARACTERS));
             }
 
             res(characters);

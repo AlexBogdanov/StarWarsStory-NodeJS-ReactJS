@@ -69,6 +69,17 @@ const spaceshipController = {
           console.log(err);
           res.error(err.message, null, 500);
         });
+    },
+
+    searchSpaceships: (req, res) => {
+      const search = req.query.search;
+
+      spaceshipData.searchSpaceships(search)
+        .then(res.success)
+        .catch(err => {
+          console.log(err);
+          res.error(err.message, null, 500);
+        });
     }
 };
 

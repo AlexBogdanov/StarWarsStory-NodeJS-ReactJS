@@ -69,6 +69,17 @@ const planetController = {
           console.log(err);
           res.error(err.message, null, 500);
         });
+    },
+
+    searchPlanets: (req, res) => {
+      const search = req.query.search;
+
+      planetData.searchPlanets(search)
+        .then(res.success)
+        .catch(err => {
+          console.log(err);
+          res.error(err.message, null, 500);
+        });
     }
 };
 

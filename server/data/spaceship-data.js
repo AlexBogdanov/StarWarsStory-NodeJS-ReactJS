@@ -68,6 +68,17 @@ const spaceshipData = {
 
             res(spaceships);
         })
+    }),
+
+    searchSpaceships: (search) => new Promise((res, rej) => {
+        Spaceship.find({ name: { $regex: "^" + search } }, (err, spaceships) => {
+            if (err) {
+                console.log(err);
+                rej(new Error(notifMsgs.errors.COULD_NOT_GET_SPACESHIPS));
+            }
+
+            res(spaceships);
+        });
     })
 };
 
