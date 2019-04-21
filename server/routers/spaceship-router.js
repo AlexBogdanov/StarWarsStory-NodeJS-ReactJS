@@ -7,8 +7,8 @@ const { spaceshipController } = require('./../controllers');
 router
     .get('/all', spaceshipController.getAll)
     .get('/spaceship/:id', passport.authenticate('jwt'), spaceshipController.getById)
-    .post('/create', passport.authenticate('jwt'), auth.isAdmin, spaceshipController.create)
-    .put('/edit', passport.authenticate('jwt'), auth.isAdmin, spaceshipController.edit)
-    .delete('/delete/:id', passport.authenticate('jwt'), auth.isAdmin, spaceshipController.delete);
+    .post('/create', passport.authenticate('jwt'), spaceshipController.create)
+    .put('/edit', passport.authenticate('jwt'), spaceshipController.edit)
+    .delete('/delete/:id', passport.authenticate('jwt'), spaceshipController.delete);
 
 module.exports = router;

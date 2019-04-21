@@ -7,9 +7,9 @@ const { characterController } = require('./../controllers');
 router
     .get('/all', characterController.getAll)
     .get('/character/:id', passport.authenticate('jwt'), characterController.getById)
-    .post('/create', passport.authenticate('jwt'), auth.isAdmin, characterController.create)
-    .put('/edit', passport.authenticate('jwt'), auth.isAdmin, characterController.edit)
-    .delete('/delete/:id', passport.authenticate('jwt'), auth.isAdmin, characterController.delete)
-    .get('/characterNamesAndIds', passport.authenticate('jwt'), auth.isAdmin, characterController.getAllCharactersNamesAndIds);
+    .post('/create', passport.authenticate('jwt'), characterController.create)
+    .put('/edit', passport.authenticate('jwt'), characterController.edit)
+    .delete('/delete/:id', passport.authenticate('jwt'), characterController.delete)
+    .get('/characterNamesAndIds', passport.authenticate('jwt'), characterController.getAllCharactersNamesAndIds);
 
 module.exports = router;

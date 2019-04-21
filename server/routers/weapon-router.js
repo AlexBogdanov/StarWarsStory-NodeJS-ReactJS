@@ -7,8 +7,8 @@ const { weaponController } = require('./../controllers');
 router
     .get('/all', weaponController.getAll)
     .get('/weapon/:id', passport.authenticate('jwt'), weaponController.getById)
-    .post('/create', passport.authenticate('jwt'), auth.isAdmin, weaponController.create)
-    .put('/edit', passport.authenticate('jwt'), auth.isAdmin, weaponController.edit)
-    .delete('/delete/:id', passport.authenticate('jwt'), auth.isAdmin, weaponController.delete);
+    .post('/create', passport.authenticate('jwt'), weaponController.create)
+    .put('/edit', passport.authenticate('jwt'), weaponController.edit)
+    .delete('/delete/:id', passport.authenticate('jwt'), weaponController.delete);
 
 module.exports = router;
