@@ -7,7 +7,8 @@ const PlanetSchema = new mongoose.Schema({
     climate: { type: String },
     terrain: { type: String },
     natives: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }],
-    images: [{ type: String, required: true }]
+    images: [{ type: String, required: true }],
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
 module.exports = mongoose.model('Planet', PlanetSchema);

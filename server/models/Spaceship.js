@@ -6,7 +6,8 @@ const SpaceshipSchema = new mongoose.Schema({
     affilations: [{ type: String }],
     info: { type: String },
     images: [{ type: String }],
-    pilots: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }]
+    pilots: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }],
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
 module.exports = mongoose.model('Spaceship', SpaceshipSchema);

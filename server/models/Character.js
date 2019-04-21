@@ -10,7 +10,8 @@ const CharacterSchema = new mongoose.Schema({
     weight: { type: String, default: 'Unknown' },
     weapons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Weapon' }],
     vehicles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Spaceship' }],
-    images: [{ type: String, required: true }]
+    images: [{ type: String, required: true }],
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
 module.exports = mongoose.model('Character', CharacterSchema);

@@ -8,7 +8,8 @@ const MovieSchema = new mongoose.Schema({
     writers: [{ type: String }],
     actors: [{ type: String }],
     info: { type: String, required: true },
-    cover: { type: String, required: true }
+    cover: { type: String, required: true },
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
 module.exports = mongoose.model('Movie', MovieSchema);
