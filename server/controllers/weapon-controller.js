@@ -30,6 +30,7 @@ const weaponController = {
 
     create: (req, res) => {
         const weapon = cloneOnly(req.body, weaponProperties);
+        weapon.creator = req.user._id;
 
         weaponData.create(weapon)
           .then(res.success)

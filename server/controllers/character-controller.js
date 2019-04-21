@@ -35,6 +35,7 @@ const characterController = {
 
     create: (req, res) => {
         const character = cloneOnly(req.body, characterProperties);
+        character.creator = req.user._id;
         
         characterData.create(character)
           .then(res.success)

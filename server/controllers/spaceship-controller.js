@@ -42,6 +42,7 @@ const spaceshipController = {
 
     edit: (req, res) => {
         const spaceship = cloneOnly(req.body.spaceship, spaceshipProperties);
+        spaceship.creator = req.user._id;
 
         spaceshipData.edit(req.body.spaceshipId, spaceship)
           .then(res.success)

@@ -33,6 +33,7 @@ const movieController = {
 
     create: (req, res) => {
         const movie = cloneOnly(req.body, movieProperties);
+        movie.creator = req.user._id;
 
         movieData.create(movie)
           .then(res.success)

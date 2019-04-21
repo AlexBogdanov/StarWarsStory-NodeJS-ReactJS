@@ -32,6 +32,7 @@ const planetController = {
 
     create: (req, res) => {
         const planet = cloneOnly(req.body, planetProperties);
+        planet.creator = req.user._id;
         
         planetData.create(planet)
           .then(res.success)
