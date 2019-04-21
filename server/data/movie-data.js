@@ -56,7 +56,18 @@ const movieData = {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_DELETE_MOVIE);
         }
-    }
+    },
+
+    getAllMoviesByUserId: (userId) => new Promise((res, rej) => {
+        Movie.find({ creator: userId }, (err, movies) => {
+            if (err) {
+                console.log(err);
+                rej(new Error(notifMsgs.errors.COULD_NOT_GET_MOVIES));
+            }
+
+            res(movies);
+        });
+    })
 };
 
 module.exports = movieData;

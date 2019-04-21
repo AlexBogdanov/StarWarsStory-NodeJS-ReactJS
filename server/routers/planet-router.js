@@ -9,6 +9,7 @@ router
     .get('/planet/:id', passport.authenticate('jwt'), planetController.getById)
     .post('/create', passport.authenticate('jwt'), planetController.create)
     .put('/edit', passport.authenticate('jwt'), planetController.edit)
-    .delete('/delete/:id', passport.authenticate('jwt'), planetController.delete);
+    .delete('/delete/:id', passport.authenticate('jwt'), planetController.delete)
+    .get('/userPlanets', passport.authenticate('jwt'), planetController.getUserPlanets);
 
 module.exports = router;

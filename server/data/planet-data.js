@@ -57,7 +57,18 @@ const planetData = {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_DELETE_PLANET);
         }
-    }
+    },
+
+    getAllPlanetsByUserId: (userId) => new Promise((res, rej) => {
+        Planet.find({ creator: userId }, (err, planets) => {
+            if (err) {
+                console.log(err);
+                rej(new Error(notifMsgs.errors.COULD_NOT_GET_PLANETS));
+            }
+
+            res(planets);
+        });
+    })
 };
 
 module.exports = planetData;

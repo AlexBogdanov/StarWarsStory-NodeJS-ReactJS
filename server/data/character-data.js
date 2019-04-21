@@ -79,7 +79,18 @@ const characterData = {
             console.log(err);
             throw new Error(notifMsgs.errors.COULD_NOT_GET_CHARACTERS);
         }
-    }
+    },
+
+    getAllCharactersByUserId: (userId) => new Promise((res, rej) => {
+        Character.find({ creator: userId }, (err, characters) => {
+            if (err) {
+                console.log(err);
+                rej(new Error(notifMsgs.COULD_NOT_GET_CHARACTERS));
+            }
+
+            res(characters);
+        });
+    })
 };
 
 module.exports = characterData;

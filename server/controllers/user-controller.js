@@ -1,4 +1,4 @@
-const { userData } = require('./../data');
+const { userData, characterData, weaponData, spaceshipData, planetData, movieData } = require('./../data');
 const cloneOnly = require('./../utilities/clone-only');
 
 const userController = {

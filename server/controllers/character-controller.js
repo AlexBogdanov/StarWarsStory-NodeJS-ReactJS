@@ -73,6 +73,15 @@ const characterController = {
           console.log(err);
           res.error(err.message, null, 500);
         });
+    },
+
+    getUserCharacters: (req, res) => {
+      characterData.getAllCharactersByUserId(req.user._id)
+        .then(res.success)
+        .catch(err => {
+          console.log(err);
+          res.error(err.message, null, 500);
+        });
     }
 };
 

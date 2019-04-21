@@ -58,7 +58,18 @@ const weaponData = {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_DELETE_WEAPON);
         }
-    }
+    },
+
+    getAllWeaponsByUserId: (userId) => new Promise((res, rej) => {
+        Weapon.find({ creator: userId }, (err, weapons) => {
+            if (err) {
+                console.log(err);
+                rej(new Error(notifMsgs.errors.COULD_NOT_GET_WEAPONS));
+            }
+
+            res(weapons);
+        });
+    })
 };
 
 module.exports = weaponData;

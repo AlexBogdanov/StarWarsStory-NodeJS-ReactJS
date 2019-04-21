@@ -57,7 +57,18 @@ const spaceshipData = {
             console.log(err);
             throw new Error(notifMsgs.errors.FAILED_TO_DELETE_SPACESHIP);
         }
-    }
+    },
+
+    getAllSpaceshipsByUserId: (userId) => new Promise((res, rej) => {
+        Spaceship.find({ creator: userId }, (err, spaceships) => {
+            if (err) {
+                console.log(err);
+                rej(new Error(notifMsgs.errors.COULD_NOT_GET_SPACESHIPS));
+            }
+
+            res(spaceships);
+        })
+    })
 };
 
 module.exports = spaceshipData;

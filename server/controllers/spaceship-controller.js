@@ -59,6 +59,15 @@ const spaceshipController = {
             console.log(err);
             res.error(err.message, null, 500);
           });
+    },
+
+    getUserSpaceships: (req, res) => {
+      spaceshipData.getAllSpaceshipsByUserId(req.user._id)
+        .then(res.success)
+        .catch(err => {
+          console.log(err);
+          res.error(err.message, null, 500);
+        });
     }
 };
 

@@ -61,6 +61,15 @@ const movieController = {
             console.log(err);
             res.error(err.message, null, 500);
           });
+    },
+
+    getUserMovies: (req, res) => {
+        movieData.getAllMoviesByUserId(req.user._id)
+          .then(res.success)
+          .catch(err => {
+            console.log(err);
+            res.error(err.message, null, 500);
+          });
     }
 };
 

@@ -58,6 +58,15 @@ const weaponController = {
             console.log(err);
             res.error(err.message, null, 500);
           });
+    },
+
+    getUserWeapons: (req, res) => {
+      weaponData.getAllWeaponsByUserId(req.user._id)
+        .then(res.success)
+        .catch(err => {
+          console.log(err);
+          res.error(err.message, null, 500);
+        });
     }
 };
 

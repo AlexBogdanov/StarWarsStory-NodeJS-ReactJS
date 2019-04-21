@@ -60,6 +60,15 @@ const planetController = {
             console.log(err);
             res.error(err.message, null, 500);
           });
+    },
+
+    getUserPlanets: (req, res) => {
+      planetData.getAllPlanetsByUserId(req.user._id)
+        .then(res.success)
+        .catch(err => {
+          console.log(err);
+          res.error(err.message, null, 500);
+        });
     }
 };
 

@@ -9,6 +9,7 @@ router
     .get('/weapon/:id', passport.authenticate('jwt'), weaponController.getById)
     .post('/create', passport.authenticate('jwt'), weaponController.create)
     .put('/edit', passport.authenticate('jwt'), weaponController.edit)
-    .delete('/delete/:id', passport.authenticate('jwt'), weaponController.delete);
+    .delete('/delete/:id', passport.authenticate('jwt'), weaponController.delete)
+    .get('/userWeapons', passport.authenticate('jwt'), weaponController.getUserWeapons);
 
 module.exports = router;
