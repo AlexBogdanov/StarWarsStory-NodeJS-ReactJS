@@ -32,12 +32,23 @@ class WeaponsList extends Component {
             this.setState({ userRole: sessionStorage.getItem('userRole') });
         }
 
+        let currUserId;
+
+        if (localStorage.getItem('id')) {
+            currUserId = localStorage.getItem('id');
+        } else if (sessionStorage.getItem('id')) {
+            currUserId = sessionStorage.getItem('id');
+        }
+
         weaponService.getAllWeapons()
           .then(res => {
             if (res.status === OK) {
                 res.json().then(response => {
                     if (response.data.weapons.length > 0) {
-                        this.setState({ weapons: response.data.weapons, doRender: true, isLoading: false });
+                        this.setState({ weapons: response.data.weapons.map(weapon => {
+                            weapon.isOwned = weapon.creator === currUserId ? true : false;
+                            return weapon;
+                        }), doRender: true, isLoading: false });
                         return;
                     }
 
@@ -101,7 +112,8 @@ class WeaponsList extends Component {
                                 userRole={this.state.userRole}
                                 openItemDetails={this.openWeaponDetails}
                                 openItemEdit={this.openWeaponEdit}
-                                deleteItem={this.deleteWeapon} />
+                                deleteItem={this.deleteWeapon}
+                                isOwned={weapon.isOwned} />
                             );
                         })}
                         </MDBRow>

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Loader from 'react-loader-spinner';
-import { MDBRow, MDBContainer } from 'mdbreact';
+import { MDBRow } from 'mdbreact';
 
 import ListItem from './../../list-item/ListItem';
 import characterService from '../../../services/character-service';
@@ -31,13 +31,24 @@ class CharactersList extends Component {
         } else if (sessionStorage.getItem('userRole')) {
             this.setState({ userRole: sessionStorage.getItem('userRole') });
         }
+
+        let currUserId;
+
+        if (localStorage.getItem('id')) {
+            currUserId = localStorage.getItem('id');
+        } else if (sessionStorage.getItem('id')) {
+            currUserId = sessionStorage.getItem('id');
+        }
         
         characterService.getAllCharacters()
           .then(res => {
               if (res.status === OK) {
                   res.json().then(response => {
                     if (response.data.characters.length > 0) {
-                        this.setState({ characters: response.data.characters, doRender: true, isLoading: false });
+                        this.setState({ characters: response.data.characters.map(character => {
+                            character.isOwned = character.creator === currUserId ? true : false;
+                            return character;
+                        }), doRender: true, isLoading: false });
                         return;
                     }
 
@@ -101,7 +112,8 @@ class CharactersList extends Component {
                                     userRole={this.state.userRole}
                                     openItemDetails={this.openCharacterDetails}
                                     openItemEdit={this.openCharacterEdit}
-                                    deleteItem={this.deleteCharacter} />
+                                    deleteItem={this.deleteCharacter}
+                                    isOwned={character.isOwned} />
                                 );
                             })}
                             </MDBRow>

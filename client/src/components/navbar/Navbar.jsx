@@ -5,8 +5,7 @@ import {
     MDBFormInline
 } from 'mdbreact';
 
-import AdminRoutes from './../../routes/admin-routes';
-import AuthUserRoutes from './../../routes/authUser-routers';
+import AuthRoutes from '../../routes/authUser-routes';
 import UnauthUserRoutes from './../../routes/unauthUser-routes';
 import { userRoles } from './../../constants/common';
 
@@ -46,7 +45,7 @@ class Navbar extends Component {
 
     componentWillMount() {
         this.setState({ userRole: localStorage.getItem('userRole')
-        ? localStorage.getItem('userRole') : sessionStorage.getItem('userRole') });
+        ? localStorage.getItem('userRole') : sessionStorage.getItem('userRole')});
     }
 
     toggleCollapse() {
@@ -103,7 +102,7 @@ class Navbar extends Component {
                         </MDBNavItem>
 
                             {
-                                this.state.userRole === userRoles.ADMIN ?
+                                this.state.userRole === userRoles.ADMIN || this.state.userRole === userRoles.USER ?
                                 <Fragment>
                                     <MDBDropdown>
                                         <MDBDropdownToggle nav caret>
@@ -111,6 +110,7 @@ class Navbar extends Component {
                                         </MDBDropdownToggle>
                                         <MDBDropdownMenu>
                                             <MDBDropdownItem href="/characters">All</MDBDropdownItem>
+                                            <MDBDropdownItem href="/my-characters">My characters</MDBDropdownItem>
                                             <MDBDropdownItem onClick={this.toggleCharacter}>Create</MDBDropdownItem>
                                         </MDBDropdownMenu>
                                     </MDBDropdown>
@@ -121,6 +121,7 @@ class Navbar extends Component {
                                         </MDBDropdownToggle>
                                         <MDBDropdownMenu>
                                             <MDBDropdownItem href="/weapons">All</MDBDropdownItem>
+                                            <MDBDropdownItem href="/my-weapons">My weapons</MDBDropdownItem>
                                             <MDBDropdownItem onClick={this.toggleWeapon}>Create</MDBDropdownItem>
                                         </MDBDropdownMenu>
                                     </MDBDropdown>
@@ -131,6 +132,7 @@ class Navbar extends Component {
                                         </MDBDropdownToggle>
                                         <MDBDropdownMenu>
                                             <MDBDropdownItem href="/spaceships">All</MDBDropdownItem>
+                                            <MDBDropdownItem href="/my-spaceships">My spaceships</MDBDropdownItem>
                                             <MDBDropdownItem onClick={this.toggleSpaceship}>Create</MDBDropdownItem>
                                         </MDBDropdownMenu>
                                     </MDBDropdown>
@@ -141,6 +143,7 @@ class Navbar extends Component {
                                         </MDBDropdownToggle>
                                         <MDBDropdownMenu>
                                             <MDBDropdownItem href="/planets">All</MDBDropdownItem>
+                                            <MDBDropdownItem href="/my-planets">My planets</MDBDropdownItem>
                                             <MDBDropdownItem onClick={this.togglePlanet}>Create</MDBDropdownItem>
                                         </MDBDropdownMenu>
                                     </MDBDropdown>
@@ -151,27 +154,10 @@ class Navbar extends Component {
                                         </MDBDropdownToggle>
                                         <MDBDropdownMenu>
                                             <MDBDropdownItem href="/movies">All</MDBDropdownItem>
+                                            <MDBDropdownItem href="/my-movies">My movies</MDBDropdownItem>
                                             <MDBDropdownItem onClick={this.toggleMovie}>Create</MDBDropdownItem>
                                         </MDBDropdownMenu>
                                     </MDBDropdown>
-                                </Fragment>
-                                : this.state.userRole === userRoles.USER ?
-                                <Fragment>
-                                <MDBNavItem>
-                                    <MDBNavLink to="/characters">Characters</MDBNavLink>
-                                </MDBNavItem>
-                                    <MDBNavItem>
-                                        <MDBNavLink to="/weapons">Weapons</MDBNavLink>
-                                    </MDBNavItem>
-                                    <MDBNavItem>
-                                        <MDBNavLink to="/spaceships">Spaceships</MDBNavLink>
-                                    </MDBNavItem>
-                                    <MDBNavItem>
-                                        <MDBNavLink to="/planets">Planets</MDBNavLink>
-                                    </MDBNavItem>
-                                    <MDBNavItem>
-                                        <MDBNavLink to="/movies">Movies</MDBNavLink>
-                                    </MDBNavItem>
                                 </Fragment>
                                 :
                                 <Fragment>
@@ -227,8 +213,8 @@ class Navbar extends Component {
                 </MDBCollapse>
             </MDBNavbar>
                 {
-                     this.state.userRole === userRoles.ADMIN ?
-                     <AdminRoutes
+                     this.state.userRole === userRoles.ADMIN || this.state.userRole === userRoles.USER ?
+                     <AuthRoutes
                      notifHandler={this.props.notifHandler}
                      openCharacterCreate={this.state.openCharacterCreate}
                      openCharacterEdit={this.state.openCharacterEdit}
@@ -245,8 +231,6 @@ class Navbar extends Component {
                      openMovieCreate={this.state.openMovieCreate}
                      openMovieEdit={this.state.openMovieEdit}
                      toggleMovie={this.toggleMovie} />
-                     : this.state.userRole === userRoles.USER ?
-                     <AuthUserRoutes notifHandler={this.props.notifHandler} />
                     :
                     <UnauthUserRoutes
                     notifHandler={this.props.notifHandler}

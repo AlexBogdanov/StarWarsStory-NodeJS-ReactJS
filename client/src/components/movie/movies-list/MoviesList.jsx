@@ -31,6 +31,14 @@ class MovieList extends Component {
         } else if (sessionStorage.getItem('userRole')) {
             this.setState({ userRole: sessionStorage.getItem('userRole') });
         }
+
+        let currUserId;
+
+        if (localStorage.getItem('id')) {
+            currUserId = localStorage.getItem('id');
+        } else if (sessionStorage.getItem('id')) {
+            currUserId = sessionStorage.getItem('id');
+        }
         
         movieService.getAllMovies()
           .then(res => {
@@ -38,7 +46,10 @@ class MovieList extends Component {
 
                   res.json().then(response => {
                     if (response.data.movies.length > 0) {
-                        this.setState({ movies: response.data.movies, doRender: true, isLoading: false });
+                        this.setState({ movies: response.data.movies.map(movie => {
+                            movie.isOwned = movie.creator === currUserId ? true : false;
+                            return movie;
+                        }), doRender: true, isLoading: false });
                         return;
                     }
 
@@ -102,7 +113,8 @@ class MovieList extends Component {
                                 userRole={this.state.userRole}
                                 openItemDetails={this.openMovieDetails}
                                 openItemEdit={this.openMovieEdit}
-                                deleteItem={this.deleteMovie} />
+                                deleteItem={this.deleteMovie}
+                                isOwned={movie.isOwned} />
                             );
                         })}
                         </MDBRow>

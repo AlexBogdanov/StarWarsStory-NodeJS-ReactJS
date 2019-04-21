@@ -32,12 +32,23 @@ class PlanetsList extends Component {
             this.setState({ userRole: sessionStorage.getItem('userRole') });
         }
 
+        let currUserId;
+
+        if (localStorage.getItem('id')) {
+            currUserId = localStorage.getItem('id');
+        } else if (sessionStorage.getItem('id')) {
+            currUserId = sessionStorage.getItem('id');
+        }
+
         planetService.getAllPlanets()
           .then(res => {
               if (res.status === OK) {
                   res.json().then(response => {
                     if (response.data.planets.length > 0) {
-                        this.setState({ planets: response.data.planets, doRender: true, isLoading: false });
+                        this.setState({ planets: response.data.planets.map(planet => {
+                            planet.isOwned = planet.creator === currUserId ? true : false;
+                            return planet;
+                        }), doRender: true, isLoading: false });
                         return;
                     }
 
@@ -102,7 +113,8 @@ class PlanetsList extends Component {
                                     userRole={this.state.userRole}
                                     openItemDetails={this.openPlanetDetails}
                                     openItemEdit={this.openPlanetEdit}
-                                    deleteItem={this.deletePlanet} />
+                                    deleteItem={this.deletePlanet}
+                                    isOwned={planet.isOwned} />
                                 );
                             })}
                             </MDBRow>

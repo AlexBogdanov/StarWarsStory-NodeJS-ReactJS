@@ -55,6 +55,7 @@ class Login extends Component {
                     // Setting credentials
                     localStorage.setItem('token', response.data.token);
                     localStorage.setItem('userRole', userRole);
+                    localStorage.setItem('id', response.data.user._id);
 
                     this.props.notifHandler(response.data.msg, notifTypes.success);
                     setTimeout(() => { window.location.href = '/'; }, 2000);

@@ -32,12 +32,23 @@ class SpaceshipsList extends Component {
             this.setState({ userRole: sessionStorage.getItem('userRole') });
         }
 
+        let currUserId;
+
+        if (localStorage.getItem('id')) {
+            currUserId = localStorage.getItem('id');
+        } else if (sessionStorage.getItem('id')) {
+            currUserId = sessionStorage.getItem('id');
+        }
+
         spaceshipService.getAllSpaceships()
           .then(res => {
             if (res.status === OK) {
                 res.json().then(response => {
                     if (response.data.spaceships.length > 0) {
-                        this.setState({ spaceships: response.data.spaceships, doRender: true, isLoading: false });
+                        this.setState({ spaceships: response.data.spaceships.map(spaceship => {
+                            spaceship.isOwned = spaceship.creator === currUserId ? true : false;
+                            return spaceship;
+                        }), doRender: true, isLoading: false });
                         return;
                     }
 
@@ -102,7 +113,8 @@ class SpaceshipsList extends Component {
                                     userRole={this.state.userRole}
                                     openItemDetails={this.openSpaceshipDetails}
                                     openItemEdit={this.openSpaceshipEdit}
-                                    deleteItem={this.deleteSpaceship} />
+                                    deleteItem={this.deleteSpaceship}
+                                    isOwned={spaceship.isOwned} />
                                 );
                             })}
                             </MDBRow>

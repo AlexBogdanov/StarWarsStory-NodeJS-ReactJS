@@ -16,7 +16,7 @@ const ListItem = (props) => {
                         <MDBCardText>{shortDescription}</MDBCardText>
                         
                         {
-                            props.userRole === userRoles.ADMIN ?
+                            props.userRole === userRoles.ADMIN || props.isOwned ?
                             <Fragment>
                                 <MDBBtn onClick={() => props.openItemDetails(props.itemId)}>Details</MDBBtn>
                                 <MDBBtn onClick={() => props.openItemEdit(props.itemId)}>Edit</MDBBtn>
@@ -24,7 +24,7 @@ const ListItem = (props) => {
                             </Fragment>
                             : props.userRole === userRoles.USER ?
                             <Fragment>
-                                <MDBBtn onClick={() => props.opentItemDetails(props.itemId)}>Details</MDBBtn>
+                                <MDBBtn onClick={() => props.openItemDetails(props.itemId)}>Details</MDBBtn>
                             </Fragment>
                             :
                             <Fragment>
