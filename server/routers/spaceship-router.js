@@ -10,7 +10,6 @@ router
     .post('/create', passport.authenticate('jwt'), spaceshipController.create)
     .put('/edit', passport.authenticate('jwt'), spaceshipController.edit)
     .delete('/delete/:id', passport.authenticate('jwt'), spaceshipController.delete)
-    .get('/userSpaceships', passport.authenticate('jwt'), spaceshipController.getUserSpaceships)
-    .get('/find', spaceshipController.searchSpaceships);
+    .get('/userSpaceships', passport.authenticate('jwt'), spaceshipController.getUserSpaceships);
 
 module.exports = router;

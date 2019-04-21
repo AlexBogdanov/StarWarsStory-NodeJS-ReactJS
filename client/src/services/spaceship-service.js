@@ -29,7 +29,7 @@ const spaceshipService = {
     },
 
     getUserSpaceships: () => {
-        return get(getAllSpaceshipsUrl, true);
+        return get(getUserSpaceshipsUrl, true);
     }
 };
 

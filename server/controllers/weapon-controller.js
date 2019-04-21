@@ -43,7 +43,7 @@ const weaponController = {
     edit: (req, res) => {
         const weapon = cloneOnly(req.body.weapon, weaponProperties);
 
-        weaponData.edit(req.body.weaponId, weapon)
+        weaponData.edit(req.body.weaponId, weapon, req.user._id, req.user.roles[0])
           .then(res.success)
           .catch(err => {
             console.log(err);
@@ -52,7 +52,7 @@ const weaponController = {
     },
 
     delete: (req, res) => {
-        weaponData.delete(req.params.id)
+        weaponData.delete(req.params.id, req.user._id, req.user.roles[0])
           .then(msg => res.success({ msg }))
           .catch(err => {
             console.log(err);
@@ -62,17 +62,6 @@ const weaponController = {
 
     getUserWeapons: (req, res) => {
       weaponData.getAllWeaponsByUserId(req.user._id)
-        .then(res.success)
-        .catch(err => {
-          console.log(err);
-          res.error(err.message, null, 500);
-        });
-    },
-
-    searchWeapons: (req, res) => {
-      const search = req.query.search;
-
-      weaponData.searchWeapons(search)
         .then(res.success)
         .catch(err => {
           console.log(err);

@@ -5,9 +5,12 @@ import {
     MDBFormInline
 } from 'mdbreact';
 
+import userService from './../../services/user-service';
 import AuthRoutes from '../../routes/authUser-routes';
 import UnauthUserRoutes from './../../routes/unauthUser-routes';
-import { userRoles } from './../../constants/common';
+import { userRoles, notifTypes } from './../../constants/common';
+import { errorNotifs } from './../../constants/notification-messages';
+import { OK } from './../../constants/http-responses';
 
 class Navbar extends Component {
     constructor(props) {
@@ -29,7 +32,8 @@ class Navbar extends Component {
             spaceships: [],
             planets: [],
             movies: [],
-            searchStr: ''
+            searchStr: '',
+            matchedResults: []
         };
 
         this.logout = this.logout.bind(this);
@@ -41,6 +45,9 @@ class Navbar extends Component {
         this.toggleSpaceship = this.toggleSpaceship.bind(this);
         this.togglePlanet = this.togglePlanet.bind(this);
         this.toggleMovie = this.toggleMovie.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.search = this.search.bind(this);
+        this.openItem = this.openItem.bind(this);
     }
 
     componentWillMount() {
@@ -88,6 +95,47 @@ class Navbar extends Component {
 
     toggleClass() {
         this.setState(state => ({isActive: !state.isActive}));
+    }
+
+    handleChange(e) {
+        const change = {};
+        change[e.target.name] = e.target.value;
+        this.setState(change);
+    }
+
+    search(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (this.state.searchStr) {
+                userService.search(this.state.searchStr)
+                  .then(res => {
+                      if (res.status === OK) {
+                          res.json().then(response => {
+                            this.setState({ matchedResults: response.data });
+                            console.log(this.state.matchedResults);
+                          });
+                      } else {
+                          res.json().then(() => {
+                            this.props.notifHandler(errorNotifs.NO_RESULTS, notifTypes.info);
+                          });
+                      }
+                  });
+            }
+        }
+    }
+
+    openItem(item) {
+        if (item.hasOwnProperty('vehicles')) {
+            window.location.href = `/character/${item._id}`;
+        } else if (item.hasOwnProperty('owners')) {
+            window.location.href = `/weapon/${item._id}`;
+        } else if (item.hasOwnProperty('pilots')) {
+            window.location.href = `/spaceship/${item._id}`;
+        } else if (item.hasOwnProperty('natives')) {
+            window.location.href = `/planet/${item._id}`;
+        } else if (item.hasOwnProperty('releaseDate')) {
+            window.location.href = `/movie/${item._id}`;
+        }
     }
 
     render() {
@@ -181,10 +229,30 @@ class Navbar extends Component {
                     </MDBNavbarNav>
 
                     <MDBNavbarNav right>
+                        {
+                            this.state.matchedResults.length > 0 ?
+                            <MDBNavItem>
+                                <MDBDropdown>
+                                    <MDBDropdownToggle nav caret>
+                                        <MDBIcon fab icon="galactic-republic" />
+                                    </MDBDropdownToggle>
+                                    <MDBDropdownMenu className="dropdown-default" right>
+                                        {
+                                            this.state.matchedResults.map((item, index) => {
+                                                return(
+                                                    <MDBDropdownItem key={index} onClick={() => this.openItem(item)}>{item.name}</MDBDropdownItem>
+                                                );
+                                            })
+                                        }
+                                    </MDBDropdownMenu>
+                                </MDBDropdown>
+                            </MDBNavItem>
+                            : null
+                        }
                         <MDBNavItem>
                             <MDBFormInline waves>
                                 <div className="md-form my-0">
-                                    <input className="form-control mr-sm-2" type="text" name="searchStr" placeholder="Search" arial-label="Search" />
+                                    <input className="form-control mr-sm-2" type="text" name="searchStr" placeholder="Search" arial-label="Search" onChange={this.handleChange} onKeyPress={this.search} />
                                 </div>
                             </MDBFormInline>
                         </MDBNavItem>

@@ -1,5 +1,6 @@
 const notifMsgs = require('./../constants/notification-messages');
 const Character = require('./../models/Character');
+const userRoles = require('./../constants/user-roles');
 
 const characterData = {
     getAll: async () => {
@@ -27,6 +28,7 @@ const characterData = {
     create: async (characterInput) => {
         try {
             const character = await Character.create(characterInput);
+
             return {  characterId: character._id, msg: notifMsgs.success.CHARACTER_CREATED }
         } catch(err) {
             console.log(err);
@@ -34,9 +36,13 @@ const characterData = {
         }
     },
 
-    edit: async (id, newCharacterInput) => {
+    edit: async (id, newCharacterInput, currUserId, userRole) => {
         try {
             const character = await Character.findById(id);
+
+            if (character.creator !== currUserId && userRole !== userRoles.ADMIN) {
+                throw new Error(notifMsgs.errors.UNAUTHORIZED_EDIT);
+            }
 
             Object.keys(newCharacterInput).forEach(newProp => {
                 character[newProp] = newCharacterInput[newProp];
@@ -50,8 +56,14 @@ const characterData = {
         }
     },
 
-    delete: async (id) => {
+    delete: async (id, currUserId, userRole) => {
         try {
+            const character = await Character.findById(id);
+
+            if (character.creator !== currUserId && userRole !== userRoles.ADMIN) {
+                throw new Error(notifMsgs.errors.UNAUTHORIZED_DELETE);
+            }
+
             await Character.findByIdAndDelete(id);
             return notifMsgs.success.CHARACTER_DELETED
         } catch(err) {
@@ -93,13 +105,15 @@ const characterData = {
     }),
 
     searchCharacters: (search) => new Promise((res, rej) => {
-        Character.find({ name: { $regex: "^" + search } }, (err, characters) => {
-            if (err) {
-                console.log(err);
-                rej(new Error(notifMsgs.errors.COULD_NOT_GET_CHARACTERS));
-            }
-
-            res(characters);
+        Character.find({ name: { $regex: '^' + search } })
+        .select('_id name vehicles')
+        .exec((err, characters) => {
+          if (err) {
+            console.log(err);
+            rej(new Error(notifMsgs.errors.COULD_NOT_GET_CHARACTERS));
+          }
+          
+          res(characters);
         });
     })
 };

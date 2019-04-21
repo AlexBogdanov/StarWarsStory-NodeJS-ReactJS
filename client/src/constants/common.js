@@ -24,9 +24,18 @@ const movieTypesName = {
     3: 'Standalone movie'
 };
 
+const searchSections = {
+    0: 'Characters',
+    1: 'Weapons',
+    2: 'Spaceships',
+    3: 'Planets',
+    4: 'Movies'
+};
+
 export {
     userRoles,
     notifTypes,
     movieTypes,
-    movieTypesName
+    movieTypesName,
+    searchSections
 };

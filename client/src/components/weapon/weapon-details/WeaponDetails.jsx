@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import Loader from 'react-loader-spinner';
-import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
+import { MDBContainer, MDBRow, MDBCol, MDBBtn } from 'mdbreact';
 
 import weaponService from './../../../services/weapon-service';
 import { OK } from './../../../constants/http-responses';
-import { notifTypes } from './../../../constants/common';
+import { notifTypes, userRoles } from './../../../constants/common';
 import { errorNotifs } from './../../../constants/notification-messages';
 
 class WeaponDetails extends Component {
@@ -12,13 +12,19 @@ class WeaponDetails extends Component {
         super(props);
 
         this.state = {
+            userRole: '',
             weapon: null,
             isLoading: false
         };
+
+        this.openEdit = this.openEdit.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     componentWillMount() {
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true, userRole:
+            window.localStorage.getItem('userRole') ? window.localStorage.getItem('userRole')
+            : window.sessionStorage.getItem('userRole') });
         
         weaponService.getWeaponById(this.props.match.params.weaponId)
           .then(res => {
@@ -30,6 +36,29 @@ class WeaponDetails extends Component {
                 res.json().then(() => {
                     this.props.notifHandler(errorNotifs.SOMETHING_WENT_WRONG, notifTypes.error);
                     setTimeout(() => { this.props.history.push('/weapons'); }, 2000);
+                });
+            }
+          });
+    }
+
+    openEdit() {
+        this.props.history.push(`/weapon/edit/${this.state.weapon._id}`);
+    }
+
+    delete() {
+        this.setState({ isLoading: true });
+
+        weaponService.deleteWeapon(this.state.weapon._id)
+          .then(res => {
+            if (res.status === OK) {
+                res.json().then(response => {
+                    this.props.notifHandler(response.data.msg, notifTypes.success);
+                    setTimeout(() => { this.props.history.push('/weapons') }, 2000);
+                });
+            } else {
+                res.json().then(err => {
+                    this.setState({ isLoading: false });
+                    this.props.notifHandler(err.message, notifTypes.error);
                 });
             }
           });
@@ -97,6 +126,18 @@ class WeaponDetails extends Component {
                     </MDBCol>
                     <MDBCol></MDBCol>
                 </MDBRow>
+                {
+                    this.state.userRole === userRoles.ADMIN ?
+                    <MDBRow>
+                        <MDBCol></MDBCol>
+                        <MDBCol>
+                            <MDBBtn type="button" onClick={this.openEdit}>Edit</MDBBtn>
+                            <MDBBtn type="button" onClick={this.delete}>Delete</MDBBtn>
+                        </MDBCol>
+                        <MDBCol></MDBCol>
+                    </MDBRow>
+                    : null
+                }
             </MDBContainer>
         );
     };

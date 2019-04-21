@@ -45,7 +45,7 @@ const planetController = {
     edit: (req, res) => {
         const planet = cloneOnly(req.body.planet, planetProperties);
         
-        planetData.edit(req.body.planetId, planet)
+        planetData.edit(req.body.planetId, planet, req.user._id, req.user.roles[0])
           .then(res.success)
           .catch(err => {
             console.log(err);
@@ -54,7 +54,7 @@ const planetController = {
     },
 
     delete: (req, res) => {
-        planetData.delete(req.params.id)
+        planetData.delete(req.params.id, req.user._id, req.user.roles[0])
           .then(msg => res.success({ msg }))
           .catch(err => {
             console.log(err);
@@ -64,17 +64,6 @@ const planetController = {
 
     getUserPlanets: (req, res) => {
       planetData.getAllPlanetsByUserId(req.user._id)
-        .then(res.success)
-        .catch(err => {
-          console.log(err);
-          res.error(err.message, null, 500);
-        });
-    },
-
-    searchPlanets: (req, res) => {
-      const search = req.query.search;
-
-      planetData.searchPlanets(search)
         .then(res.success)
         .catch(err => {
           console.log(err);

@@ -10,7 +10,6 @@ router
     .post('/create', passport.authenticate('jwt'), planetController.create)
     .put('/edit', passport.authenticate('jwt'), planetController.edit)
     .delete('/delete/:id', passport.authenticate('jwt'), planetController.delete)
-    .get('/userPlanets', passport.authenticate('jwt'), planetController.getUserPlanets)
-    .get('/find', planetController.searchPlanets);
+    .get('/userPlanets', passport.authenticate('jwt'), planetController.getUserPlanets);
 
 module.exports = router;

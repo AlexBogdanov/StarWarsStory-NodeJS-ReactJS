@@ -4,7 +4,6 @@ import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 import Navbar from './components/navbar/Navbar';
-import Footer from './components/footer/Footer';
 import { notifTypes } from './constants/common';
 
 class App extends Component {
@@ -31,7 +30,6 @@ class App extends Component {
       <div className="App">
         <Navbar notifHandler={this.notifHandler} />
         <NotificationContainer />
-        {/* <Footer /> */}
       </div>
     );
   }

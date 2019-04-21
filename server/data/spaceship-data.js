@@ -1,5 +1,6 @@
 const Spaceship = require('./../models/Spaceship');
 const notifMsgs = require('./../constants/notification-messages');
+const userRoles = require('./../constants/user-roles');
 
 const spaceshipData = {
     getAll: async () => {
@@ -33,9 +34,13 @@ const spaceshipData = {
         }
     },
 
-    edit: async (id, newSpaceshipInput) => {
+    edit: async (id, newSpaceshipInput, currUserId, userRole) => {
         try {
             const spaceship = await Spaceship.findById(id);
+
+            if (spaceship.creator !== currUserId && userRole !== userRoles.ADMIN) {
+                throw new Error(notifMsgs.errors.UNAUTHORIZED_EDIT);
+            }
 
             Object.keys(newSpaceshipInput).forEach(newProp => {
                 spaceship[newProp] = newSpaceshipInput[newProp];
@@ -49,8 +54,14 @@ const spaceshipData = {
         }
     },
     
-    delete: async (id) => {
+    delete: async (id, currUserId, userRole) => {
         try {
+            const spaceship = await Spaceship.findById(id);
+
+            if (spaceship.creator !== currUserId && userRole !== userRoles.ADMIN) {
+                throw new Error(notifMsgs.errors.UNAUTHORIZED_DELETE);
+            }
+
             await Spaceship.findByIdAndDelete(id);
             return notifMsgs.success.SPACESHIP_DELETED;
         } catch(err) {
@@ -71,12 +82,14 @@ const spaceshipData = {
     }),
 
     searchSpaceships: (search) => new Promise((res, rej) => {
-        Spaceship.find({ name: { $regex: "^" + search } }, (err, spaceships) => {
+        Spaceship.find({ name: { $regex: "^" + search } })
+        .select('_id name pilots')
+        .exec((err, spaceships) => {
             if (err) {
                 console.log(err);
                 rej(new Error(notifMsgs.errors.COULD_NOT_GET_SPACESHIPS));
             }
-
+            
             res(spaceships);
         });
     })

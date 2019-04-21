@@ -20,6 +20,25 @@ const userController = {
             .catch(err => {
                 res.error(err.message, null, 500);
             });
+    },
+
+    search: async (req, res) => {
+        const search = req.query.search;
+
+        try {
+            const matchedCharacters = await characterData.searchCharacters(search);
+            const matchedWeapons = await weaponData.searchWeapons(search);
+            const matchedSpaceships = await spaceshipData.searchSpaceships(search);
+            const matchedPlanets = await planetData.searchPlanets(search);
+            const matchedMovies = await movieData.serachMovies(search);
+
+            const matchedResult = [...matchedCharacters, ...matchedWeapons, ...matchedSpaceships,
+                ...matchedPlanets, ...matchedMovies];
+            res.success(matchedResult);
+        } catch (err) {
+            console.log(err);
+            res.error(err.message, null, 500);
+        }
     }
 };
 

@@ -1,5 +1,6 @@
 const Movie = require('./../models/Movie');
 const notifMsgs = require('./../constants/notification-messages');
+const userRoles = require('./../constants/user-roles');
 
 const movieData = {
     getAll: async () => {
@@ -32,9 +33,13 @@ const movieData = {
         }
     },
 
-    edit: async (id, newMovieInput) => {
+    edit: async (id, newMovieInput, currUserId, userRole) => {
         try {
             const movie = await Movie.findById(id);
+
+            if (movie.creator !== currUserId && userRole !== userRoles.ADMIN) {
+                throw new Error(notifMsgs.errors.UNAUTHORIZED_EDIT);
+            }
 
             Object.keys(newMovieInput).forEach(newProp => {
                 movie[newProp] = newMovieInput[newProp];
@@ -48,8 +53,14 @@ const movieData = {
         }
     },
 
-    delete: async (id) => {
+    delete: async (id, currUserId, userRole) => {
         try {
+            const movie = await Movie.findById(id);
+
+            if (movie.creator !== currUserId && userRole !== userRoles.ADMIN) {
+                throw new Error(notifMsgs.errors.UNAUTHORIZED_DELETE);
+            }
+
             await Movie.findByIdAndDelete(id);
             return notifMsgs.success.MOVIE_DELETED;
         } catch(err) {
@@ -70,12 +81,14 @@ const movieData = {
     }),
 
     serachMovies: (search) => new Promise((res, rej) => {
-        Movie.find({ name: { $regex: "^" + search } }, (err, movies) => {
+        Movie.find({ name: { $regex: "^" + search } })
+        .select('_id name releaseDate')
+        .exec((err, movies) => {
             if (err) {
                 console.log(err);
                 rej(new Error(notifMsgs.errors.COULD_NOT_GET_MOVIES));
             }
-
+            
             res(movies);
         });
     })

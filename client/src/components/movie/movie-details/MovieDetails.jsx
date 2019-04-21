@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import Loader from 'react-loader-spinner';
-import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
+import { MDBContainer, MDBRow, MDBCol, MDBBtn } from 'mdbreact';
 
 import movieService from './../../../services/movie-service';
 import { OK } from './../../../constants/http-responses';
-import { notifTypes, movieTypesName } from './../../../constants/common';
+import { notifTypes, movieTypesName, userRoles } from './../../../constants/common';
 import { errorNotifs } from './../../../constants/notification-messages';
 
 class MovieDetails extends Component {
@@ -12,15 +12,20 @@ class MovieDetails extends Component {
         super(props);
 
         this.state = {
+            userRole: '',
             movie: null,
             isLoading: false
         };
 
         this.getDate = this.getDate.bind(this);
+        this.openEdit = this.openEdit.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     componentWillMount() {
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true, userRole:
+            window.localStorage.getItem('userRole') ? window.localStorage.getItem('userRole')
+            : window.sessionStorage.getItem('userRole') });
 
         movieService.getMovieById(this.props.match.params.movieId)
           .then(res => {
@@ -42,6 +47,29 @@ class MovieDetails extends Component {
     getDate(date) {
         const parsedDate = new Date(date);
         return `${parsedDate.getDate()}-${parsedDate.getMonth() + 1}-${parsedDate.getFullYear()}`;
+    }
+
+    openEdit() {
+        this.props.history.push(`/movie/edit/${this.state.movie._id}`);
+    }
+
+    delete() {
+        this.setState({ isLoading: true });
+
+        movieService.deleteMovie(this.state.movie._id)
+          .then(res => {
+            if (res.status === OK) {
+                res.json().then(response => {
+                    this.props.notifHandler(response.data.msg, notifTypes.success);
+                    setTimeout(() => { this.props.history.push('/movies') }, 2000);
+                });
+            } else {
+                res.json().then(err => {
+                    this.setState({ isLoading: false });
+                    this.props.notifHandler(err.message, notifTypes.error);
+                });
+            }
+          });
     }
 
     render() {
@@ -106,6 +134,18 @@ class MovieDetails extends Component {
                     </MDBCol>
                     <MDBCol></MDBCol>
                 </MDBRow>
+                {
+                    this.state.userRole === userRoles.ADMIN ?
+                    <MDBRow>
+                        <MDBCol></MDBCol>
+                        <MDBCol>
+                            <MDBBtn type="button" onClick={this.openEdit}>Edit</MDBBtn>
+                            <MDBBtn type="button" onClick={this.delete}>Delete</MDBBtn>
+                        </MDBCol>
+                        <MDBCol></MDBCol>
+                    </MDBRow>
+                    : null
+                }
             </MDBContainer>
         );
     };

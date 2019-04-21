@@ -22,7 +22,9 @@ const errorNotifs = {
     MOVIE_INFO_TOO_SHORT: 'Movie info should be atleast 30 characters long',
     MOVIE_COVER_REQUIRED: 'Please provide a cover',
     INVALID_DATE: 'Invalid date',
-    SEARCH_UNREACHABLE: 'Search bar is not working in the moment, please try to use it later.'
+    SEARCH_UNREACHABLE: 'Search bar is not working in the moment, please try to use it later.',
+    INVALID_SEARCH_SECTION: 'Invalid search section.',
+    NO_RESULTS: 'We don`t have any results matching your input.'
 };
 
 const successNotifs = {

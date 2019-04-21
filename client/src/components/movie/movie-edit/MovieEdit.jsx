@@ -5,7 +5,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn,
 
 import movieService from './../../../services/movie-service';
 import { OK } from './../../../constants/http-responses';
-import { notifTypes, movieTypes } from '../../../constants/common';
+import { notifTypes, movieTypesName, movieTypes } from '../../../constants/common';
 import { errorNotifs } from '../../../constants/notification-messages';
 import collectionManager from './../../../utilities/collection-manager';
 
@@ -105,7 +105,7 @@ class MovieEdit extends Component {
     }
 
     setMovieType(movieType) {
-        this.setState({ type: movieTypes[movieType] });
+        this.setState({ type: movieType });
     }
 
     handleChange(e) {
@@ -180,14 +180,19 @@ class MovieEdit extends Component {
                                     </MDBDropdownToggle>
                                     <MDBDropdownMenu basic>
                                         {
-                                            Object.keys(movieTypes).map((movieType, index) => {
+                                            Object.values(movieTypes).map((movieType, index) => {
                                                 return (
-                                                    <MDBDropdownItem key={index} onClick={() => this.setMovieType(movieType)}>{movieType}</MDBDropdownItem>
+                                                    <MDBDropdownItem key={index} onClick={() => this.setMovieType(movieType)}>{movieTypesName[movieType]}</MDBDropdownItem>
                                                 );
                                             })
                                         }
                                     </MDBDropdownMenu>
                                 </MDBDropdown>
+                                {
+                                    this.state.type || this.state.type === 0 ?
+                                    <MDBBtn disabled>{movieTypesName[this.state.type]}</MDBBtn>
+                                    : null
+                                }
 
                                 <MDBInput
                                 label="Info"

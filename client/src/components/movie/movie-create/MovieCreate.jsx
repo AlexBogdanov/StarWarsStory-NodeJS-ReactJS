@@ -78,7 +78,6 @@ class MovieCreate extends Component {
     }
 
     setMovieType(movieType) {
-        debugger;
         this.setState({ type: movieType });
     }
 
@@ -187,6 +186,11 @@ class MovieCreate extends Component {
                                         }
                                     </MDBDropdownMenu>
                                 </MDBDropdown>
+                                {
+                                    this.state.type || this.state.type === 0 ?
+                                    <MDBBtn disabled>{movieTypesName[this.state.type]}</MDBBtn>
+                                    : null
+                                }
                                 
                                 <MDBInput
                                 label="dd"

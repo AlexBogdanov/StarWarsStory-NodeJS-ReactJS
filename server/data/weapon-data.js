@@ -1,5 +1,6 @@
 const Weapon = require('./../models/Weapon');
 const notifMsgs = require('./../constants/notification-messages');
+const userRoles = require('./../constants/user-roles');
 
 const weaponData = {
     getAll: async () => {
@@ -34,9 +35,13 @@ const weaponData = {
         }
     },
 
-    edit: async (id, newWeaponInput) => {
+    edit: async (id, newWeaponInput, currUserId, userRole) => {
         try {
             const weapon = await Weapon.findById(id);
+
+            if (weapon.creator !== currUserId && userRole !== userRoles.ADMIN) {
+                throw new Error(notifMsgs.errors.UNAUTHORIZED_EDIT);
+            }
 
             Object.keys(newWeaponInput).forEach(newProp => {
                 weapon[newProp] = newWeaponInput[newProp];
@@ -50,8 +55,14 @@ const weaponData = {
         }
     },
 
-    delete: async (id) => {
+    delete: async (id, currUserId, userRole) => {
         try {
+            const weapon = await Weapon.findById(id);
+
+            if (weapon.creator !== currUserId && userRole !== userRoles.ADMIN) {
+                throw new Error(notifMsgs.errors.UNAUTHORIZED_DELETE);
+            }
+
             await Weapon.findByIdAndDelete(id);
             return notifMsgs.success.WEAPON_DELETED;
         } catch(err) {
@@ -71,13 +82,15 @@ const weaponData = {
         });
     }),
 
-    searchWeapons: (search) => new Promise((rej, res) => {
-        Weapon.find({ name: { $regex: "^" + search } }, (err, weapons) => {
+    searchWeapons: (search) => new Promise((res, rej) => {
+        Weapon.find({ name: { $regex: "^" + search } })
+        .select('_id name owners')
+        .exec((err, weapons) => {
             if (err) {
                 console.log(err);
                 rej(new Error(notifMsgs.errors.COULD_NOT_GET_WEAPONS));
             }
-
+            
             res(weapons);
         });
     })

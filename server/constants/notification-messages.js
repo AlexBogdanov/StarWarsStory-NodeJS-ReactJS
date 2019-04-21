@@ -34,7 +34,9 @@ const notifMsgs = {
         WEAPON_DOES_NOT_EXIST: 'Weapon does not exist, anymore',
         UNABLE_TO_CREATE_WEAPON: 'Unable to create weapon',
         FAILED_TO_EDIT_WEAPON: 'Failed to edit weapon',
-        FAILED_TO_DELETE_WEAPON: 'Failed to delete weapon'
+        FAILED_TO_DELETE_WEAPON: 'Failed to delete weapon',
+        UNAUTHORIZED_EDIT: 'Unauthorized to edit this record.',
+        UNAUTHORIZED_DELETE: 'Unauthorized to delete this record.'
     },
 
     success: {

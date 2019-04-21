@@ -45,7 +45,7 @@ const spaceshipController = {
         const spaceship = cloneOnly(req.body.spaceship, spaceshipProperties);
         spaceship.creator = req.user._id;
 
-        spaceshipData.edit(req.body.spaceshipId, spaceship)
+        spaceshipData.edit(req.body.spaceshipId, spaceship, req.user._id, req.user.roles[0])
           .then(res.success)
           .catch(err => {
             console.log(err);
@@ -54,7 +54,7 @@ const spaceshipController = {
     },
 
     delete: (req, res) => {
-        spaceshipData.delete(req.params.id)
+        spaceshipData.delete(req.params.id, req.user._id, req.user.roles[0])
           .then(msg => res.success({ msg }))
           .catch(err => {
             console.log(err);
@@ -64,17 +64,6 @@ const spaceshipController = {
 
     getUserSpaceships: (req, res) => {
       spaceshipData.getAllSpaceshipsByUserId(req.user._id)
-        .then(res.success)
-        .catch(err => {
-          console.log(err);
-          res.error(err.message, null, 500);
-        });
-    },
-
-    searchSpaceships: (req, res) => {
-      const search = req.query.search;
-
-      spaceshipData.searchSpaceships(search)
         .then(res.success)
         .catch(err => {
           console.log(err);

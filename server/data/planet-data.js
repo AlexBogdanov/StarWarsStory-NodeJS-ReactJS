@@ -1,5 +1,6 @@
 const Planet = require('./../models/Planet');
 const notifMsgs = require('./../constants/notification-messages');
+const userRoles = require('./../constants/user-roles');
 
 const planetData = {
     getAll: async () => {
@@ -33,9 +34,13 @@ const planetData = {
         }
     },
 
-    edit: async (id, newPlanetInput) => {
+    edit: async (id, newPlanetInput, currUserId, userRole) => {
         try {
             const planet = await Planet.findById(id);
+
+            if (planet.creator !== currUserId && userRole !== userRoles.ADMIN) {
+                throw new Error(notifMsgs.errors.UNAUTHORIZED_EDIT);
+            }
 
             Object.keys(newPlanetInput).forEach(newProp => {
                 planet[newProp] = newPlanetInput[newProp];
@@ -49,8 +54,14 @@ const planetData = {
         }
     },
 
-    delete: async (id) => {
+    delete: async (id, currUserId, userRole) => {
         try {
+            const planet = await Planet.findById(id);
+
+            if (planet.creator !== currUserId && userRole !== userRoles.ADMIN) {
+                throw new Error(notifMsgs.errors.UNAUTHORIZED_DELETE);
+            }
+
             await Planet.findByIdAndDelete(id);
             return notifMsgs.success.PLANET_DELETED;
         } catch(err) {
@@ -71,12 +82,14 @@ const planetData = {
     }),
 
     searchPlanets: (search) => new Promise((res, rej) => {
-        Planet.find({ name: { $regex: "^" + search } }, (err, planets) => {
+        Planet.find({ name: { $regex: "^" + search } })
+        .select('_id name natives')
+        .exec((err, planets) => {
             if (err) {
                 console.log(err);
                 rej(new Error(notifMsgs.errors.COULD_NOT_GET_PLANETS));
             }
-
+            
             res(planets);
         });
     })

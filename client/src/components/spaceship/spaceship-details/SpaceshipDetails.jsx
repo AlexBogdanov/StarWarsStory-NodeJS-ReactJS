@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import Loader from 'react-loader-spinner';
-import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
+import { MDBContainer, MDBRow, MDBCol, MDBBtn } from 'mdbreact';
 
 import spaceshipService from './../../../services/spaceship-service';
 import { OK } from './../../../constants/http-responses';
-import { notifTypes } from './../../../constants/common';
+import { notifTypes, userRoles } from './../../../constants/common';
 import { errorNotifs } from './../../../constants/notification-messages';
 
 class SpaceshipDetails extends Component {
@@ -12,13 +12,19 @@ class SpaceshipDetails extends Component {
         super(props);
 
         this.state = {
+            userRole: '',
             spaceship: null,
             isLoading: false
         };
+
+        this.openEdit = this.openEdit.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     componentWillMount() {
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true, userRole:
+            window.localStorage.getItem('userRole') ? window.localStorage.getItem('userRole')
+            : window.sessionStorage.getItem('userRole') });
 
         spaceshipService.getSpacehipById(this.props.match.params.spaceshipId)
           .then(res => {
@@ -30,6 +36,29 @@ class SpaceshipDetails extends Component {
                 res.json().then(err => {
                     this.props.notifHandler(errorNotifs.SOMETHING_WENT_WRONG, notifTypes.error);
                     setTimeout(() => { this.props.history.push('/spaceships'); }, 2000);
+                });
+            }
+          });
+    }
+
+    openEdit() {
+        this.props.history.push(`/spaceship/edit/${this.state.spaceship._id}`);
+    }
+
+    delete() {
+        this.setState({ isLoading: true });
+
+        spaceshipService.deleteSpaceship(this.state.spaceship._id)
+          .then(res => {
+            if (res.status === OK) {
+                res.json().then(response => {
+                    this.props.notifHandler(response.data.msg, notifTypes.success);
+                    setTimeout(() => { this.props.history.push('/spaceships') }, 2000);
+                });
+            } else {
+                res.json().then(err => {
+                    this.setState({ isLoading: false });
+                    this.props.notifHandler(err.message, notifTypes.error);
                 });
             }
           });
@@ -97,6 +126,18 @@ class SpaceshipDetails extends Component {
                     </MDBCol>
                     <MDBCol></MDBCol>
                 </MDBRow>
+                {
+                    this.state.userRole === userRoles.ADMIN ?
+                    <MDBRow>
+                        <MDBCol></MDBCol>
+                        <MDBCol>
+                            <MDBBtn type="button" onClick={this.openEdit}>Edit</MDBBtn>
+                            <MDBBtn type="button" onClick={this.delete}>Delete</MDBBtn>
+                        </MDBCol>
+                        <MDBCol></MDBCol>
+                    </MDBRow>
+                    : null
+                }
             </MDBContainer>
         );
     };

@@ -48,7 +48,7 @@ const characterController = {
     edit: (req, res) => {
         const character = cloneOnly(req.body.character, characterProperties);
 
-        characterData.edit(req.body.characterId, character)
+        characterData.edit(req.body.characterId, character, req.user._id, req.user.roles[0])
           .then(res.success)
           .catch(err => {
             console.log(err);
@@ -57,7 +57,7 @@ const characterController = {
     },
 
     delete: (req, res) => {
-        characterData.delete(req.params.id)
+        characterData.delete(req.params.id, req.user._id, req.user.roles[0])
           .then(msg => res.success({ msg }))
           .catch(err => {
             console.log(err);
@@ -77,17 +77,6 @@ const characterController = {
 
     getUserCharacters: (req, res) => {
       characterData.getAllCharactersByUserId(req.user._id)
-        .then(res.success)
-        .catch(err => {
-          console.log(err);
-          res.error(err.message, null, 500);
-        });
-    },
-
-    searchCharacters: (req, res) => {
-      const search = req.query.search;
-
-      characterData.searchCharacters(search)
         .then(res.success)
         .catch(err => {
           console.log(err);

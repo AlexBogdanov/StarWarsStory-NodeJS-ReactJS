@@ -5,6 +5,7 @@ const { userController } = require('./../controllers');
 
 router
     .post('/register', userController.register)
-    .post('/login', passport.authenticate('local'), userController.login);
+    .post('/login', passport.authenticate('local'), userController.login)
+    .get('/find', userController.search);
 
 module.exports = router;

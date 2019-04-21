@@ -46,7 +46,7 @@ const movieController = {
     edit: (req, res) => {
         const movie = cloneOnly(req.body.movie, movieProperties);
 
-        movieData.edit(req.body.movieId, movie)
+        movieData.edit(req.body.movieId, movie, req.user._id, req.user.roles[0])
           .then(res.success)
           .catch(err => {
               console.log(err);
@@ -55,7 +55,7 @@ const movieController = {
     },
 
     delete: (req, res) => {
-        movieData.delete(req.params.id)
+        movieData.delete(req.params.id, req.user._id, req.user.roles[0])
           .then(msg => res.success({ msg }))
           .catch(err => {
             console.log(err);
@@ -70,17 +70,6 @@ const movieController = {
             console.log(err);
             res.error(err.message, null, 500);
           });
-    },
-
-    searchMovies: (req, res) => {
-      const search = req.query.search;
-
-      movieData.serachMovies(search)
-        .then(res.success)
-        .catch(err => {
-          console.log(err);
-          res.error(err.message, null, 500);
-        });
     }
 };
 

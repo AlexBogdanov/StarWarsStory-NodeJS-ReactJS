@@ -10,7 +10,6 @@ router
     .post('/create', passport.authenticate('jwt'), movieController.create)
     .put('/edit', passport.authenticate('jwt'), movieController.edit)
     .delete('/delete/:id', passport.authenticate('jwt'), movieController.delete)
-    .get('/userMovies', passport.authenticate('jwt'), movieController.getUserMovies)
-    .get('/find', movieController.searchMovies);
+    .get('/userMovies', passport.authenticate('jwt'), movieController.getUserMovies);
 
 module.exports = router;

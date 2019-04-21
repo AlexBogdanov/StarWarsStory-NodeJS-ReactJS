@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import Loader from 'react-loader-spinner';
-import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
+import { MDBContainer, MDBRow, MDBCol, MDBBtn } from 'mdbreact';
 
 import characterService from './../../../services/character-service';
 import { OK } from './../../../constants/http-responses';
-import { notifTypes } from './../../../constants/common';
+import { notifTypes, userRoles } from './../../../constants/common';
 import { errorNotifs } from './../../../constants/notification-messages';
 
 class CharacterDetails extends Component {
@@ -12,13 +12,19 @@ class CharacterDetails extends Component {
         super(props);
 
         this.state = {
+            userRole: '',
             character: null,
             isLoading: false
         };
+
+        this.openEdit = this.openEdit.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     componentWillMount() {
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true, userRole:
+            window.localStorage.getItem('userRole') ? window.localStorage.getItem('userRole')
+            : window.sessionStorage.getItem('userRole') });
 
         characterService.getCharacterById(this.props.match.params.characterId)
           .then(res => {
@@ -33,6 +39,29 @@ class CharacterDetails extends Component {
                   });
               }
           })
+    }
+
+    openEdit() {
+        this.props.history.push(`/character/edit/${this.state.character._id}`);
+    }
+
+    delete() {
+        this.setState({ isLoading: true });
+
+        characterService.deleteCharacterById(this.state.character._id)
+          .then(res => {
+            if (res.status === OK) {
+                res.json().then(response => {
+                    this.props.notifHandler(response.data.msg, notifTypes.success);
+                    setTimeout(() => { this.props.history.push('/characters') }, 2000);
+                });
+            } else {
+                res.json().then(err => {
+                    this.setState({ isLoading: false });
+                    this.props.notifHandler(err.message, notifTypes.error);
+                });
+            }
+          });
     }
 
     render() {
@@ -140,6 +169,18 @@ class CharacterDetails extends Component {
                     </MDBCol>
                     <MDBCol></MDBCol>
                 </MDBRow>
+                {
+                    this.state.userRole === userRoles.ADMIN ?
+                    <MDBRow>
+                        <MDBCol></MDBCol>
+                        <MDBCol>
+                            <MDBBtn type="button" onClick={this.openEdit}>Edit</MDBBtn>
+                            <MDBBtn type="button" onClick={this.delete}>Delete</MDBBtn>
+                        </MDBCol>
+                        <MDBCol></MDBCol>
+                    </MDBRow>
+                    : null
+                }
             </MDBContainer>
         );
     };
