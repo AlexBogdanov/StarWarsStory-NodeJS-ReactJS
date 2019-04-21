@@ -3,24 +3,24 @@ import Loader from 'react-loader-spinner';
 import { MDBRow } from 'mdbreact';
 
 import ListItem from './../../list-item/ListItem';
-import characterService from '../../../services/character-service';
-import { OK } from '../../../constants/http-responses';
+import planetService from './../../../services/planet-service';
+import { OK } from './../../../constants/http-responses';
 import { notifTypes } from '../../../constants/common';
 
-class CharactersList extends Component {
+class MyPlanets extends Component {
     constructor(props) {
         super(props);
         
         this.state = {
-            characters: [],
+            planets: [],
             isLoading: false,
             doRender: false,
             userRole: ''
         };
 
-        this.openCharacterDetails = this.openCharacterDetails.bind(this);
-        this.openCharacterEdit = this.openCharacterEdit.bind(this);
-        this.deleteCharacter = this.deleteCharacter.bind(this);
+        this.openPlanetDetails = this.openPlanetDetails.bind(this);
+        this.openPlanetEdit = this.openPlanetEdit.bind(this);
+        this.deletePlanet = this.deletePlanet.bind(this);
     }
 
     componentWillMount() {
@@ -31,51 +31,43 @@ class CharactersList extends Component {
         } else if (sessionStorage.getItem('userRole')) {
             this.setState({ userRole: sessionStorage.getItem('userRole') });
         }
-
-        let currUserId;
-
-        if (localStorage.getItem('id')) {
-            currUserId = localStorage.getItem('id');
-        } else if (sessionStorage.getItem('id')) {
-            currUserId = sessionStorage.getItem('id');
-        }
         
-        characterService.getAllCharacters()
+        planetService.getUserPlanets()
           .then(res => {
-              if (res.status === OK) {
-                  res.json().then(response => {
-                    if (response.data.characters.length > 0) {
-                        this.setState({ characters: response.data.characters.map(character => {
-                            character.isOwned = character.creator === currUserId ? true : false;
-                            return character;
+            if (res.status === OK) {
+                res.json().then(response => {
+                    if (response.data.length > 0) {
+                        this.setState({ planets: response.data.map(planet => {
+                            planet.isOwned = true;
+                            return planet;
                         }), doRender: true, isLoading: false });
                         return;
                     }
 
                     this.setState({ isLoading: false });
-                  });
-              } else {
-                  res.json().then(err => {
+                });
+            } else {
+                res.json().then(err => {
                     this.setState({ isLoading: false });
                     this.props.notifHandler(err.message, notifTypes.error);
                     this.props.history.push('/');
-                  });
-              }
+                });
+            }
           });
     }
 
-    openCharacterDetails(id) {
-        this.props.history.push(`/character/${id}`);
+    openPlanetDetails(id) {
+        this.props.history.push(`/planet/${id}`);
     }
 
-    openCharacterEdit(id) {
-        this.props.history.push(`/character/edit/${id}`);
+    openPlanetEdit(id) {
+        this.props.history.push(`/planet/edit/${id}`);
     }
 
-    deleteCharacter(id) {
+    deletePlanet(id) {
         this.setState({ isLoading: true });
-        
-        characterService.deleteCharacterById(id)
+
+        planetService.deletePlanet(id)
           .then(res => {
             if (res.status === OK) {
                 res.json().then(response => {
@@ -86,7 +78,7 @@ class CharactersList extends Component {
                 res.json().then(err => {
                     this.setState({ isLoading: false });
                     this.props.notifHandler(err.message, notifTypes.error);
-                });
+                })
             }
           });
     }
@@ -99,26 +91,27 @@ class CharactersList extends Component {
                     <Loader type="Ball-Triangle" color="black" height="120" />
                     :
                     <Fragment>
-                        {this.state.doRender ?
+                        {
+                            this.state.doRender ?
                             <MDBRow className="padding">
-                            {this.state.characters.map((character, index) => {
+                            {this.state.planets.map((planet, index) => {
                                 return (
                                     <ListItem
                                     key={index}
-                                    itemId={character._id}
-                                    name={character.name}
-                                    shortDescr={character.shortStory}
-                                    imageUrl={character.images[0]}
+                                    itemId={planet._id}
+                                    name={planet.name}
+                                    shortDescr={planet.info}
+                                    imageUrl={planet.images[0]}
                                     userRole={this.state.userRole}
-                                    openItemDetails={this.openCharacterDetails}
-                                    openItemEdit={this.openCharacterEdit}
-                                    deleteItem={this.deleteCharacter}
-                                    isOwned={character.isOwned} />
+                                    openItemDetails={this.openPlanetDetails}
+                                    openItemEdit={this.openPlanetEdit}
+                                    deleteItem={this.deletePlanet}
+                                    isOwned={planet.isOwned} />
                                 );
                             })}
                             </MDBRow>
-                        :
-                        <div> No results </div>
+                            :
+                            <div> No results </div>
                         }
                     </Fragment>
                 }
@@ -127,4 +120,4 @@ class CharactersList extends Component {
     };
 };
 
-export default CharactersList;
+export default MyPlanets;

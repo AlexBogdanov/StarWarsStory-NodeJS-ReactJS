@@ -78,7 +78,8 @@ class MovieCreate extends Component {
     }
 
     setMovieType(movieType) {
-        this.setState({ type: movieTypes[movieType] });
+        debugger;
+        this.setState({ type: movieType });
     }
 
     handleChange(e) {
@@ -178,7 +179,7 @@ class MovieCreate extends Component {
                                     </MDBDropdownToggle>
                                     <MDBDropdownMenu basic>
                                         {
-                                            Object.keys(movieTypes).map((movieType, index) => {
+                                            Object.values(movieTypes).map((movieType, index) => {
                                                 return (
                                                     <MDBDropdownItem key={index} onClick={() => this.setMovieType(movieType)}>{movieTypesName[movieType]}</MDBDropdownItem>
                                                 );

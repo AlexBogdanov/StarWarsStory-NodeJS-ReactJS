@@ -8,30 +8,35 @@ import CharacterList from '../components/character/characters-list/CharactersLis
 import CharacterDetails from '../components/character/character-details/CharacterDetails';
 import CharacterCreate from '../components/character/character-create/CharacterCreate';
 import CharacterEdit from '../components/character/character-edit/CharacterEdit';
+import MyCharacters from './../components/character/my-characters/MyCharacters';
 
 // Weapon
 import WeaponList from '../components/weapon/weapons-list/WeaponsList';
 import WeaponDetails from '../components/weapon/weapon-details/WeaponDetails';
 import WeaponCreate from '../components/weapon/weapon-create/WeaponCreate';
 import WeaponEdit from '../components/weapon/weapon-edit/WeaponEdit';
+import MyWeapons from './../components/weapon/my-weapons/MyWeapons';
 
 // Planet
 import PlanetList from '../components/planet/planets-list/PlanetsList';
 import PlanetDetails from '../components/planet/planet-details/PlanetDetails';
 import PlanetCreate from '../components/planet/planet-create/PlanetCreate';
 import PlanetEdit from '../components/planet/planet-edit/PlanetEdit';
+import MyPlanets from './../components/planet/my-planets/MyPlanets';
 
 // Spaceship
 import SpaceshipList from '../components/spaceship/spaceships-list/SpaceshipsList';
 import SpaceshipDetails from '../components/spaceship/spaceship-details/SpaceshipDetails';
 import SpaceshipCreate from '../components/spaceship/spaceship-create/SpaceshipCreate';
 import SpaceshipEdit from '../components/spaceship/spaceship-edit/SpaceshipEdit';
+import MySpaceships from './../components/spaceship/my-spaceships/MySpaceships';
 
 // Movie
 import MovieList from '../components/movie/movies-list/MoviesList';
 import MovieDetails from '../components/movie/movie-details/MovieDetails';
 import MovieCreate from '../components/movie/movie-create/MovieCreate';
 import MovieEdit from '../components/movie/movie-edit/MovieEdit';
+import MyMovies from './../components/movie/my-movies/MyMovies';
 
 const AuthRoutes = (props) => {
     return (
@@ -48,26 +53,31 @@ const AuthRoutes = (props) => {
                 <Route exact path="/characters" render={({ history }) => <CharacterList history={history} notifHandler={props.notifHandler} />} />
                 <Route exact path="/character/edit/:characterId" render={({ match, history }) => <CharacterEdit match={match} history={history} notifHandler={props.notifHandler} />} />
                 <Route exact path="/character/:characterId" render={({ match, history }) => <CharacterDetails match={match} history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/my-characters" render={({ history }) => <MyCharacters history={history} notifHandler={props.notifHandler} />} />
 
                 {/* Weapon */}
                 <Route exact path="/weapons" render={({ history }) => <WeaponList history={history} notifHandler={props.notifHandler} />} />
                 <Route exact path="/weapon/edit/:weaponId" render={({ match, history }) => <WeaponEdit match={match} history={history} notifHandler={props.notifHandler} />} />
                 <Route exact path="/weapon/:weaponId" render={({ match, history }) => <WeaponDetails match={match} history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/my-weapons" render={({ history }) => <MyWeapons history={history} notifHandler={props.notifHandler} />} />
 
                 {/* Planet */}
                 <Route exact path="/planets" render={({ history }) => <PlanetList history={history} notifHandler={props.notifHandler} />} />
                 <Route exact path="/planet/edit/:planetId" render={({ match, history }) => <PlanetEdit match={match} history={history} notifHandler={props.notifHandler} />} />
                 <Route exact path="/planet/:planetId" render={({ match, history }) => <PlanetDetails match={match} history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/my-planets" render={({ history }) => <MyPlanets history={history} notifHandler={props.notifHandler} />} />
 
                 {/* Spaceship */}
                 <Route exact path="/spaceships" render={({ history }) => <SpaceshipList history={history} notifHandler={props.notifHandler} />} />
                 <Route exact path="/spaceship/edit/:spaceshipId" render={({ match, history }) => <SpaceshipEdit match={match} history={history} notifHandler={props.notifHandler} />} />
                 <Route exact path="/spaceship/:spaceshipId" render={({ match, history }) => <SpaceshipDetails match={match} history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/my-spaceships" render={({ history }) => <MySpaceships history={history} notifHandler={props.notifHandler} />} />
                        
                 {/* Movie */}
                 <Route exact path="/movies" render={({ history }) => <MovieList history={history} notifHandler={props.notifHandler} />} />
                 <Route exact path="/movie/edit/:movieId" render={({ match, history }) => <MovieEdit match={match} history={history} notifHandler={props.notifHandler} />} />
                 <Route exact path="/movie/:movieId" render={({ match, history }) => <MovieDetails match={match} history={history} notifHandler={props.notifHandler} />} />
+                <Route exact path="/my-movies" render={({ history }) => <MyMovies history={history} notifHandler={props.notifHandler} />} />
             </Switch>
         </Fragment>
     );

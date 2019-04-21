@@ -5,6 +5,7 @@ const getPlanetByIdUrl = '/planet/planet';
 const createPlanetUrl = '/planet/create';
 const editPlanetUrl = '/planet/edit';
 const deletePlanetUrl = '/planet/delete';
+const getUserPlanetsUrl = '/planet/userPlanets';
 
 const planetService = {
     getAllPlanets: () => {
@@ -25,6 +26,10 @@ const planetService = {
 
     deletePlanet: (planetId) => {
         return del(`${deletePlanetUrl}/${planetId}`, true);
+    },
+
+    getUserPlanets: () => {
+        return get(getUserPlanetsUrl, true);
     }
 };
 

@@ -5,6 +5,7 @@ const getSpaceshipByIdUrl = '/spaceship/spaceship';
 const createSpaceshipUrl = '/spaceship/create';
 const editSpaceshipUrl = '/spaceship/edit';
 const deleteSpaceshipUrl = '/spaceship/delete';
+const getUserSpaceshipsUrl = '/spaceship/userSpaceships';
 
 const spaceshipService = {
     getAllSpaceships: () => {
@@ -25,6 +26,10 @@ const spaceshipService = {
 
     deleteSpaceship: (spaceshipId) => {
         return del(`${deleteSpaceshipUrl}/${spaceshipId}`, true);
+    },
+
+    getUserSpaceships: () => {
+        return get(getAllSpaceshipsUrl, true);
     }
 };
 

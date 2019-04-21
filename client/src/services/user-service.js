@@ -1,4 +1,4 @@
-import { post, get } from './ajax-service';
+import { post } from './ajax-service';
 
 const registerUrl = '/user/register';
 const loginUrl = '/user/login';

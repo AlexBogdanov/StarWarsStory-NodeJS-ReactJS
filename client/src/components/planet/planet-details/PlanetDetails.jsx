@@ -81,7 +81,7 @@ class PlanetDetails extends Component {
                     <MDBCol md="3">
                         Natives:
                         {
-                            this.state.planet.natives.lenght > 0 ?
+                            this.state.planet.natives.length > 0 ?
                             this.state.planet.natives.map((native, index) => {
                                 return (
                                     <div key={index}><a href={`/character/${native._id}`}>{native.name}</a></div>

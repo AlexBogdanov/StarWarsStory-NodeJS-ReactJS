@@ -5,6 +5,7 @@ const getMovieByIdUrl = '/movie/movie';
 const createMovieUrl = '/movie/create';
 const editMovieUrl = '/movie/edit';
 const deleteMovieUrl = '/movie/delete';
+const getUserMoviesUrl = '/movie/userMovies';
 
 const movieService = {
     getAllMovies: () => {
@@ -25,6 +26,10 @@ const movieService = {
 
     deleteMovie: (movieId) => {
         return del(`${deleteMovieUrl}/${movieId}`, true);
+    },
+
+    getUserMovies: () => {
+        return get(getUserMoviesUrl, true);
     }
 };
 

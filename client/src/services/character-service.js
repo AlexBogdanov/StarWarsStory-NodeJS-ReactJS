@@ -6,6 +6,7 @@ const createCharacterUrl = '/character/create';
 const editCharacterUrl = '/character/edit';
 const deleteCharacterByIdUrl = '/character/delete';
 const getCharactersNamesAndIdsUrl = '/character/characterNamesAndIds';
+const getUserCharactersUrl = '/character/userCharacters';
 
 const characterService = {
     getAllCharacters: () => {
@@ -30,6 +31,10 @@ const characterService = {
 
     getCharactersNamesAndIds: () => {
         return get(getCharactersNamesAndIdsUrl, true);
+    },
+
+    getUserCharacters: () => {
+        return get(getUserCharactersUrl, true);
     }
 };
 

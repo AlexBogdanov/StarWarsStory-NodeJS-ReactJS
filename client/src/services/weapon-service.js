@@ -5,6 +5,7 @@ const getWeaponByIdUrl = '/weapon/weapon';
 const createWeaponUrl = '/weapon/create';
 const editWeaponUrl = '/weapon/edit';
 const deleteWeaponUrl = '/weapon/delete';
+const getUserWeaponsUrl = '/weapon/userWeapons';
 
 const weaponService = {
     getAllWeapons: () => {
@@ -25,6 +26,10 @@ const weaponService = {
 
     deleteWeapon: (weaponId) => {
         return del(`${deleteWeaponUrl}/${weaponId}`, true);
+    },
+
+    getUserWeapons: () => {
+        return get(getUserWeaponsUrl, true);
     }
 };
 

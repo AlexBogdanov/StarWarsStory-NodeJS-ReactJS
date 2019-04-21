@@ -5,7 +5,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn,
 
 import movieService from './../../../services/movie-service';
 import { OK } from './../../../constants/http-responses';
-import { notifTypes, movieTypesName, movieTypes } from '../../../constants/common';
+import { notifTypes, movieTypes } from '../../../constants/common';
 import { errorNotifs } from '../../../constants/notification-messages';
 import collectionManager from './../../../utilities/collection-manager';
 

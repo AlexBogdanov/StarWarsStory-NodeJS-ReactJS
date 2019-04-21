@@ -26,7 +26,7 @@ const Home = ({ history }) => {
     
     return (
         <MDBContainer>
-            <h4 className="mt-5" mb-2></h4>
+            <h4 className="mt-5 mb-2"></h4>
             <MDBCarousel activeItem={1} length={5} showControls={true} showIndicators={true} className="z-depth-1">
                 <MDBCarouselInner>
                     <MDBCarouselItem itemId="1">

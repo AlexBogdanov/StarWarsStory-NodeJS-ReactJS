@@ -31,6 +31,7 @@ const spaceshipController = {
 
     create: (req, res) => {
         const spaceship = cloneOnly(req.body, spaceshipProperties);
+        spaceship.creator = req.user._id;
 
         spaceshipData.create(spaceship)
           .then(res.success)

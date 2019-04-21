@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import 'react-notifications/lib/notifications.css';
-import { NotificationContainer, NotificationManager, Button } from 'react-notifications';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 import Navbar from './components/navbar/Navbar';
 import Footer from './components/footer/Footer';
@@ -31,7 +31,7 @@ class App extends Component {
       <div className="App">
         <Navbar notifHandler={this.notifHandler} />
         <NotificationContainer />
-        <Footer />
+        {/* <Footer /> */}
       </div>
     );
   }

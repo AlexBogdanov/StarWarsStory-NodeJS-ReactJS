@@ -7,7 +7,7 @@ import characterService from '../../../services/character-service';
 import { OK } from '../../../constants/http-responses';
 import { notifTypes } from '../../../constants/common';
 
-class CharactersList extends Component {
+class MyCharacters extends Component {
     constructor(props) {
         super(props);
         
@@ -32,21 +32,13 @@ class CharactersList extends Component {
             this.setState({ userRole: sessionStorage.getItem('userRole') });
         }
 
-        let currUserId;
-
-        if (localStorage.getItem('id')) {
-            currUserId = localStorage.getItem('id');
-        } else if (sessionStorage.getItem('id')) {
-            currUserId = sessionStorage.getItem('id');
-        }
-        
-        characterService.getAllCharacters()
+        characterService.getUserCharacters()
           .then(res => {
               if (res.status === OK) {
                   res.json().then(response => {
-                    if (response.data.characters.length > 0) {
-                        this.setState({ characters: response.data.characters.map(character => {
-                            character.isOwned = character.creator === currUserId ? true : false;
+                    if (response.data.length > 0) {
+                        this.setState({ characters: response.data.map(character => {
+                            character.isOwned = true;
                             return character;
                         }), doRender: true, isLoading: false });
                         return;
@@ -125,6 +117,7 @@ class CharactersList extends Component {
             </div>
         );
     };
+         
 };
 
-export default CharactersList;
+export default MyCharacters;
