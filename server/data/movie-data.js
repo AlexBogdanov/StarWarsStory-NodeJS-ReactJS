@@ -37,7 +37,7 @@ const movieData = {
         try {
             const movie = await Movie.findById(id);
 
-            if (movie.creator !== currUserId && userRole !== userRoles.ADMIN) {
+            if (movie.creator.toString() !== currUserId.toString() && userRole !== userRoles.ADMIN) {
                 throw new Error(notifMsgs.errors.UNAUTHORIZED_EDIT);
             }
 
@@ -57,7 +57,7 @@ const movieData = {
         try {
             const movie = await Movie.findById(id);
 
-            if (movie.creator !== currUserId && userRole !== userRoles.ADMIN) {
+            if (movie.creator.toString() !== currUserId.toString() && userRole !== userRoles.ADMIN) {
                 throw new Error(notifMsgs.errors.UNAUTHORIZED_DELETE);
             }
 

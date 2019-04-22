@@ -69,7 +69,7 @@ class CharacterDetails extends Component {
             this.state.isLoading ?
             <Loader type="Ball-Triangle" color="black" height="120" />
             :
-            <MDBContainer style={{ 'background-color': "white", opacity: "0.9 " }}>
+            <MDBContainer style={{ 'backgroundColor': "white", opacity: "0.9 " }}>
                 <MDBRow>
                     <MDBCol></MDBCol>
                     <MDBCol md="6">{this.state.character.name}</MDBCol>
@@ -82,8 +82,8 @@ class CharacterDetails extends Component {
                         {
                             this.state.character.images.map((img, index) => {
                                 return (
-                                    <Fragment>
-                                        <img src={img} alt="" className="img-fluid" key={index} />
+                                    <Fragment key={index}>
+                                        <img src={img} alt="" className="img-fluid" />
                                         <hr />
                                     </Fragment>
                                 );

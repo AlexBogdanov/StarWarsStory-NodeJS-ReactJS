@@ -39,7 +39,7 @@ const weaponData = {
         try {
             const weapon = await Weapon.findById(id);
 
-            if (weapon.creator !== currUserId && userRole !== userRoles.ADMIN) {
+            if (weapon.creator.toString() !== currUserId.toString() && userRole !== userRoles.ADMIN) {
                 throw new Error(notifMsgs.errors.UNAUTHORIZED_EDIT);
             }
 
@@ -59,7 +59,7 @@ const weaponData = {
         try {
             const weapon = await Weapon.findById(id);
 
-            if (weapon.creator !== currUserId && userRole !== userRoles.ADMIN) {
+            if (weapon.creator.toString() !== currUserId.toString() && userRole !== userRoles.ADMIN) {
                 throw new Error(notifMsgs.errors.UNAUTHORIZED_DELETE);
             }
 

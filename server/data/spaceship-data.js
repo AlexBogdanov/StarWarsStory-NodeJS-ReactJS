@@ -38,7 +38,7 @@ const spaceshipData = {
         try {
             const spaceship = await Spaceship.findById(id);
 
-            if (spaceship.creator !== currUserId && userRole !== userRoles.ADMIN) {
+            if (spaceship.creator.toString() !== currUserId.toString() && userRole !== userRoles.ADMIN) {
                 throw new Error(notifMsgs.errors.UNAUTHORIZED_EDIT);
             }
 
@@ -58,7 +58,7 @@ const spaceshipData = {
         try {
             const spaceship = await Spaceship.findById(id);
 
-            if (spaceship.creator !== currUserId && userRole !== userRoles.ADMIN) {
+            if (spaceship.creator.toString() !== currUserId.toString() && userRole !== userRoles.ADMIN) {
                 throw new Error(notifMsgs.errors.UNAUTHORIZED_DELETE);
             }
 

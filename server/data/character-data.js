@@ -40,7 +40,7 @@ const characterData = {
         try {
             const character = await Character.findById(id);
 
-            if (character.creator !== currUserId && userRole !== userRoles.ADMIN) {
+            if (character.creator.toString() !== currUserId.toString() && userRole !== userRoles.ADMIN) {
                 throw new Error(notifMsgs.errors.UNAUTHORIZED_EDIT);
             }
 
@@ -60,7 +60,7 @@ const characterData = {
         try {
             const character = await Character.findById(id);
 
-            if (character.creator !== currUserId && userRole !== userRoles.ADMIN) {
+            if (character.creator.toString() !== currUserId.toString() && userRole !== userRoles.ADMIN) {
                 throw new Error(notifMsgs.errors.UNAUTHORIZED_DELETE);
             }
 

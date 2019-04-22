@@ -38,7 +38,7 @@ const planetData = {
         try {
             const planet = await Planet.findById(id);
 
-            if (planet.creator !== currUserId && userRole !== userRoles.ADMIN) {
+            if (planet.creator.toString() !== currUserId.toString() && userRole !== userRoles.ADMIN) {
                 throw new Error(notifMsgs.errors.UNAUTHORIZED_EDIT);
             }
 
@@ -58,7 +58,7 @@ const planetData = {
         try {
             const planet = await Planet.findById(id);
 
-            if (planet.creator !== currUserId && userRole !== userRoles.ADMIN) {
+            if (planet.creator.toString() !== currUserId.toString() && userRole !== userRoles.ADMIN) {
                 throw new Error(notifMsgs.errors.UNAUTHORIZED_DELETE);
             }
 

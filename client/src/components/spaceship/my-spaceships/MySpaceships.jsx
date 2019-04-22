@@ -36,8 +36,8 @@ class MySpaceships extends Component {
           .then(res => {
             if (res.status === OK) {
                 res.json().then(response => {
-                    if (response.data.spaceships.length > 0) {
-                        this.setState({ spaceships: response.data.spaceships.map(spaceship => {
+                    if (response.data.length > 0) {
+                        this.setState({ spaceships: response.data.map(spaceship => {
                             spaceship.isOwned = true;
                             return spaceship;
                         }), doRender: true, isLoading: false });

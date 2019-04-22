@@ -202,7 +202,7 @@ class SpaceshipEdit extends Component {
             <MDBContainer>
                 <MDBRow>
                     <MDBCol></MDBCol>
-                    <MDBCol md="6" style={{ 'background-color': "white", opacity: "0.9" }}>
+                    <MDBCol md="6" style={{ 'backgroundColor': "white", opacity: "0.9" }}>
                         <form onSubmit={this.handleSubmit}>
                             <p className="h5 text-center mb-4">{this.state.name}</p>
                             <div className="grey-text">
