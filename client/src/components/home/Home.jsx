@@ -15,7 +15,7 @@ const Home = ({ history }) => {
             history.push('/characters');
         } else if (routeType === routeTypes.WEAPONS) {
             history.push('/weapons');
-        } else if (routeType === routeType.SPACESHIPS) {
+        } else if (routeType === routeTypes.SPACESHIPS) {
             history.push('/spaceships');
         } else if (routeType === routeTypes.PLANETS) {
             history.push('/planets');
